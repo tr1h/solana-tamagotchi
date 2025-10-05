@@ -3104,18 +3104,28 @@
             const baseUrl = window.location.origin + window.location.pathname;
             const referralLink = `${baseUrl}?ref=${referralCode}`;
             
-            document.getElementById('referralLink').value = referralLink;
+            const refLinkEl = document.getElementById('referralLink');
+            if (refLinkEl) {
+                refLinkEl.value = referralLink;
+            }
             
-            // Обновляем статистику (для демо)
-            document.getElementById('referralCount').textContent = totalReferrals;
-            document.getElementById('referralEarnings').textContent = (referralEarnings / 1000000000).toFixed(2) + ' SOL';
+            // Обновляем статистику (для демо) - только если элементы существуют
+            const refCountEl = document.getElementById('referralCount');
+            const refEarningsEl = document.getElementById('referralEarnings');
+            
+            if (refCountEl) refCountEl.textContent = totalReferrals;
+            if (refEarningsEl) refEarningsEl.textContent = (referralEarnings / 1000000000).toFixed(2) + ' SOL';
         }
         
         function copyReferralLink() {
             const input = document.getElementById('referralLink');
+            if (!input) {
+                showNotification('❌ Referral link not available');
+                return;
+            }
             input.select();
             document.execCommand('copy');
-            showNotification('✅ Ссылка скопирована!');
+            showNotification('✅ Link copied!');
         }
         
         async function shareReferral() {
@@ -3837,10 +3847,10 @@
                 showNotification('🤖 AI is thinking...');
                 
                 // Get pet stats if available
-                const petStats = petData ? {
-                    health: petData.health,
-                    hunger: petData.hunger,
-                    happiness: petData.happiness
+                const petStats = (typeof petData !== 'undefined' && petData) ? {
+                    health: petData.health || 0,
+                    hunger: petData.hunger || 0,
+                    happiness: petData.happiness || 0
                 } : null;
                 
                 const response = await fetch(`${WORKERS_API}/ai/advisor`, {
