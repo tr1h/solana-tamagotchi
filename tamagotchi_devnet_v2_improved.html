@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,7 +7,7 @@
     <title>Crypto Tamagotchi 🐣 | Play-to-Earn NFT Game on Solana</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Crypto Tamagotchi - уникальная Play-to-Earn игра на Solana. Заботься о своем NFT питомце, зарабатывай токены $TAMA!">
+    <meta name="description" content="Crypto Tamagotchi - unique Play-to-Earn game on Solana. Take care of your NFT pet, earn $TAMA tokens!">
     <meta name="keywords" content="Crypto Tamagotchi, Solana NFT, Play-to-Earn, GameFi, Web3 Game, TAMA Token, Blockchain Game">
     <meta name="author" content="Crypto Tamagotchi Team">
     
@@ -15,14 +15,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://crypto-tamagotchi.vercel.app/">
     <meta property="og:title" content="Crypto Tamagotchi 🐣 | Play-to-Earn NFT Game on Solana">
-    <meta property="og:description" content="Заботься о своем уникальном NFT питомце и зарабатывай токены $TAMA! Играй сейчас на Solana blockchain.">
+    <meta property="og:description" content="Take care of your unique NFT pet and earn $TAMA tokens! Play now on Solana blockchain.">
     <meta property="og:image" content="https://crypto-tamagotchi.vercel.app/og-image.png">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://crypto-tamagotchi.vercel.app/">
     <meta property="twitter:title" content="Crypto Tamagotchi 🐣 | Play-to-Earn NFT Game">
-    <meta property="twitter:description" content="Заботься о своем уникальном NFT питомце и зарабатывай $TAMA!">
+    <meta property="twitter:description" content="Take care of your unique NFT pet and earn $TAMA tokens!">
     <meta property="twitter:image" content="https://crypto-tamagotchi.vercel.app/twitter-card.png">
     
     <!-- Favicon -->
@@ -790,15 +790,15 @@
 
         <div class="wallet-section">
             <button class="connect-btn" id="connectBtn" onclick="window.connectWallet()">
-                🔗 Подключить кошелек
+                🔗 Connect Wallet
             </button>
             <div class="wallet-connected" id="walletAddress" style="display: none; position: relative;">
                 <div id="tamaBalance" style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; text-align: center;">
                     <div style="font-size: 18px; font-weight: bold; color: #FFD700;">🎯 TAMA: <span id="tamaAmount">0</span></div>
-                    <div style="font-size: 12px; color: #ccc;">Токены за действия с питомцем</div>
+                    <div style="font-size: 12px; color: #ccc;">Tokens earned from pet actions</div>
                 </div>
                 <button class="disconnect-btn" onclick="window.disconnectWallet()" style="margin-left: 10px; padding: 8px 15px; background: #ff4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px;">
-                    🚪 Отключить
+                    🚪 Disconnect
                 </button>
             </div>
         </div>
@@ -818,44 +818,53 @@
                     </div>
                 </div>
 
-                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2)); padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;">
-                    <h3 style="color: #00ff99; margin-bottom: 15px;">🎁 Beta Tester Rewards:</h3>
-                    <div style="color: #fff;">
-                        <p style="margin-bottom: 10px;">• Free Mainnet NFT mint</p>
-                        <p style="margin-bottom: 10px;">• $GOTCHI token airdrop</p>
-                        <p style="margin-bottom: 10px;">• OG Badge (on-chain)</p>
-                        <p>• VIP Discord role</p>
+                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2)); padding: 18px; border-radius: 15px; margin-bottom: 15px; text-align: center;">
+                    <h3 style="color: #00ff99; margin: 0 0 12px 0; font-size: 16px;">🎁 Beta Tester Rewards:</h3>
+                    <div style="color: #fff; font-size: 13px; line-height: 1.6;">
+                        <p style="margin: 0 0 8px 0;">• Free Mainnet NFT mint</p>
+                        <p style="margin: 0 0 8px 0;">• $GOTCHI token airdrop</p>
+                        <p style="margin: 0 0 8px 0;">• OG Badge (on-chain)</p>
+                        <p style="margin: 0;">• VIP Discord role</p>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(255,165,0,0.2), rgba(255,140,0,0.2)); padding: 18px; border-radius: 15px; margin-bottom: 15px; text-align: left; border: 2px solid rgba(255,165,0,0.5);">
+                    <h3 style="color: #FFA500; margin: 0 0 12px 0; text-align: center; font-size: 16px;">📝 Testing on Devnet:</h3>
+                    <div style="color: #fff; font-size: 13px; line-height: 1.5;">
+                        <p style="margin: 0 0 8px 0; font-weight: bold;">1. Switch to Devnet</p>
+                        <p style="margin: 0 0 12px 0; padding-left: 15px; opacity: 0.9;">• In Phantom: Settings → Change Network → Devnet</p>
+                        
+                        <p style="margin: 0 0 8px 0; font-weight: bold;">2. Get free SOL</p>
+                        <p style="margin: 0 0 5px 0; padding-left: 15px; opacity: 0.9;">• Visit: <a href="https://faucet.solana.com" target="_blank" style="color: #00D4AA; text-decoration: underline; font-weight: 500;">faucet.solana.com</a></p>
+                        <p style="margin: 0 0 12px 0; padding-left: 15px; opacity: 0.9;">• Paste your wallet address & request</p>
+                        
+                        <p style="margin: 0 0 8px 0; font-weight: bold;">3. Create pet & test!</p>
+                        <p style="margin: 0; padding-left: 15px; opacity: 0.9;">• Connect wallet → Create pet → Play</p>
                     </div>
                 </div>
             </div>
 
             <div style="margin: 20px 0; text-align: center;">
-                <button onclick="createPet()" style="background: linear-gradient(135deg, #00D4AA, #00A8CC); color: white; font-size: 18px; padding: 20px 30px; border: none; border-radius: 15px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; box-shadow: 0 8px 32px rgba(0, 212, 170, 0.3); margin-bottom: 20px;">
-                    🐣 Create Your First Pet (FREE)
+                <button onclick="createPet()" id="createPetBtn" style="background: linear-gradient(135deg, #00D4AA, #00A8CC); color: white; font-size: 18px; padding: 20px 30px; border: none; border-radius: 15px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; box-shadow: 0 8px 32px rgba(0, 212, 170, 0.3); margin-bottom: 15px;">
+                    🐣 Create Your Pet (FREE)
                 </button>
 
-                <p style="color: #fff; opacity: 0.8; font-size: 14px; margin-bottom: 10px;">
-                    💎 Mainnet launch with REAL NFTs coming soon!
+                <p style="color: #fff; opacity: 0.9; font-size: 13px; margin-bottom: 5px;">
+                    ✅ Free beta testing on Devnet
                 </p>
-                <p style="color: #fff; opacity: 0.8; font-size: 14px;">
-                    🎮 All beta testers will receive exclusive rewards!
+                <p style="color: #fff; opacity: 0.9; font-size: 13px; margin-bottom: 5px;">
+                    💎 Beta testers get exclusive rewards
+                </p>
+                <p style="color: #fff; opacity: 0.8; font-size: 13px;">
+                    🎮 Mainnet launch with REAL NFTs coming soon!
                 </p>
             </div>
 
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                </div>
-                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center;">
-                    <p style="color: #fff; opacity: 0.7; font-size: 0.9em;">
-                        💡 This is a beta test on Devnet. All progress will be reset before Mainnet launch.
-                    </p>
-                </div>
-                </div>
-            </p>
-            
-            <!-- Recovery кнопка (показывается если Entry Fee оплачен но питомец не создан) -->
-            <button class="action-btn" onclick="recoverEntryFee()" id="recoveryBtn" style="display: none; background: linear-gradient(135deg, #f093fb, #f5576c); margin-top: 10px;">
-                🔧 Уже оплатил? Создать питомца
-            </button>
+            <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center;">
+                <p style="color: #fff; opacity: 0.7; font-size: 0.85em; margin: 0;">
+                    💡 This is a beta test on Devnet. All progress will be reset before Mainnet launch.
+                </p>
+            </div>
             
             <!-- Manual Refresh кнопка -->
         </div>
@@ -864,28 +873,18 @@
         <div id="gameScreen" style="display: none;">
             <div class="pet-display" id="petDisplay">
                 <div class="pet-sprite" id="petSprite">🐣</div>
-                <div class="pet-name" id="petName">Питомец</div>
-                <div class="pet-level" id="petLevel">Уровень 1</div>
+                <div class="pet-name" id="petName">Pet</div>
+                <div class="pet-level" id="petLevel">Level 1</div>
                 <div class="pet-lives" id="petLives" style="font-size: 20px; margin-top: 5px;">❤️❤️❤️</div>
                 
-                <!-- 🤖 AUTO-CLICKER MECHANICS -->
+                <!-- 🍖 AUTO-FEED MECHANICS -->
                 <div class="click-stats" style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="color: #4caf50; font-weight: bold;">🤖 Авто-кликеры: <span id="autoClickerCount">0</span></span>
-                        <span style="color: #00d4ff; font-weight: bold;">⚡ TAMA/сек: <span id="tamaPerSec">0</span></span>
+                        <span style="color: #4caf50; font-weight: bold;">🍖 Auto-Feeders: <span id="autoFeedCount">0</span></span>
+                        <span style="color: #00d4ff; font-weight: bold;">⏱ Next Feed: <span id="nextFeedTime">--</span></span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="color: #ff9800; font-weight: bold;">💰 Offline: <span id="offlineReward">0</span></span>
-                        <span style="color: #ffd700; font-weight: bold;">⏰ До claim: <span id="timeToClaim">0</span></span>
-                    </div>
-                    <!-- Прогресс до следующего авто-кликера -->
-                    <div id="autoClickerProgress" style="margin-top: 10px; display: none;">
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 5px;">
-                            До следующего авто-кликера: <span id="tamaToNext">0</span> TAMA
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; height: 8px;">
-                            <div id="autoClickerProgressBar" style="background: linear-gradient(90deg, #4caf50, #8bc34a); height: 100%; width: 0%; transition: width 0.3s;"></div>
-                        </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #ff9800; font-weight: bold; font-size: 13px;">Prevents hunger decay automatically</span>
                     </div>
                 </div>
                 <div class="exp-bar-container">
@@ -896,180 +895,189 @@
 
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-label">❤️ Здоровье</div>
+                    <div class="stat-label">❤️ Health</div>
                     <div class="stat-bar-container">
                         <div class="stat-bar health" id="healthBar" data-value="10">100%</div>
                     </div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">🍖 Голод</div>
+                    <div class="stat-label">🍖 Hunger</div>
                     <div class="stat-bar-container">
                         <div class="stat-bar hunger" id="hungerBar" data-value="10">100%</div>
                     </div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">💧 Жажда</div>
-                    <div class="stat-bar-container">
-                        <div class="stat-bar thirst" id="thirstBar" data-value="10">100%</div>
-                    </div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">😊 Счастье</div>
+                    <div class="stat-label">😊 Happiness</div>
                     <div class="stat-bar-container">
                         <div class="stat-bar happiness" id="happinessBar" data-value="10">100%</div>
                     </div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">⚡ Энергия</div>
+                    <div class="stat-label">⚡ Energy</div>
                     <div class="stat-bar-container">
                         <div class="stat-bar energy" id="energyBar" data-value="10">100%</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Реальное время информация -->
+            <!-- Real-time info -->
             <div class="realtime-info">
-                <div class="realtime-title">⏰ Реальное время</div>
-                <div class="death-prediction" id="deathPrediction" style="display: none;">💀 Прогноз: --</div>
+                <div class="realtime-title">⏰ Real-Time Status</div>
+                <div class="death-prediction" id="deathPrediction" style="display: none;">💀 Prediction: --</div>
                 <div class="recommendations" id="recommendations" style="display: none;">
-                    <div class="recommendations-title">💡 Рекомендации:</div>
+                    <div class="recommendations-title">💡 Recommendations:</div>
                     <div class="recommendations-list" id="recommendationsList"></div>
                 </div>
             </div>
 
-            <!-- Действия -->
+            <!-- Actions -->
             <div class="actions">
                 <button class="action-btn" onclick="feedPet()" id="feedBtn">
-                    🍖 Кормить
+                    🍖 Feed
                     <div class="token-cost">5 TAMA</div>
                 </button>
                 <button class="action-btn" onclick="playWithPet()" id="playBtn">
-                    🎮 Играть
+                    🎮 Play
                     <div class="token-cost">3 TAMA</div>
                 </button>
                 <button class="action-btn" onclick="healPet()" id="healBtn">
-                    💊 Лечить
+                    💊 Heal
                     <div class="token-cost">8 TAMA</div>
                 </button>
-                <button class="action-btn" onclick="drinkPet()" id="drinkBtn">
-                    🍹 Напоить
-                    <div class="token-cost">3 TAMA</div>
-                </button>
                 <button class="action-btn" onclick="restPet()" id="restBtn">
-                    😴 Отдохнуть
+                    😴 Rest
                     <div class="token-cost">2 TAMA</div>
                 </button>
                 
-                <!-- 🔥 AUTO-CLICKER -->
-                <button class="action-btn" onclick="buyAutoClicker()" id="autoClickerBtn" style="background: linear-gradient(135deg, #4caf50, #45a049);">
-                    🤖 Авто-кликер
-                    <div class="token-cost" id="autoClickerCost">100 TAMA</div>
+                <!-- 🍖 AUTO-FEED -->
+                <button class="action-btn" onclick="buyAutoFeed()" id="autoFeedBtn" style="background: linear-gradient(135deg, #4caf50, #45a049);">
+                    🍖 Auto-Feed
+                    <div class="token-cost" id="autoFeedCost">50 TAMA</div>
                 </button>
             </div>
             
-            <!-- 💀 ВОСКРЕШЕНИЕ (показывается только для мертвых питомцев) -->
+            <!-- 💀 RESURRECTION (only for dead pets) -->
             <div class="resurrection-panel" id="resurrectionPanel" style="display: none;">
                 <div style="background: rgba(255,0,0,0.1); border: 2px solid #ff4444; border-radius: 15px; padding: 20px; margin: 15px 0;">
-                    <h3 style="color: #ff4444; text-align: center; margin-bottom: 15px;">💀 Твой питомец умер!</h3>
+                    <h3 style="color: #ff4444; text-align: center; margin-bottom: 15px;">💀 Your pet died!</h3>
                     <p style="text-align: center; color: white; margin-bottom: 20px;">
-                        Выбери что делать:
+                        Choose an action:
                     </p>
                     
                     <div style="display: grid; gap: 10px;">
-                        <!-- Воскресить БЕСПЛАТНО (первый раз) -->
-                        <button class="action-btn" onclick="resurrectFree()" id="resurrectFreeBtn" style="background: linear-gradient(135deg, #4caf50, #8bc34a); display: none;">
-                            🎁 БЕСПЛАТНО (1-я жизнь)
-                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Восстановится с 50% статов</div>
+                        <!-- FREE Resurrection (once) -->
+                        <button class="action-btn" onclick="resurrectFree()" id="resurrectFreeBtn" style="background: linear-gradient(135deg, #4caf50, #8bc34a);">
+                            🎁 FREE Resurrection
+                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Restores with 50% stats (once per pet)</div>
                         </button>
                         
-                        <!-- Воскресить за SOL -->
-                        <button class="action-btn" onclick="resurrectWithSOL()" id="resurrectSOLBtn" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                            💎 Воскресить за 0.1 SOL
-                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Восстановится с 50% статов</div>
-                        </button>
-                        
-                        <!-- Воскресить за TAMA -->
-                        <button class="action-btn" onclick="resurrectWithTAMA()" id="resurrectTAMABtn" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
-                            🔥 Воскресить за 5,000 TAMA
-                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Токены будут СОЖЖЕНЫ</div>
-                        </button>
-                        
-                        <!-- Закрыть аккаунт -->
+                        <!-- Close Account -->
                         <button class="action-btn" onclick="closePetAccount()" id="closeAccountBtn" style="background: linear-gradient(135deg, #434343, #000000);">
-                            ⚰️ Закрыть аккаунт
-                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Вернуть rent и создать нового</div>
+                            ⚰️ Close Account
+                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Get rent back & create new pet</div>
                         </button>
                     </div>
                     
                     <p style="text-align: center; color: #ff4444; margin-top: 15px; font-size: 0.85em;">
-                        ⚠️ После закрытия питомец исчезнет навсегда!
+                        ⚠️ Closing account deletes pet forever!
                     </p>
                 </div>
             </div>
 
-            <!-- Toggle История -->
+            <!-- Toggle History -->
             <button class="toggle-btn" onclick="toggleHistory()">
-                📜 История действий
+                📜 Action History
             </button>
             
             <!-- 💰 REFERRAL SYSTEM -->
             <button class="toggle-btn" onclick="toggleReferral()" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
-                💰 Реферальная система
+                💰 Referral System
             </button>
             
-            <!-- История -->
+            <button class="toggle-btn" onclick="toggleStats()" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                📊 Statistics
+            </button>
+            
+            <!-- History -->
             <div class="history-panel" id="historyPanel">
-                <div class="history-title">Последние действия</div>
+                <div class="history-title">Recent Actions</div>
                 <div class="history-list" id="historyList">
                     <div style="text-align: center; color: #999; font-size: 0.85em; padding: 20px;">
-                        Пока нет действий
+                        No actions yet
                     </div>
                 </div>
             </div>
             
             <!-- 💰 REFERRAL PANEL -->
             <div class="history-panel" id="referralPanel" style="display: none;">
-                <div class="history-title">💰 Реферальная программа</div>
+                <div class="history-title">💰 Referral Program</div>
                 <div style="padding: 15px;">
                     <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
-                        <h3 style="color: #ffd700; margin-bottom: 10px;">🎁 Твоя реферальная ссылка:</h3>
+                        <h3 style="color: #ffd700; margin-bottom: 10px;">🎁 Your Referral Link:</h3>
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <input type="text" id="referralLink" readonly 
                                 style="flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #ffd700; background: rgba(255,255,255,0.9); font-family: monospace; font-size: 0.9em;" 
-                                value="Подключи кошелек"/>
+                                value="Connect wallet"/>
                             <button onclick="copyReferralLink()" style="padding: 10px 20px; background: #ffd700; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
-                                📋 Копировать
+                                📋 Copy
                             </button>
                         </div>
                         <button onclick="shareReferral()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px;">
-                            📢 Поделиться
+                            📢 Share
                         </button>
                     </div>
                     
                     <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
-                        <h3 style="color: #4caf50; margin-bottom: 15px;">💰 Твои награды:</h3>
+                        <h3 style="color: #4caf50; margin-bottom: 15px;">💰 Your Rewards:</h3>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
                                 <div style="font-size: 2em;">👥</div>
                                 <div style="font-size: 1.5em; font-weight: bold; color: white;" id="referralCount">0</div>
-                                <div style="font-size: 0.85em; color: #ccc;">Приглашено</div>
+                                <div style="font-size: 0.85em; color: #ccc;">Referred</div>
                             </div>
                             <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
                                 <div style="font-size: 2em;">💎</div>
                                 <div style="font-size: 1.5em; font-weight: bold; color: #ffd700;" id="referralEarnings">0 SOL</div>
-                                <div style="font-size: 0.85em; color: #ccc;">Заработано</div>
+                                <div style="font-size: 0.85em; color: #ccc;">Earned</div>
                             </div>
                         </div>
                     </div>
                     
                     <div style="background: rgba(76, 175, 80, 0.2); border-radius: 15px; padding: 20px; border: 2px solid #4caf50;">
-                        <h3 style="color: #4caf50; margin-bottom: 10px;">🎯 Как это работает:</h3>
-                        <ul style="color: white; line-height: 1.8; padding-left: 20px;">
-                            <li>🎁 Друг регистрируется по твоей ссылке → ты получаешь <strong style="color: #ffd700;">100 TAMA</strong></li>
-                            <li>💰 Друг оплачивает Entry Fee (0.5 SOL) → ты получаешь <strong style="color: #ffd700;">10% (0.05 SOL)</strong></li>
-                            <li>🔄 Друг покупает улучшения → ты получаешь <strong style="color: #ffd700;">5% комиссии</strong></li>
-                            <li>🚀 Бесконечный пассивный доход!</li>
+                        <h3 style="color: #4caf50; margin-bottom: 10px;">🎯 How it works:</h3>
+                        <ul style="color: white; line-height: 1.8; padding-left: 20px; font-size: 14px;">
+                            <li>🎁 Friend creates pet via your link → you get <strong style="color: #ffd700;">10% of entry fee</strong></li>
+                            <li>💎 More referrals = more rewards</li>
+                            <li>🚀 Passive income forever!</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 📊 STATS PANEL -->
+            <div class="history-panel" id="statsPanel" style="display: none;">
+                <div class="history-title">📊 Statistics</div>
+                <div style="padding: 15px;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
+                        <h3 style="color: #00d4ff; margin-bottom: 15px;">🎮 Your Stats:</h3>
+                        <div style="display: grid; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                                <span style="color: #ccc;">Total Actions:</span>
+                                <span style="color: white; font-weight: bold;" id="totalActions">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                                <span style="color: #ccc;">Pet Age:</span>
+                                <span style="color: white; font-weight: bold;" id="petAge">0 days</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                                <span style="color: #ccc;">Deaths:</span>
+                                <span style="color: white; font-weight: bold;" id="deathCount">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                                <span style="color: #ccc;">Lives Remaining:</span>
+                                <span style="color: white; font-weight: bold;" id="livesRemaining">3</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1126,6 +1134,68 @@
         </div>
     </div>
 
+    <!-- 📊 GAME STATS SECTION -->
+    <div class="container" style="margin-top: 20px;">
+        <h2 style="text-align: center; color: white; margin-bottom: 20px;">📊 Game Statistics</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 15px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: white;" id="totalPets">...</div>
+                <div style="font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 5px;">Total Pets</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 15px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: white;" id="totalPlayers">...</div>
+                <div style="font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 5px;">Players</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 20px; border-radius: 15px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: white;" id="activeNow">...</div>
+                <div style="font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 5px;">Active Now</div>
+            </div>
+            <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 20px; border-radius: 15px; text-align: center;">
+                <div style="font-size: 32px; font-weight: bold; color: white;" id="popularSpecies">...</div>
+                <div style="font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 5px;">Most Popular</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🏆 LEADERBOARD SECTION -->
+    <div class="container" style="margin-top: 20px;">
+        <h2 style="text-align: center; color: white; margin-bottom: 20px;">🏆 Top Players</h2>
+        <div id="leaderboard-container" style="max-height: 400px; overflow-y: auto;">
+            <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
+                Loading leaderboard...
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎁 REFERRAL SECTION -->
+    <div class="container" style="margin-top: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <h2 style="text-align: center; color: white; margin-bottom: 15px;">🎁 Invite Friends & Earn Rewards</h2>
+        <p style="text-align: center; color: white; margin-bottom: 20px; font-size: 16px;">
+            Get <strong id="referralBonus" style="font-size: 24px;">100</strong> TAMA for each friend!
+        </p>
+        
+        <button onclick="createReferralLink()" style="background: white; color: #f5576c; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 15px; transition: transform 0.2s;">
+            🔗 Generate Referral Link
+        </button>
+        
+        <div id="referralResult" style="display: none; margin-top: 15px;">
+            <p style="color: white; margin-bottom: 10px;">
+                Your code: <strong id="referralCode" style="font-size: 18px; color: #FFD700;">-</strong>
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <input 
+                    type="text" 
+                    id="referralLink" 
+                    readonly 
+                    style="flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-family: monospace;"
+                >
+                <button onclick="copyReferralLink()" style="background: #FFD700; color: #f5576c; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;">
+                    📋 Copy
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="notification" id="notification"></div>
 
     <!-- Solana Web3.js -->
@@ -1136,12 +1206,14 @@
         const PROGRAM_ID = 'uY5hZR2uYzkquJDuDkFBj29tfzZRPE96BBTHYGaYnwX';
         
         // 💰 TREASURY WALLET (команда)
-        const TREASURY_WALLET = 'H2a7hSCumPuFGVV9yvzABxbTBnt9N3VWLyRrwjKrYJ7i';
+        const TREASURY_WALLET = '49kwEKNBnfqYt4GYpYkcCHyDiQDxS24jRuckLjptryvu';
+        
+        // ⚡ CLOUDFLARE WORKERS API
+        const WORKERS_API = 'https://my-vibe-sdk.travkevich.workers.dev';
         
         const RPC_URLS = [
             'https://api.devnet.solana.com',
-            'https://rpc.ankr.com/solana_devnet',
-            'https://devnet.sonic.game'
+            'https://rpc.ankr.com/solana_devnet'
         ];
         
         // 🎯 TAMA Token System
@@ -1301,19 +1373,19 @@
                 document.getElementById('createScreen').style.display = 'none';
                 document.getElementById('gameScreen').style.display = 'none';
                 
-                showNotification('👋 Кошелек отключен');
+                showNotification('👋 Wallet disconnected');
                 console.log('✅ Кошелек отключен');
                 
             } catch (err) {
                 console.error('Ошибка отключения:', err);
-                showNotification('❌ Ошибка отключения кошелька');
+                showNotification('❌ Error disconnecting wallet');
             }
         }
         
         window.connectWallet = async function() {
             try {
                 if (!window.solana || !window.solana.isPhantom) {
-                    showNotification('❌ Установите Phantom Wallet!');
+                    showNotification('❌ Please install Phantom Wallet!');
                     window.open('https://phantom.app/', '_blank');
                     return;
                 }
@@ -1330,7 +1402,7 @@
                 // 🎯 Обновить TAMA баланс
                 await updateTamaBalance();
                 
-                showNotification('✅ Кошелек подключен!');
+                showNotification('✅ Wallet connected!');
                 
                 // Обновляем реферальную ссылку
                 updateReferralLink();
@@ -1351,7 +1423,7 @@
                 
             } catch (err) {
                 console.error('Ошибка подключения:', err);
-                showNotification('❌ Ошибка подключения кошелька');
+                showNotification('❌ Error connecting wallet');
             }
         }
 
@@ -1365,7 +1437,7 @@
                 const programInfo = await connection.getAccountInfo(new window.solanaWeb3.PublicKey(PROGRAM_ID));
                 if (!programInfo) {
                     console.error('❌ Контракт не найден! Program ID:', PROGRAM_ID);
-                    showNotification('❌ Контракт не найден! Проверь деплой.');
+                    showNotification('❌ Contract not found! Check deployment.');
                     return false;
                 }
                 console.log('✅ Контракт найден:', PROGRAM_ID);
@@ -1400,7 +1472,7 @@
         // Recovery функция - создать питомца если Entry Fee уже оплачен
         window.recoverEntryFee = async function() {
             if (!wallet) {
-                showNotification('❌ Подключи кошелек!');
+                showNotification('❌ Connect your wallet!');
                 return;
             }
             
@@ -1409,21 +1481,21 @@
             
             if (savedEntryFee === 'true') {
                 entryFeePaid = true;
-                showNotification('✅ Entry Fee подтвержден! Создаю питомца...');
+                showNotification('✅ Entry Fee confirmed! Creating pet...');
                 createPet();
             } else {
-                showNotification('❌ Entry Fee не найден. Сначала оплати вход.');
+                showNotification('❌ Entry Fee not found. Pay entry first.');
             }
         }
         
         // Manual Refresh - принудительная проверка питомца
         async function manualRefresh() {
             if (!wallet) {
-                showNotification('❌ Подключи кошелек!');
+                showNotification('❌ Connect your wallet!');
                 return;
             }
             
-            showNotification('🔄 Проверяю питомца...');
+            showNotification('🔄 Checking pet...');
             
             // Сбрасываем флаг
             isCheckingPet = false;
@@ -1482,7 +1554,7 @@
             
             try {
                 console.log('🔍 Проверяю питомца...');
-                showNotification('⏳ Проверяю питомца... Пробую 4 разных RPC...');
+                showNotification('⏳ Checking pet... Trying 4 different RPCs...');
                 
                 const [petPda] = await getPetPda(wallet.publicKey);
                 petPubkey = petPda;
@@ -1509,7 +1581,7 @@
                     
                     startRealtimeUpdates();
                     
-                    showNotification('🎉 Ваш питомец найден!');
+                    showNotification('🎉 Your pet found!');
                 } else {
                     console.log('❌ Питомец не найден, показываю экран создания');
                     document.getElementById('createScreen').style.display = 'block';
@@ -1520,9 +1592,9 @@
                 
                 // Улучшенное сообщение для RPC ошибок
                 if (err.message.includes('Timeout') || err.message.includes('RPC')) {
-                    showNotification('⚠️ Проблемы с сетью Devnet. Попробуйте обновить страницу или создать питомца.');
+                    showNotification('⚠️ Devnet network issues. Try refreshing or creating pet.');
                 } else {
-                    showNotification('❌ Ошибка: ' + err.message);
+                    showNotification('❌ Error: ' + err.message);
                 }
                 
                 document.getElementById('createScreen').style.display = 'block';
@@ -1605,16 +1677,16 @@
         window.createNFTWithTAMA = async function() {
             if (!wallet || !wallet.publicKey) return;
             
-            showNotification('🎨 NFT за TAMA временно отключено! Используй NFT за SOL.');
+            showNotification('🎨 NFT for TAMA temporarily disabled! Use NFT for SOL.');
             return;
             
             try {
-                showNotification('🎨 Создаю NFT за TAMA...');
+                showNotification('🎨 Creating NFT for TAMA...');
                 
                 // Проверяем баланс TAMA
                 const tamaBalance = await getTamaBalance(wallet.publicKey);
                 if (tamaBalance < 10) {
-                    showNotification('❌ Недостаточно TAMA! Нужно: 10, у вас: ' + tamaBalance);
+                    showNotification('❌ Insufficient TAMA! Need: 10, you have: ' + tamaBalance);
                     return;
                 }
                 
@@ -1690,7 +1762,7 @@
                 const signature = await connection.sendRawTransaction(signed.serialize());
                 await connection.confirmTransaction(signature, 'confirmed');
                 
-                showNotification('🎉 NFT создан за TAMA! 10 TAMA сожжено!');
+                showNotification('🎉 NFT created for TAMA! 10 TAMA burned!');
                 
                 // Обновляем данные
                 await checkExistingPet();
@@ -1698,7 +1770,7 @@
                 
             } catch (error) {
                 console.error('Ошибка создания NFT за TAMA:', error);
-                showNotification('❌ Ошибка: ' + error.message);
+                showNotification('❌ Error: ' + error.message);
             }
         }
 
@@ -1707,14 +1779,14 @@
             if (!wallet || !wallet.publicKey) return;
             
             try {
-                showNotification('💰 Создаю NFT за SOL...');
+                showNotification('💰 Creating NFT for SOL...');
                 
                 // Проверяем баланс SOL
                 const solBalance = await connection.getBalance(wallet.publicKey);
                 const solAmount = solBalance / window.solanaWeb3.LAMPORTS_PER_SOL;
                 
                 if (solAmount < 0.01) {
-                    showNotification('❌ Недостаточно SOL! Нужно: 0.01, у вас: ' + solAmount.toFixed(4));
+                    showNotification('❌ Insufficient SOL! Need: 0.01, you have: ' + solAmount.toFixed(4));
                     return;
                 }
                 
@@ -1788,14 +1860,20 @@
                 const signature = await connection.sendRawTransaction(signed.serialize());
                 await connection.confirmTransaction(signature, 'confirmed');
                 
-                showNotification('🎉 NFT создан за SOL! 0.01 SOL переведено в treasury!');
+                showNotification('🎉 NFT created for SOL! 0.01 SOL sent to treasury!');
+                
+                // ❤️ Инициализируем 3 жизни для нового питомца
+                petLives = 3;
+                deathCount = 0;
+                saveLivesToStorage();
                 
                 // Обновляем данные
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 await checkExistingPet();
                 
             } catch (error) {
                 console.error('Ошибка создания NFT за SOL:', error);
-                showNotification('❌ Ошибка: ' + error.message);
+                showNotification('❌ Error: ' + error.message);
             }
         }
 
@@ -1807,11 +1885,11 @@
                 // Проверяем существование контракта
                 const programExists = await checkProgramExists();
                 if (!programExists) {
-                    showNotification('❌ Контракт не найден! Проверь деплой в Solana Playground.');
+                    showNotification('❌ Contract not found! Check Solana Playground deployment.');
                     return;
                 }
                 
-                showNotification('🐣 Создаю питомца...');
+                showNotification('🐣 Creating pet...');
                 const createBtn = document.getElementById('createPetBtn');
                 if (createBtn) createBtn.disabled = true;
 
@@ -1845,7 +1923,7 @@
                 
                 await connection.confirmTransaction(signature, 'confirmed');
                 
-                showNotification('✅ Питомец создан!');
+                showNotification('✅ Pet created!');
                 
                 // ❤️ Инициализируем 3 жизни для нового питомца
                 petLives = 3;
@@ -2334,7 +2412,7 @@
 
         window.feedPet = async function() {
             if (isActionInProgress) {
-                showNotification('⏳ Подождите, действие выполняется...');
+                showNotification('⏳ Please wait, action in progress...');
                 return;
             }
             await performAction('feed_pet', '🍖 Кормлю...', '✅ Покормлен!', 5_000_000_000);
@@ -2343,7 +2421,7 @@
 
         window.playWithPet = async function() {
             if (isActionInProgress) {
-                showNotification('⏳ Подождите, действие выполняется...');
+                showNotification('⏳ Please wait, action in progress...');
                 return;
             }
             await performAction('play_with_pet', '🎮 Играю...', '✅ Поиграли!', 3_000_000_000);
@@ -2352,7 +2430,7 @@
 
         window.healPet = async function() {
             if (isActionInProgress) {
-                showNotification('⏳ Подождите, действие выполняется...');
+                showNotification('⏳ Please wait, action in progress...');
                 return;
             }
             await performAction('heal_pet', '💊 Лечу...', '✅ Вылечен!', 8_000_000_000);
@@ -2361,7 +2439,7 @@
 
         window.drinkPet = async function() {
             if (isActionInProgress) {
-                showNotification('⏳ Подождите, действие выполняется...');
+                showNotification('⏳ Please wait, action in progress...');
                 return;
             }
             await performAction('drink_pet', '🍹 Пою...', '✅ Напоил!', 3_000_000_000);
@@ -2370,7 +2448,7 @@
 
         window.restPet = async function() {
             if (isActionInProgress) {
-                showNotification('⏳ Подождите, действие выполняется...');
+                showNotification('⏳ Please wait, action in progress...');
                 return;
             }
             await performAction('rest_pet', '😴 Отдыхаю...', '✅ Отдохнул!', 2_000_000_000);
@@ -2470,11 +2548,11 @@
                 
                 // Обработка специфических ошибок
                 if (err.message && err.message.includes('already been processed')) {
-                    showNotification('⏳ Транзакция уже обрабатывается...');
+                    showNotification('⏳ Transaction already processing...');
                     await new Promise(resolve => setTimeout(resolve, 2000));
                     await refreshPet(); // Просто обновляем данные
                 } else {
-                    showNotification('❌ Ошибка: ' + err.message);
+                    showNotification('❌ Error: ' + err.message);
                 }
             } finally {
                 // 🔓 Всегда разблокируем в конце
@@ -2563,7 +2641,7 @@
             }
             
             try {
-                showNotification('🔄 Закрываю аккаунт...');
+                showNotification('🔄 Closing account...');
                 
                 const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
                 
@@ -2590,7 +2668,7 @@
                 
                 await connection.confirmTransaction(signature, 'confirmed');
                 
-                showNotification('✅ Аккаунт закрыт! Rent возвращен.');
+                showNotification('✅ Account closed! Rent returned.');
                 
                 document.getElementById('gameScreen').style.display = 'none';
                 document.getElementById('createScreen').style.display = 'block';
@@ -2658,7 +2736,7 @@
             if (!wallet || !petPubkey) return;
             
             try {
-                showNotification('✨ Воскрешаю питомца бесплатно...');
+                showNotification('✨ Resurrecting pet for free...');
                 
                 const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
                 
@@ -2684,28 +2762,28 @@
                 const signature = await connection.sendRawTransaction(signed.serialize());
                 await connection.confirmTransaction(signature, 'confirmed');
                 
-                showNotification('✨ Питомец воскрешен бесплатно!');
+                showNotification('✨ Pet resurrected for free!');
                 
                 // Обновляем данные
                 await checkExistingPet();
                 
             } catch (error) {
                 console.error('Ошибка воскрешения:', error);
-                showNotification('❌ Ошибка: ' + error.message);
+                showNotification('❌ Error: ' + error.message);
             }
         }
         
         window.resurrectWithSOL = async function() {
             if (!wallet || !petPubkey) return;
             
-            showNotification('💎 Воскрешение за SOL временно отключено! Используй бесплатное воскрешение.');
+            showNotification('💎 Resurrection for SOL temporarily disabled! Use free resurrection.');
             return;
         }
         
         window.resurrectWithTAMA = async function() {
             if (!wallet || !petPubkey) return;
             
-            showNotification('🔥 Воскрешение за TAMA временно отключено! Используй бесплатное воскрешение.');
+            showNotification('🔥 Resurrection for TAMA temporarily disabled! Use free resurrection.');
             return;
             
             if (!confirm('🔥 Воскресить за 5,000 TAMA?\n\n⚠️ Токены будут СОЖЖЕНЫ\n✅ Питомец оживет с 50% статов')) {
@@ -2713,7 +2791,7 @@
             }
             
             try {
-                showNotification('💀➡️🐣 Воскрешаю питомца...');
+                showNotification('💀➡️🐣 Resurrecting pet...');
                 
                 const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
                 const discriminator = await getInstructionDiscriminator('resurrect_pet');
@@ -2754,7 +2832,7 @@
                 const signature = await connection.sendRawTransaction(signed.serialize());
                 await connection.confirmTransaction(signature, 'confirmed');
                 
-                showNotification('🎉 Питомец воскрешен! 5,000 TAMA сожжено!');
+                showNotification('🎉 Pet resurrected! 5,000 TAMA burned!');
                 
                 // Обновляем данные
                 await checkExistingPet();
@@ -3741,9 +3819,143 @@
                 return result;
             };
         }
+
+        // 🔥 ==================================
+        // CLOUDFLARE WORKERS API INTEGRATION
+        // 🔥 ==================================
+
+        // 📊 Load game statistics
+        async function loadGameStats() {
+            try {
+                const response = await fetch(`${WORKERS_API}/stats`);
+                const stats = await response.json();
+                
+                document.getElementById('totalPets').textContent = stats.totalPets.toLocaleString();
+                document.getElementById('totalPlayers').textContent = stats.totalPlayers.toLocaleString();
+                document.getElementById('activeNow').textContent = stats.activeNow;
+                document.getElementById('popularSpecies').textContent = stats.mostPopularSpecies;
+                
+                console.log('📊 Stats loaded:', stats);
+            } catch (err) {
+                console.error('❌ Error loading stats:', err);
+                document.getElementById('totalPets').textContent = '-';
+                document.getElementById('totalPlayers').textContent = '-';
+                document.getElementById('activeNow').textContent = '-';
+                document.getElementById('popularSpecies').textContent = '-';
+            }
+        }
+
+        // 🏆 Load leaderboard
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch(`${WORKERS_API}/leaderboard`);
+                const leaders = await response.json();
+                
+                let html = '';
+                
+                leaders.forEach(player => {
+                    html += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 8px 0; background: rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(10px);">
+                            <span style="font-weight: bold; font-size: 20px; color: #FFD700; min-width: 40px;">#${player.rank}</span>
+                            <span style="flex: 1; font-family: monospace; font-size: 13px; color: rgba(255,255,255,0.8); margin: 0 10px; overflow: hidden; text-overflow: ellipsis;">${player.wallet}</span>
+                            <span style="color: #4facfe; margin: 0 10px; font-size: 14px;">${player.petName}</span>
+                            <span style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 6px 12px; border-radius: 8px; font-weight: bold; color: white; font-size: 14px; min-width: 60px; text-align: center;">Lvl ${player.level}</span>
+                            <span style="color: #43e97b; font-weight: bold; font-size: 14px; min-width: 80px; text-align: right;">${player.score.toLocaleString()} pts</span>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('leaderboard-container').innerHTML = html;
+                console.log('🏆 Leaderboard loaded');
+            } catch (err) {
+                console.error('❌ Error loading leaderboard:', err);
+                document.getElementById('leaderboard-container').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
+                        Failed to load leaderboard
+                    </div>
+                `;
+            }
+        }
+
+        // 🎁 Create referral link
+        window.createReferralLink = async function() {
+            if (!wallet) {
+                showNotification('❌ Connect your wallet first!');
+                return;
+            }
+            
+            try {
+                showNotification('🎁 Creating referral link...');
+                
+                const response = await fetch(`${WORKERS_API}/referral/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: wallet.publicKey.toString()
+                    })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('referralCode').textContent = data.code;
+                document.getElementById('referralLink').value = data.link;
+                document.getElementById('referralBonus').textContent = data.bonus;
+                document.getElementById('referralResult').style.display = 'block';
+                
+                showNotification(`✅ Link created! Bonus: ${data.bonus} TAMA`);
+                
+                console.log('🎁 Referral created:', data);
+            } catch (err) {
+                showNotification('❌ Error creating referral link');
+                console.error(err);
+            }
+        }
+
+        // 📋 Copy referral link
+        window.copyReferralLink = function() {
+            const link = document.getElementById('referralLink').value;
+            navigator.clipboard.writeText(link).then(() => {
+                showNotification('✅ Link copied to clipboard!');
+            }).catch(() => {
+                showNotification('❌ Failed to copy link');
+            });
+        }
+
+        // 🎲 Generate random pet (можно использовать при создании)
+        async function generateRandomPet() {
+            try {
+                const response = await fetch(`${WORKERS_API}/generate-pet`);
+                const pet = await response.json();
+                
+                console.log('🐣 Random pet generated:', pet);
+                return pet;
+            } catch (err) {
+                console.error('❌ Error generating pet:', err);
+                return null;
+            }
+        }
+
+        // 🚀 Initialize API features on page load
+        window.addEventListener('load', () => {
+            console.log('⚡ Initializing Cloudflare Workers API...');
+            console.log('📡 API URL:', WORKERS_API);
+            
+            // Load stats and leaderboard
+            loadGameStats();
+            loadLeaderboard();
+            
+            // Update every 30 seconds
+            setInterval(() => {
+                loadGameStats();
+                loadLeaderboard();
+            }, 30000);
+            
+            console.log('✅ API features initialized!');
+        });
     </script>
 
 </body>
 </html>
+
 
 

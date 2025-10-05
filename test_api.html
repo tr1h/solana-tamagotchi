@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧪 Test Workers API</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .success { color: #48bb78; }
+        .error { color: #f56565; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Cloudflare Workers API</h1>
+    
+    <div class="test-section">
+        <h2>🎲 Generate Pet</h2>
+        <button onclick="testGeneratePet()">Test</button>
+        <pre id="pet-result">Click button to test...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Game Stats</h2>
+        <button onclick="testStats()">Test</button>
+        <pre id="stats-result">Click button to test...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>🏆 Leaderboard</h2>
+        <button onclick="testLeaderboard()">Test</button>
+        <pre id="leaderboard-result">Click button to test...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎁 Referral</h2>
+        <button onclick="testReferral()">Test</button>
+        <pre id="referral-result">Click button to test...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>🚀 Test All Endpoints</h2>
+        <button onclick="testAll()">Run All Tests</button>
+    </div>
+
+    <script>
+        const API = 'https://my-vibe-sdk.travkevich.workers.dev';
+
+        async function testGeneratePet() {
+            const el = document.getElementById('pet-result');
+            el.textContent = '⏳ Loading...';
+            
+            try {
+                const response = await fetch(`${API}/generate-pet`);
+                const data = await response.json();
+                el.textContent = JSON.stringify(data, null, 2);
+                el.className = 'success';
+            } catch (err) {
+                el.textContent = `❌ Error: ${err.message}`;
+                el.className = 'error';
+            }
+        }
+
+        async function testStats() {
+            const el = document.getElementById('stats-result');
+            el.textContent = '⏳ Loading...';
+            
+            try {
+                const response = await fetch(`${API}/stats`);
+                const data = await response.json();
+                el.textContent = JSON.stringify(data, null, 2);
+                el.className = 'success';
+            } catch (err) {
+                el.textContent = `❌ Error: ${err.message}`;
+                el.className = 'error';
+            }
+        }
+
+        async function testLeaderboard() {
+            const el = document.getElementById('leaderboard-result');
+            el.textContent = '⏳ Loading...';
+            
+            try {
+                const response = await fetch(`${API}/leaderboard`);
+                const data = await response.json();
+                el.textContent = JSON.stringify(data, null, 2);
+                el.className = 'success';
+            } catch (err) {
+                el.textContent = `❌ Error: ${err.message}`;
+                el.className = 'error';
+            }
+        }
+
+        async function testReferral() {
+            const el = document.getElementById('referral-result');
+            el.textContent = '⏳ Loading...';
+            
+            try {
+                const response = await fetch(`${API}/referral/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: '49kwEKNBnfqYt4GYpYkcCHyDiQDxS24jRuckLjptryvu'
+                    })
+                });
+                const data = await response.json();
+                el.textContent = JSON.stringify(data, null, 2);
+                el.className = 'success';
+            } catch (err) {
+                el.textContent = `❌ Error: ${err.message}`;
+                el.className = 'error';
+            }
+        }
+
+        async function testAll() {
+            console.log('🚀 Running all tests...');
+            await testGeneratePet();
+            await new Promise(r => setTimeout(r, 500));
+            await testStats();
+            await new Promise(r => setTimeout(r, 500));
+            await testLeaderboard();
+            await new Promise(r => setTimeout(r, 500));
+            await testReferral();
+            console.log('✅ All tests complete!');
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            console.log('🧪 Test page loaded');
+            console.log('API URL:', API);
+        });
+    </script>
+</body>
+</html>
