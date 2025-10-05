@@ -19,7 +19,29 @@
 	 */
 	"ai": {
 		"binding": "AI"
-	}
+	},
+	/**
+	 * KV Namespaces - Key-Value Storage
+	 * https://developers.cloudflare.com/kv/
+	 */
+	"kv_namespaces": [
+		{
+			"binding": "LEADERBOARD",
+			"id": "2d58d9bf797045f9a0b92cf187ad18ad"
+		},
+		{
+			"binding": "CACHE",
+			"id": "6dd78d35c575463289e03a25f6adfd73"
+		},
+		{
+			"binding": "HISTORY",
+			"id": "67ae7f3274e943ac91fdcc15ed1055b7"
+		},
+		{
+			"binding": "STATS",
+			"id": "064b94d250974cd1a4bf9e1f5b6add63"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

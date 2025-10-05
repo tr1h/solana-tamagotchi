@@ -1031,6 +1031,24 @@
         </div>
     </div>
 
+    <!-- 📜 ACTION HISTORY SECTION -->
+    <div class="container" style="margin-top: 20px;">
+        <h2 style="text-align: center; color: white; margin-bottom: 15px;">📜 Your Action History</h2>
+        <p style="text-align: center; color: white; margin-bottom: 20px; font-size: 14px; opacity: 0.8;">
+            Powered by Cloudflare KV Database 💾
+        </p>
+        
+        <button onclick="loadHistory()" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 15px;">
+            🔄 Load History
+        </button>
+        
+        <div id="historyList" style="max-height: 400px; overflow-y: auto;">
+            <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
+                Click "Load History" to see your actions
+            </div>
+        </div>
+    </div>
+
     <!-- 🤖 AI ADVISOR SECTION -->
     <div class="container" style="margin-top: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <h2 style="text-align: center; color: white; margin-bottom: 15px;">🤖 AI Advisor - Ask for Help!</h2>
@@ -3900,10 +3918,137 @@
             }
         }
 
+        // 📊 Обновить leaderboard с реальными данными
+        async function updateLeaderboardData() {
+            if (!wallet || !petData) return;
+            
+            try {
+                await fetch(`${WORKERS_API}/leaderboard/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: wallet.publicKey.toString(),
+                        level: petData.level,
+                        experience: petData.experience,
+                        petName: `Питомец #${petData.petId}`
+                    })
+                });
+                
+                console.log('✅ Leaderboard updated');
+            } catch (err) {
+                console.log('⚠️ Failed to update leaderboard:', err);
+            }
+        }
+
+        // 📜 Добавить действие в историю
+        async function addToHistory(action, details) {
+            if (!wallet) return;
+            
+            try {
+                await fetch(`${WORKERS_API}/history/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: wallet.publicKey.toString(),
+                        action: action,
+                        details: details
+                    })
+                });
+                
+                console.log(`📜 Added to history: ${action}`);
+            } catch (err) {
+                console.log('⚠️ Failed to add to history:', err);
+            }
+        }
+
+        // 📜 Загрузить историю действий
+        window.loadHistory = async function() {
+            if (!wallet) {
+                showNotification('❌ Connect wallet first!');
+                return;
+            }
+            
+            try {
+                showNotification('📜 Loading history...');
+                
+                const response = await fetch(`${WORKERS_API}/history/${wallet.publicKey.toString()}`);
+                const history = await response.json();
+                
+                const historyListEl = document.getElementById('historyList');
+                
+                if (!history || history.length === 0) {
+                    historyListEl.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
+                            No actions yet. Start playing!
+                        </div>
+                    `;
+                    showNotification('📜 No history found');
+                    return;
+                }
+                
+                let html = '';
+                history.forEach(item => {
+                    const date = new Date(item.timestamp);
+                    const timeStr = date.toLocaleTimeString();
+                    const dateStr = date.toLocaleDateString();
+                    
+                    const actionEmoji = {
+                        'feed': '🍖',
+                        'play': '🎾',
+                        'heal': '💊',
+                        'rest': '😴'
+                    };
+                    
+                    html += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; margin: 8px 0; background: rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(10px);">
+                            <span style="font-size: 24px;">${actionEmoji[item.action] || '🎮'}</span>
+                            <div style="flex: 1; margin: 0 15px;">
+                                <div style="color: white; font-weight: bold; font-size: 14px;">${item.action.toUpperCase()}</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 12px;">${dateStr} ${timeStr}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: #4caf50; font-size: 12px;">Level ${item.details?.petLevel || '-'}</div>
+                                <div style="color: #ff4444; font-size: 12px;">HP ${item.details?.petHealth || '-'}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                historyListEl.innerHTML = html;
+                showNotification('✅ History loaded!');
+                console.log('📜 History loaded:', history.length, 'actions');
+                
+            } catch (err) {
+                showNotification('❌ Failed to load history');
+                console.error(err);
+            }
+        }
+
+        // 🔄 Обновляем leaderboard после действий
+        const originalPerformAction = window.performAction;
+        if (originalPerformAction) {
+            window.performAction = async function(actionType) {
+                const result = await originalPerformAction(actionType);
+                
+                // После успешного действия обновляем leaderboard и историю
+                if (result !== false) {
+                    await updateLeaderboardData();
+                    await addToHistory(actionType, {
+                        timestamp: Date.now(),
+                        petLevel: petData?.level,
+                        petHealth: petData?.health
+                    });
+                }
+                
+                return result;
+            };
+        }
+
         // 🚀 Initialize API features on page load
         window.addEventListener('load', () => {
             console.log('⚡ Initializing Cloudflare Workers API...');
             console.log('📡 API URL:', WORKERS_API);
+            console.log('💾 KV Database: ENABLED');
             
             // Load stats and leaderboard
             loadGameStats();
