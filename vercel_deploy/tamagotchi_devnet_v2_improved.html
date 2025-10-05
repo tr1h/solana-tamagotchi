@@ -2498,7 +2498,7 @@
                                 { pubkey: tokenProgramId, isSigner: false, isWritable: false },
                             ],
                             programId: associatedTokenProgram,
-                            data: Buffer.from([]),
+                            data: new Uint8Array([]),
                         });
                         transaction.add(createATAIx);
                     }
@@ -2800,8 +2800,8 @@
                 const treasury = new window.solanaWeb3.PublicKey(TEAM_WALLET);
                 
                 // use_sol = false (0 byte)
-                const useSol = Buffer.from([0]);
-                const data = Buffer.concat([discriminator, useSol]);
+                const useSol = new Uint8Array([0]);
+                const data = new Uint8Array([...discriminator, ...useSol]);
                 
                 const tokenMint = new window.solanaWeb3.PublicKey(TOKEN_MINT);
                 const userTokenAccount = await getAssociatedTokenAddress(tokenMint, wallet.publicKey);

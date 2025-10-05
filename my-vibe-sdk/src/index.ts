@@ -7,6 +7,20 @@ export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const url = new URL(request.url);
 
+		// 🔧 CORS Headers для всех запросов
+		const corsHeaders = {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type',
+		};
+
+		// ✅ Handle OPTIONS preflight request
+		if (request.method === 'OPTIONS') {
+			return new Response(null, {
+				headers: corsHeaders
+			});
+		}
+
 		// 🎲 Генерация случайного питомца
 		if (url.pathname === '/generate-pet') {
 			const species = ['Cat', 'Dog', 'Dragon', 'Phoenix', 'Unicorn', 'Wolf', 'Fox', 'Bear'];
