@@ -43,11 +43,18 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding: 20px 10px;
+            align-items: center;
+            padding: 40px 20px;
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
+        }
+        
+        /* 🖥️ DESKTOP OPTIMIZATION */
+        @media (min-width: 1024px) {
+            body {
+                padding: 60px 40px;
+            }
         }
 
         @keyframes gradientShift {
@@ -105,6 +112,17 @@
             position: relative;
             z-index: 10;
             animation: containerFloat 6s ease-in-out infinite;
+        }
+        
+        /* 🖥️ Desktop Enhanced Container */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 600px;
+                padding: 40px;
+                border-radius: 40px;
+                box-shadow: 0 30px 90px rgba(0, 0, 0, 0.4), 
+                            inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+            }
         }
 
         @keyframes containerFloat {
@@ -802,6 +820,66 @@
                 padding: 12px 8px !important;
                 font-size: 14px !important;
                 white-space: nowrap;
+            }
+        }
+        
+        /* 🖥️ DESKTOP ENHANCED - Улучшенный дизайн */
+        @media (min-width: 1024px) {
+            /* Заголовки */
+            h1 {
+                font-size: 36px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            h2 {
+                font-size: 24px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            h3 {
+                font-size: 20px !important;
+            }
+            
+            /* Pet Display */
+            .pet-display {
+                padding: 30px !important;
+                margin: 20px 0 !important;
+            }
+            
+            .pet-sprite {
+                font-size: 100px !important;
+            }
+            
+            /* Кнопки */
+            .action-buttons {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 15px !important;
+                margin-top: 25px !important;
+            }
+            
+            .action-buttons button {
+                padding: 18px 20px !important;
+                font-size: 16px !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .action-buttons button:hover {
+                transform: translateY(-5px) scale(1.05);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            }
+            
+            .action-buttons button:active {
+                transform: translateY(-2px) scale(1.02);
+            }
+            
+            /* Progress bars */
+            .stat-bar {
+                height: 24px !important;
+            }
+            
+            /* Particles активны */
+            .particle {
+                display: block !important;
             }
 
             /* 📊 Статистика компактно */
@@ -2552,8 +2630,9 @@
                 const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
                 
                 // 1. Вычислить TAMA Mint PDA (нужен для контракта)
+                const tamaMintSeeds = new Uint8Array([116, 97, 109, 97, 95, 109, 105, 110, 116]); // "tama_mint" в bytes
                 const [tamaMintPDA] = window.solanaWeb3.PublicKey.findProgramAddressSync(
-                    [Buffer.from('tama_mint')],
+                    [tamaMintSeeds],
                     programId
                 );
                 console.log('🔑 TAMA Mint PDA:', tamaMintPDA.toString());
