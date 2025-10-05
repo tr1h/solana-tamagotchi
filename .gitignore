@@ -1,0 +1,63 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# Build artifacts
+target/
+dist/
+build/
+*.log
+
+# Solana keys (ВАЖНО!)
+wallet-devnet.json
+faucet-wallet.json
+*.keypair
+id.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Vercel
+.vercel/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Backups
+backup_*/
+*.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Rust
+*.rs.bk
+Cargo.lock
+.rustup/
+.cargo/
+
+# Temporary files
+*.tmp
+*.temp
+*_OLD*
+*_BACKUP*
+
+# Documentation (опционально, можно убрать если хочешь включить)
+# *.md

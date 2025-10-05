@@ -1,0 +1,83 @@
+{
+  "name": "Tamagotchi #12345",
+  "symbol": "TAMA",
+  "description": "Уникальный крипто-питомец на Solana. Каждый питомец генерируется на основе адреса кошелька и имеет уникальные характеристики, редкость и внешний вид.",
+  "image": "https://YOUR_DOMAIN/images/pet_12345.png",
+  "external_url": "https://YOUR_DOMAIN",
+  "attributes": [
+    {
+      "trait_type": "DNA",
+      "value": "1234567890"
+    },
+    {
+      "trait_type": "Pet ID",
+      "value": "12345"
+    },
+    {
+      "trait_type": "Species",
+      "value": "5",
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Accessory",
+      "value": "3"
+    },
+    {
+      "trait_type": "Background",
+      "value": "2"
+    },
+    {
+      "trait_type": "Level",
+      "value": "1",
+      "display_type": "number"
+    },
+    {
+      "trait_type": "Health",
+      "value": "100",
+      "display_type": "number",
+      "max_value": "100"
+    },
+    {
+      "trait_type": "Hunger",
+      "value": "100",
+      "display_type": "number",
+      "max_value": "100"
+    },
+    {
+      "trait_type": "Happiness",
+      "value": "100",
+      "display_type": "number",
+      "max_value": "100"
+    },
+    {
+      "trait_type": "Energy",
+      "value": "100",
+      "display_type": "number",
+      "max_value": "100"
+    },
+    {
+      "trait_type": "Is Alive",
+      "value": "Yes"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "https://YOUR_DOMAIN/images/pet_12345.png",
+        "type": "image/png"
+      }
+    ],
+    "creators": [
+      {
+        "address": "YOUR_WALLET_ADDRESS",
+        "share": 100
+      }
+    ]
+  }
+}
+

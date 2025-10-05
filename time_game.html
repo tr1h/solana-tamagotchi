@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏱️ Угадай Время!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-modes {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            padding: 15px 25px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .mode-btn.active {
+            background: #51cf66;
+            border-color: #51cf66;
+        }
+        
+        .timer-display {
+            font-size: 5em;
+            font-weight: bold;
+            margin: 30px 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            font-family: 'Courier New', monospace;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hidden-timer {
+            font-size: 3em;
+            color: #ffd43b;
+        }
+        
+        .instructions {
+            font-size: 1.3em;
+            margin: 20px 0;
+            line-height: 1.6;
+            min-height: 80px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+            background: #51cf66;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #40c057;
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        input[type="number"] {
+            padding: 15px;
+            font-size: 1.5em;
+            width: 100px;
+            border: 3px solid white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result.excellent {
+            background: rgba(81, 207, 102, 0.3);
+            border: 3px solid #51cf66;
+        }
+        
+        .result.good {
+            background: rgba(255, 212, 59, 0.3);
+            border: 3px solid #ffd43b;
+        }
+        
+        .result.poor {
+            background: rgba(255, 107, 107, 0.3);
+            border: 3px solid #ff6b6b;
+        }
+        
+        .stats {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.2em;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd43b;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66, #40c057);
+            transition: width 0.1s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .pulsing {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Угадай Время!</h1>
+        
+        <div class="game-modes">
+            <button class="mode-btn active" onclick="setMode('stopwatch')">⏱️ Секундомер</button>
+            <button class="mode-btn" onclick="setMode('countdown')">⏳ Обратный отсчёт</button>
+            <button class="mode-btn" onclick="setMode('blind')">👁️ Вслепую</button>
+        </div>
+        
+        <div class="instructions" id="instructions">
+            Нажмите СТАРТ и остановите таймер как можно ближе к целевому времени!
+        </div>
+        
+        <div id="targetTime" style="font-size: 1.5em; color: #ffd43b; margin: 10px 0;">
+            Цель: <span id="target">5.00</span> секунд
+        </div>
+        
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+        
+        <div class="timer-display" id="timerDisplay">0.00</div>
+        
+        <div class="controls">
+            <button id="startBtn" onclick="startTimer()">▶️ СТАРТ</button>
+            <button id="stopBtn" onclick="stopTimer()" disabled>⏸️ СТОП</button>
+            <button id="resetBtn" onclick="resetGame()">🔄 НОВАЯ ИГРА</button>
+        </div>
+        
+        <div class="result" id="result" style="display: none;"></div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div>Лучший результат</div>
+                <div class="stat-value" id="bestScore">-</div>
+            </div>
+            <div class="stat-item">
+                <div>Сыграно игр</div>
+                <div class="stat-value" id="gamesPlayed">0</div>
+            </div>
+            <div class="stat-item">
+                <div>Точных попаданий</div>
+                <div class="stat-value" id="perfectHits">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTime = 0;
+        let targetTime = 5.0;
+        let isRunning = false;
+        let startTimestamp = 0;
+        let animationId = null;
+        let currentMode = 'stopwatch';
+        
+        // Статистика
+        let stats = {
+            bestScore: Infinity,
+            gamesPlayed: 0,
+            perfectHits: 0
+        };
+        
+        // Загрузка статистики
+        function loadStats() {
+            const saved = localStorage.getItem('timeGameStats');
+            if (saved) {
+                stats = JSON.parse(saved);
+                updateStatsDisplay();
+            }
+        }
+        
+        function saveStats() {
+            localStorage.setItem('timeGameStats', JSON.stringify(stats));
+        }
+        
+        function updateStatsDisplay() {
+            document.getElementById('gamesPlayed').textContent = stats.gamesPlayed;
+            document.getElementById('perfectHits').textContent = stats.perfectHits;
+            document.getElementById('bestScore').textContent = 
+                stats.bestScore === Infinity ? '-' : stats.bestScore.toFixed(2) + 's';
+        }
+        
+        function setMode(mode) {
+            if (isRunning) return;
+            
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            resetGame();
+            
+            const instructions = document.getElementById('instructions');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const targetDisplay = document.getElementById('targetTime');
+            const progressBar = document.getElementById('progressBar');
+            
+            progressBar.style.display = 'none';
+            
+            switch(mode) {
+                case 'stopwatch':
+                    targetTime = Math.random() * 5 + 3; // 3-8 секунд
+                    instructions.innerHTML = 'Нажмите СТАРТ и остановите таймер как можно ближе к целевому времени!';
+                    targetDisplay.style.display = 'block';
+                    timerDisplay.style.display = 'flex';
+                    break;
+                case 'countdown':
+                    targetTime = Math.random() * 5 + 5; // 5-10 секунд
+                    instructions.innerHTML = 'Обратный отсчёт! Остановите на 0.00 секунд!';
+                    targetDisplay.style.display = 'none';
+                    progressBar.style.display = 'block';
+                    timerDisplay.style.display = 'flex';
+                    break;
+                case 'blind':
+                    targetTime = Math.random() * 5 + 3; // 3-8 секунд
+                    instructions.innerHTML = 'Угадайте время вслепую! Таймер скрыт!';
+                    targetDisplay.style.display = 'block';
+                    timerDisplay.style.display = 'flex';
+                    break;
+            }
+            
+            document.getElementById('target').textContent = targetTime.toFixed(2);
+            resetDisplay();
+        }
+        
+        function resetDisplay() {
+            const timerDisplay = document.getElementById('timerDisplay');
+            if (currentMode === 'countdown') {
+                currentTime = targetTime;
+                timerDisplay.textContent = targetTime.toFixed(2);
+                updateProgressBar();
+            } else if (currentMode === 'blind') {
+                timerDisplay.innerHTML = '<span class="hidden-timer">???</span>';
+            } else {
+                currentTime = 0;
+                timerDisplay.textContent = '0.00';
+            }
+        }
+        
+        function startTimer() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            startTimestamp = performance.now();
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('result').style.display = 'none';
+            
+            if (currentMode === 'countdown') {
+                currentTime = targetTime;
+            } else {
+                currentTime = 0;
+            }
+            
+            animate();
+        }
+        
+        function animate() {
+            if (!isRunning) return;
+            
+            const now = performance.now();
+            const elapsed = (now - startTimestamp) / 1000;
+            
+            if (currentMode === 'countdown') {
+                currentTime = targetTime - elapsed;
+                if (currentTime <= 0) {
+                    currentTime = 0;
+                    stopTimer(true);
+                }
+                updateProgressBar();
+            } else {
+                currentTime = elapsed;
+            }
+            
+            updateDisplay();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        function updateDisplay() {
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            if (currentMode === 'blind') {
+                timerDisplay.innerHTML = '<span class="hidden-timer">???</span>';
+            } else {
+                timerDisplay.textContent = currentTime.toFixed(2);
+                
+                // Пульсация при приближении к цели (режим секундомера)
+                if (currentMode === 'stopwatch') {
+                    const diff = Math.abs(currentTime - targetTime);
+                    if (diff < 0.5) {
+                        timerDisplay.classList.add('pulsing');
+                    } else {
+                        timerDisplay.classList.remove('pulsing');
+                    }
+                }
+            }
+        }
+        
+        function updateProgressBar() {
+            if (currentMode !== 'countdown') return;
+            
+            const percentage = (currentTime / targetTime) * 100;
+            const fill = document.getElementById('progressFill');
+            fill.style.width = percentage + '%';
+            fill.textContent = Math.round(percentage) + '%';
+        }
+        
+        function stopTimer(autoStop = false) {
+            if (!isRunning && !autoStop) return;
+            
+            isRunning = false;
+            cancelAnimationFrame(animationId);
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            showResult();
+        }
+        
+        function showResult() {
+            const resultDiv = document.getElementById('result');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            // Показываем реальное время в режиме "вслепую"
+            if (currentMode === 'blind') {
+                timerDisplay.textContent = currentTime.toFixed(2);
+            }
+            
+            let difference;
+            if (currentMode === 'countdown') {
+                difference = Math.abs(currentTime);
+            } else {
+                difference = Math.abs(currentTime - targetTime);
+            }
+            
+            stats.gamesPlayed++;
+            
+            let message = '';
+            let className = '';
+            
+            if (difference < 0.05) {
+                message = '🎯 ИДЕАЛЬНО! Невероятная точность!';
+                className = 'excellent';
+                stats.perfectHits++;
+            } else if (difference < 0.2) {
+                message = '🌟 ОТЛИЧНО! Почти идеально!';
+                className = 'excellent';
+            } else if (difference < 0.5) {
+                message = '👍 ХОРОШО! Неплохая попытка!';
+                className = 'good';
+            } else if (difference < 1.0) {
+                message = '😊 НЕПЛОХО! Можно лучше!';
+                className = 'good';
+            } else {
+                message = '💪 Попробуйте ещё раз!';
+                className = 'poor';
+            }
+            
+            if (difference < stats.bestScore) {
+                stats.bestScore = difference;
+                message += '<br>🏆 НОВЫЙ РЕКОРД!';
+            }
+            
+            resultDiv.innerHTML = message + '<br>Погрешность: ' + difference.toFixed(3) + ' сек';
+            resultDiv.className = 'result ' + className;
+            resultDiv.style.display = 'flex';
+            
+            saveStats();
+            updateStatsDisplay();
+        }
+        
+        function resetGame() {
+            isRunning = false;
+            cancelAnimationFrame(animationId);
+            
+            if (currentMode === 'stopwatch') {
+                targetTime = Math.random() * 5 + 3;
+            } else if (currentMode === 'countdown') {
+                targetTime = Math.random() * 5 + 5;
+            } else {
+                targetTime = Math.random() * 5 + 3;
+            }
+            
+            document.getElementById('target').textContent = targetTime.toFixed(2);
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('result').style.display = 'none';
+            
+            resetDisplay();
+        }
+        
+        // Пробел для старта/стопа
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!isRunning) {
+                    startTimer();
+                } else {
+                    stopTimer();
+                }
+            }
+        });
+        
+        // Инициализация
+        loadStats();
+        resetGame();
+    </script>
+</body>
+</html>

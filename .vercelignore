@@ -1,0 +1,38 @@
+# Rust build artifacts
+target/
+programs/tamagotchi/target/
+
+# Node modules
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Solana
+.anchor/
+.cache/
+
+# Temporary files
+*.log
+*.tmp
+wallet-devnet.json
+team-treasury.json
+
+# Test files
+test-ledger/

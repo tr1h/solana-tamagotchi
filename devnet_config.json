@@ -1,0 +1,13 @@
+{
+  "network": "devnet",
+  "rpcUrl": "https://api.devnet.solana.com",
+  "walletAddress": "3grSgLGKkbd8pR7tzNssXMHn8ctTX7r6TE6uhRToF55h",
+  "tokenMint": "74KGR9mdiiiqVW9QCnFmZz8cyj39ZoCaKexrSxF8fpQD",
+  "tokenAccount": "32oijtpcwy8V8NzY1UC73zMa3sTWdzb9auR4DhyW6Ruj",
+  "decimals": 9,
+  "symbol": "TAMA",
+  "name": "Crypto Tamagotchi",
+  "totalSupply": 1000000000,
+  "explorerUrl": "https://explorer.solana.com/address/74KGR9mdiiiqVW9QCnFmZz8cyj39ZoCaKexrSxF8fpQD?cluster=devnet",
+  "status": "ready"
+}

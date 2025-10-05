@@ -1,0 +1,3749 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <title>Crypto Tamagotchi 🐣 | Play-to-Earn NFT Game on Solana</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Crypto Tamagotchi - уникальная Play-to-Earn игра на Solana. Заботься о своем NFT питомце, зарабатывай токены $TAMA!">
+    <meta name="keywords" content="Crypto Tamagotchi, Solana NFT, Play-to-Earn, GameFi, Web3 Game, TAMA Token, Blockchain Game">
+    <meta name="author" content="Crypto Tamagotchi Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://crypto-tamagotchi.vercel.app/">
+    <meta property="og:title" content="Crypto Tamagotchi 🐣 | Play-to-Earn NFT Game on Solana">
+    <meta property="og:description" content="Заботься о своем уникальном NFT питомце и зарабатывай токены $TAMA! Играй сейчас на Solana blockchain.">
+    <meta property="og:image" content="https://crypto-tamagotchi.vercel.app/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://crypto-tamagotchi.vercel.app/">
+    <meta property="twitter:title" content="Crypto Tamagotchi 🐣 | Play-to-Earn NFT Game">
+    <meta property="twitter:description" content="Заботься о своем уникальном NFT питомце и зарабатывай $TAMA!">
+    <meta property="twitter:image" content="https://crypto-tamagotchi.vercel.app/twitter-card.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐣</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 10px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 🎨 Floating decorative circles */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            animation: float1 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -150px;
+            right: -150px;
+            animation: float2 25s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(100px, 100px) scale(1.1); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-100px, -100px) scale(1.2); }
+        }
+
+        /* 🎨 Glassmorphism Container */
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
+            animation: containerFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes containerFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ✨ Floating particles/stars */
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .particle:nth-child(1) {
+            width: 4px;
+            height: 4px;
+            top: 20%;
+            left: 10%;
+            animation: particleFloat 8s ease-in-out infinite;
+        }
+
+        .particle:nth-child(2) {
+            width: 6px;
+            height: 6px;
+            top: 60%;
+            left: 80%;
+            animation: particleFloat 10s ease-in-out infinite 2s;
+        }
+
+        .particle:nth-child(3) {
+            width: 3px;
+            height: 3px;
+            top: 40%;
+            left: 20%;
+            animation: particleFloat 12s ease-in-out infinite 4s;
+        }
+
+        .particle:nth-child(4) {
+            width: 5px;
+            height: 5px;
+            top: 80%;
+            left: 70%;
+            animation: particleFloat 9s ease-in-out infinite 1s;
+        }
+
+        .particle:nth-child(5) {
+            width: 4px;
+            height: 4px;
+            top: 30%;
+            right: 15%;
+            animation: particleFloat 11s ease-in-out infinite 3s;
+        }
+
+        .particle:nth-child(6) {
+            width: 7px;
+            height: 7px;
+            top: 70%;
+            left: 40%;
+            animation: particleFloat 13s ease-in-out infinite 5s;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translate(20px, -30px) scale(1.2);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(-15px, -50px) scale(0.8);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translate(30px, -20px) scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
+        /* 📱 Mobile Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+                border-radius: 25px;
+                animation: none; /* Убираем плавающую анимацию на мобильных */
+            }
+            
+            body {
+                padding: 10px 5px;
+                align-items: flex-start;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: clamp(1.5em, 5vw, 2em);
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .devnet-badge {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            display: inline-block;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        /* 💳 Wallet Section */
+        .wallet-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .connect-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (hover: hover) {
+            .connect-btn:hover {
+                transform: scale(1.02);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+        }
+
+        .wallet-connected {
+            color: #667eea;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        /* 🐣 Pet Display with Rarity Effects */
+        .pet-display {
+            background: linear-gradient(135deg, rgba(224, 231, 255, 0.9) 0%, rgba(243, 232, 255, 0.9) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 15px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 600px) {
+            .pet-display {
+                padding: 20px 15px;
+                min-height: 180px;
+            }
+        }
+
+        /* ✨ Rarity Glow Effects */
+        .pet-display.rarity-0 { /* Common */
+            box-shadow: 0 0 20px rgba(200, 200, 200, 0.5);
+        }
+        .pet-display.rarity-1 { /* Uncommon */
+            box-shadow: 0 0 25px rgba(76, 175, 80, 0.6);
+            animation: glowGreen 3s ease-in-out infinite;
+        }
+        .pet-display.rarity-2 { /* Rare */
+            box-shadow: 0 0 30px rgba(33, 150, 243, 0.7);
+            animation: glowBlue 3s ease-in-out infinite;
+        }
+        .pet-display.rarity-3 { /* Epic */
+            box-shadow: 0 0 35px rgba(156, 39, 176, 0.8);
+            animation: glowPurple 3s ease-in-out infinite;
+        }
+        .pet-display.rarity-4 { /* Legendary */
+            box-shadow: 0 0 40px rgba(255, 193, 7, 0.9);
+            animation: glowGold 2s ease-in-out infinite;
+        }
+
+        @keyframes glowGreen {
+            0%, 100% { box-shadow: 0 0 25px rgba(76, 175, 80, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(76, 175, 80, 0.9); }
+        }
+
+        @keyframes glowBlue {
+            0%, 100% { box-shadow: 0 0 30px rgba(33, 150, 243, 0.7); }
+            50% { box-shadow: 0 0 45px rgba(33, 150, 243, 1); }
+        }
+
+        @keyframes glowPurple {
+            0%, 100% { box-shadow: 0 0 35px rgba(156, 39, 176, 0.8); }
+            50% { box-shadow: 0 0 50px rgba(156, 39, 176, 1); }
+        }
+
+        @keyframes glowGold {
+            0%, 100% { box-shadow: 0 0 40px rgba(255, 193, 7, 0.9), 0 0 60px rgba(255, 193, 7, 0.5); }
+            50% { box-shadow: 0 0 60px rgba(255, 193, 7, 1), 0 0 80px rgba(255, 193, 7, 0.8); }
+        }
+
+        .pet-sprite {
+            font-size: clamp(80px, 20vw, 120px);
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+            user-select: none;
+        }
+
+        .pet-sprite:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ⚠️ Critical Stats Pulse Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .stat-critical {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* 💔 Shake Animation for Low Health */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) translateY(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px) translateY(5px); }
+        }
+
+        .pet-sprite.health-critical {
+            animation: float 3s ease-in-out infinite, shake 0.5s ease-in-out infinite;
+        }
+
+        .pet-name {
+            font-size: clamp(1.2em, 4vw, 1.5em);
+            color: #667eea;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .pet-level {
+            font-size: clamp(0.9em, 3vw, 1em);
+            color: #764ba2;
+            margin-top: 5px;
+        }
+
+        /* 📊 Stats Grid - Responsive */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 350px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 18px;
+            overflow: hidden;
+        }
+
+        .stat-bar {
+            height: 100%;
+            transition: width 0.5s ease, background 0.3s ease;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 🎨 Dynamic Stat Colors */
+        .stat-bar.health {
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+        }
+        .stat-bar.health[data-value="0"],
+        .stat-bar.health[data-value="1"],
+        .stat-bar.health[data-value="2"] {
+            background: linear-gradient(90deg, #f44336, #e53935);
+        }
+        .stat-bar.health[data-value="3"],
+        .stat-bar.health[data-value="4"],
+        .stat-bar.health[data-value="5"] {
+            background: linear-gradient(90deg, #ff9800, #fb8c00);
+        }
+
+        .stat-bar.hunger {
+            background: linear-gradient(90deg, #ff9800, #fb8c00);
+        }
+        .stat-bar.hunger[data-value="0"],
+        .stat-bar.hunger[data-value="1"],
+        .stat-bar.hunger[data-value="2"] {
+            background: linear-gradient(90deg, #f44336, #e53935);
+        }
+
+        .stat-bar.happiness {
+            background: linear-gradient(90deg, #ffeb3b, #fdd835);
+        }
+        .stat-bar.happiness[data-value="0"],
+        .stat-bar.happiness[data-value="1"],
+        .stat-bar.happiness[data-value="2"] {
+            background: linear-gradient(90deg, #f44336, #e53935);
+        }
+
+        .stat-bar.energy {
+            background: linear-gradient(90deg, #2196f3, #42a5f5);
+        }
+
+        /* ⏰ Realtime Info Panel */
+        .realtime-info {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(255, 243, 224, 0.95);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .realtime-title {
+            text-align: center;
+            font-weight: bold;
+            color: #e65100;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .decay-timer, .death-prediction {
+            text-align: center;
+            font-size: 0.85em;
+            color: #f57c00;
+            margin: 5px 0;
+        }
+
+        .recommendations {
+            margin-top: 8px;
+        }
+
+        .recommendations-title {
+            text-align: center;
+            font-size: 0.85em;
+            color: #e65100;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .recommendations-list {
+            font-size: 0.8em;
+            color: #f57c00;
+        }
+
+        .recommendation-item {
+            margin: 3px 0;
+            text-align: center;
+        }
+
+        /* 🎮 Action Buttons */
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 400px) {
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 15px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        @media (hover: hover) {
+            .action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            }
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .token-cost {
+            font-size: 0.75em;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        /* 📜 History Panel */
+        .history-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .history-panel.show {
+            max-height: 300px;
+        }
+
+        .history-title {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+            font-size: 0.8em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-action {
+            font-weight: 600;
+        }
+
+        .history-time {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        /* 📊 Stats Panel */
+        .info-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .info-title {
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85em;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* 💬 Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 12px 24px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 🔘 Toggle Button */
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .toggle-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 🎨 Progress Bar for Experience */
+        .exp-bar-container {
+            background: rgba(224, 231, 255, 0.5);
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .exp-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .exp-text {
+            text-align: center;
+            font-size: 0.75em;
+            color: white;
+            margin-top: 3px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 🎨 Loading Spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        /* 🎯 Close Button */
+        .close-btn {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .close-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 🌙 Dark Mode (для будущего) */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        /* Скрытие элементов */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 📱 Touch Feedback */
+        @media (max-width: 768px) {
+            * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+
+            button {
+                min-height: 44px; /* iOS touch target */
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+    <!-- ✨ Decorative floating particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🐣 Crypto Tamagotchi</h1>
+            <span class="devnet-badge">DEVNET - Real-Time</span>
+        </div>
+
+        <div class="wallet-section">
+            <button class="connect-btn" id="connectBtn" onclick="window.connectWallet()">
+                🔗 Подключить кошелек
+            </button>
+            <div class="wallet-connected" id="walletAddress" style="display: none; position: relative;">
+                <div id="tamaBalance" style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; text-align: center;">
+                    <div style="font-size: 18px; font-weight: bold; color: #FFD700;">🎯 TAMA: <span id="tamaAmount">0</span></div>
+                    <div style="font-size: 12px; color: #ccc;">Токены за действия с питомцем</div>
+                </div>
+                <button class="disconnect-btn" onclick="window.disconnectWallet()" style="margin-left: 10px; padding: 8px 15px; background: #ff4444; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 14px;">
+                    🚪 Отключить
+                </button>
+            </div>
+        </div>
+
+        <!-- Экран создания -->
+        <div id="createScreen" style="display: none;">
+            <div class="pet-display">
+                <div class="pet-sprite" style="font-size: 64px; margin-bottom: 20px;">🥚</div>
+                
+                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2)); padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;">
+                    <h3 style="color: #FFD700; font-size: 24px; margin-bottom: 15px;">🎮 Welcome to Gotchi Game!</h3>
+                    
+                    <div style="color: #fff; margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px;">✨ Create your pixel pet</p>
+                        <p style="margin-bottom: 10px;">🎮 Play mini-games</p>
+                        <p>💰 Earn rewards!</p>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2)); padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;">
+                    <h3 style="color: #00ff99; margin-bottom: 15px;">🎁 Beta Tester Rewards:</h3>
+                    <div style="color: #fff;">
+                        <p style="margin-bottom: 10px;">• Free Mainnet NFT mint</p>
+                        <p style="margin-bottom: 10px;">• $GOTCHI token airdrop</p>
+                        <p style="margin-bottom: 10px;">• OG Badge (on-chain)</p>
+                        <p>• VIP Discord role</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin: 20px 0; text-align: center;">
+                <button onclick="createPet()" style="background: linear-gradient(135deg, #00D4AA, #00A8CC); color: white; font-size: 18px; padding: 20px 30px; border: none; border-radius: 15px; cursor: pointer; width: 100%; max-width: 400px; font-weight: bold; box-shadow: 0 8px 32px rgba(0, 212, 170, 0.3); margin-bottom: 20px;">
+                    🐣 Create Your First Pet (FREE)
+                </button>
+
+                <p style="color: #fff; opacity: 0.8; font-size: 14px; margin-bottom: 10px;">
+                    💎 Mainnet launch with REAL NFTs coming soon!
+                </p>
+                <p style="color: #fff; opacity: 0.8; font-size: 14px;">
+                    🎮 All beta testers will receive exclusive rewards!
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center;">
+                    <p style="color: #fff; opacity: 0.7; font-size: 0.9em;">
+                        💡 This is a beta test on Devnet. All progress will be reset before Mainnet launch.
+                    </p>
+                </div>
+                </div>
+            </p>
+            
+            <!-- Recovery кнопка (показывается если Entry Fee оплачен но питомец не создан) -->
+            <button class="action-btn" onclick="recoverEntryFee()" id="recoveryBtn" style="display: none; background: linear-gradient(135deg, #f093fb, #f5576c); margin-top: 10px;">
+                🔧 Уже оплатил? Создать питомца
+            </button>
+            
+            <!-- Manual Refresh кнопка -->
+        </div>
+
+        <!-- Экран игры -->
+        <div id="gameScreen" style="display: none;">
+            <div class="pet-display" id="petDisplay">
+                <div class="pet-sprite" id="petSprite">🐣</div>
+                <div class="pet-name" id="petName">Питомец</div>
+                <div class="pet-level" id="petLevel">Уровень 1</div>
+                <div class="pet-lives" id="petLives" style="font-size: 20px; margin-top: 5px;">❤️❤️❤️</div>
+                
+                <!-- 🤖 AUTO-CLICKER MECHANICS -->
+                <div class="click-stats" style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="color: #4caf50; font-weight: bold;">🤖 Авто-кликеры: <span id="autoClickerCount">0</span></span>
+                        <span style="color: #00d4ff; font-weight: bold;">⚡ TAMA/сек: <span id="tamaPerSec">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="color: #ff9800; font-weight: bold;">💰 Offline: <span id="offlineReward">0</span></span>
+                        <span style="color: #ffd700; font-weight: bold;">⏰ До claim: <span id="timeToClaim">0</span></span>
+                    </div>
+                    <!-- Прогресс до следующего авто-кликера -->
+                    <div id="autoClickerProgress" style="margin-top: 10px; display: none;">
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 5px;">
+                            До следующего авто-кликера: <span id="tamaToNext">0</span> TAMA
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 10px; overflow: hidden; height: 8px;">
+                            <div id="autoClickerProgressBar" style="background: linear-gradient(90deg, #4caf50, #8bc34a); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exp-bar-container">
+                    <div class="exp-bar" id="expBar" style="width: 0%"></div>
+                </div>
+                <div class="exp-text" id="expText">EXP: 0 / 100</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">❤️ Здоровье</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar health" id="healthBar" data-value="10">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">🍖 Голод</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar hunger" id="hungerBar" data-value="10">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">💧 Жажда</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar thirst" id="thirstBar" data-value="10">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">😊 Счастье</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar happiness" id="happinessBar" data-value="10">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">⚡ Энергия</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar energy" id="energyBar" data-value="10">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Реальное время информация -->
+            <div class="realtime-info">
+                <div class="realtime-title">⏰ Реальное время</div>
+                <div class="death-prediction" id="deathPrediction" style="display: none;">💀 Прогноз: --</div>
+                <div class="recommendations" id="recommendations" style="display: none;">
+                    <div class="recommendations-title">💡 Рекомендации:</div>
+                    <div class="recommendations-list" id="recommendationsList"></div>
+                </div>
+            </div>
+
+            <!-- Действия -->
+            <div class="actions">
+                <button class="action-btn" onclick="feedPet()" id="feedBtn">
+                    🍖 Кормить
+                    <div class="token-cost">5 TAMA</div>
+                </button>
+                <button class="action-btn" onclick="playWithPet()" id="playBtn">
+                    🎮 Играть
+                    <div class="token-cost">3 TAMA</div>
+                </button>
+                <button class="action-btn" onclick="healPet()" id="healBtn">
+                    💊 Лечить
+                    <div class="token-cost">8 TAMA</div>
+                </button>
+                <button class="action-btn" onclick="drinkPet()" id="drinkBtn">
+                    🍹 Напоить
+                    <div class="token-cost">3 TAMA</div>
+                </button>
+                <button class="action-btn" onclick="restPet()" id="restBtn">
+                    😴 Отдохнуть
+                    <div class="token-cost">2 TAMA</div>
+                </button>
+                
+                <!-- 🔥 AUTO-CLICKER -->
+                <button class="action-btn" onclick="buyAutoClicker()" id="autoClickerBtn" style="background: linear-gradient(135deg, #4caf50, #45a049);">
+                    🤖 Авто-кликер
+                    <div class="token-cost" id="autoClickerCost">100 TAMA</div>
+                </button>
+            </div>
+            
+            <!-- 💀 ВОСКРЕШЕНИЕ (показывается только для мертвых питомцев) -->
+            <div class="resurrection-panel" id="resurrectionPanel" style="display: none;">
+                <div style="background: rgba(255,0,0,0.1); border: 2px solid #ff4444; border-radius: 15px; padding: 20px; margin: 15px 0;">
+                    <h3 style="color: #ff4444; text-align: center; margin-bottom: 15px;">💀 Твой питомец умер!</h3>
+                    <p style="text-align: center; color: white; margin-bottom: 20px;">
+                        Выбери что делать:
+                    </p>
+                    
+                    <div style="display: grid; gap: 10px;">
+                        <!-- Воскресить БЕСПЛАТНО (первый раз) -->
+                        <button class="action-btn" onclick="resurrectFree()" id="resurrectFreeBtn" style="background: linear-gradient(135deg, #4caf50, #8bc34a); display: none;">
+                            🎁 БЕСПЛАТНО (1-я жизнь)
+                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Восстановится с 50% статов</div>
+                        </button>
+                        
+                        <!-- Воскресить за SOL -->
+                        <button class="action-btn" onclick="resurrectWithSOL()" id="resurrectSOLBtn" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                            💎 Воскресить за 0.1 SOL
+                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Восстановится с 50% статов</div>
+                        </button>
+                        
+                        <!-- Воскресить за TAMA -->
+                        <button class="action-btn" onclick="resurrectWithTAMA()" id="resurrectTAMABtn" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                            🔥 Воскресить за 5,000 TAMA
+                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Токены будут СОЖЖЕНЫ</div>
+                        </button>
+                        
+                        <!-- Закрыть аккаунт -->
+                        <button class="action-btn" onclick="closePetAccount()" id="closeAccountBtn" style="background: linear-gradient(135deg, #434343, #000000);">
+                            ⚰️ Закрыть аккаунт
+                            <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.9;">Вернуть rent и создать нового</div>
+                        </button>
+                    </div>
+                    
+                    <p style="text-align: center; color: #ff4444; margin-top: 15px; font-size: 0.85em;">
+                        ⚠️ После закрытия питомец исчезнет навсегда!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Toggle История -->
+            <button class="toggle-btn" onclick="toggleHistory()">
+                📜 История действий
+            </button>
+            
+            <!-- 💰 REFERRAL SYSTEM -->
+            <button class="toggle-btn" onclick="toggleReferral()" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
+                💰 Реферальная система
+            </button>
+            
+            <!-- История -->
+            <div class="history-panel" id="historyPanel">
+                <div class="history-title">Последние действия</div>
+                <div class="history-list" id="historyList">
+                    <div style="text-align: center; color: #999; font-size: 0.85em; padding: 20px;">
+                        Пока нет действий
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 💰 REFERRAL PANEL -->
+            <div class="history-panel" id="referralPanel" style="display: none;">
+                <div class="history-title">💰 Реферальная программа</div>
+                <div style="padding: 15px;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
+                        <h3 style="color: #ffd700; margin-bottom: 10px;">🎁 Твоя реферальная ссылка:</h3>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" id="referralLink" readonly 
+                                style="flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #ffd700; background: rgba(255,255,255,0.9); font-family: monospace; font-size: 0.9em;" 
+                                value="Подключи кошелек"/>
+                            <button onclick="copyReferralLink()" style="padding: 10px 20px; background: #ffd700; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                                📋 Копировать
+                            </button>
+                        </div>
+                        <button onclick="shareReferral()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px;">
+                            📢 Поделиться
+                        </button>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
+                        <h3 style="color: #4caf50; margin-bottom: 15px;">💰 Твои награды:</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 2em;">👥</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: white;" id="referralCount">0</div>
+                                <div style="font-size: 0.85em; color: #ccc;">Приглашено</div>
+                            </div>
+                            <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                                <div style="font-size: 2em;">💎</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: #ffd700;" id="referralEarnings">0 SOL</div>
+                                <div style="font-size: 0.85em; color: #ccc;">Заработано</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(76, 175, 80, 0.2); border-radius: 15px; padding: 20px; border: 2px solid #4caf50;">
+                        <h3 style="color: #4caf50; margin-bottom: 10px;">🎯 Как это работает:</h3>
+                        <ul style="color: white; line-height: 1.8; padding-left: 20px;">
+                            <li>🎁 Друг регистрируется по твоей ссылке → ты получаешь <strong style="color: #ffd700;">100 TAMA</strong></li>
+                            <li>💰 Друг оплачивает Entry Fee (0.5 SOL) → ты получаешь <strong style="color: #ffd700;">10% (0.05 SOL)</strong></li>
+                            <li>🔄 Друг покупает улучшения → ты получаешь <strong style="color: #ffd700;">5% комиссии</strong></li>
+                            <li>🚀 Бесконечный пассивный доход!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toggle Статистика -->
+            <button class="toggle-btn" onclick="toggleStats()">
+                📊 Статистика
+            </button>
+
+            <!-- Панель статистики -->
+            <div class="info-panel" id="statsPanel" style="display: none;">
+                <div class="info-title">🐣 Статистика питомца</div>
+                <div class="info-row">
+                    <span class="info-label">🆔 Pet ID:</span>
+                    <span class="info-value" id="petId">#????</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🧬 DNA:</span>
+                    <span class="info-value" id="petDna">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">✨ Редкость:</span>
+                    <span class="info-value" id="petRarity">⭐</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🎮 Всего действий:</span>
+                    <span class="info-value" id="totalActions">0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🔥 Сожжено TAMA:</span>
+                    <span class="info-value" id="totalBurned">0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">💰 TAMA баланс:</span>
+                    <span class="info-value" id="tamaBalance">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🎂 Возраст:</span>
+                    <span class="info-value" id="petAge">...</span>
+                </div>
+            </div>
+
+            <!-- Кнопка закрытия аккаунта -->
+            <button class="close-btn hidden" id="closeBtn" onclick="closePetAccount()">
+                💀 Закрыть аккаунт (вернуть rent)
+            </button>
+
+            <!-- Ссылка на Explorer -->
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="#" id="petAccountLink" target="_blank" style="color: white; text-decoration: none; font-size: 0.85em; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);">
+                    🔍 Смотреть в Explorer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <!-- Solana Web3.js -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+
+    <script>
+        // 🎯 КОНФИГУРАЦИЯ
+        const PROGRAM_ID = 'uY5hZR2uYzkquJDuDkFBj29tfzZRPE96BBTHYGaYnwX';
+        
+        // 💰 TREASURY WALLET (команда)
+        const TREASURY_WALLET = 'H2a7hSCumPuFGVV9yvzABxbTBnt9N3VWLyRrwjKrYJ7i';
+        
+        const RPC_URLS = [
+            'https://api.devnet.solana.com',
+            'https://rpc.ankr.com/solana_devnet',
+            'https://devnet.sonic.game'
+        ];
+        
+        // 🎯 TAMA Token System
+        const TAMA_MINT = 'TAMA_MINT_PDA'; // Будет создан после деплоя
+        const TOKEN_MINT = 'd8g1m1s14GFKw1P4kUjcTPjHrawwaPoJYPUhssXEjR6'; // Старый токен (для совместимости)
+        const TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        
+        // 💰 АДМИНКА - ЦЕНЫ (можно менять)
+        let PRICES = {
+            NFT_SOL: 0.01,        // SOL за NFT питомца
+            FEED_TAMA: 5,         // TAMA за кормление
+            PLAY_TAMA: 3,         // TAMA за игру
+            HEAL_TAMA: 8,         // TAMA за лечение
+            REST_TAMA: 2,         // TAMA за отдых
+            RESURRECT_SOL: 0.5,   // SOL за воскрешение
+            RESURRECT_TAMA: 5000  // TAMA за воскрешение
+        };
+        
+        // 👑 АДМИН КОШЕЛЬКИ (могут менять цены)
+        const ADMIN_WALLETS = [
+            '3FoxkxofKn9r79RjP5skNA2vpHLwngATA4gp77vwbLMB', // Основной админ
+            'H2a7hSCumPuFGVV9yvzABxbTBnt9N3VWLyRrwjKrYJ7i', // Твой админ кошелек
+        ];
+        
+        // 💰 TREASURY WALLETS
+        const TEAM_WALLET = '2eyQycA4d4zu3FbbwdvHuJ1fVDcfQsz78qGdKGYa8NXw';
+        const MARKETING_WALLET = '2eyQycA4d4zu3FbbwdvHuJ1fVDcfQsz78qGdKGYa8NXw'; // Пока тот же
+        const LIQUIDITY_WALLET = '2eyQycA4d4zu3FbbwdvHuJ1fVDcfQsz78qGdKGYa8NXw'; // Пока тот же
+        
+        // Глобальные переменные
+        var connection = null;
+        var wallet = null;
+        var petPubkey = null;
+        var realPetData = null;
+        var realtimeUpdateInterval = null;
+        var actionHistory = [];
+        
+        // 🔥 ADDICTED.FUN STYLE МЕХАНИКИ
+        var clickCount = 0;
+        var totalClicks = 0;
+        var autoClickers = 0;
+        var autoClickInterval = null;
+        var entryFeePaid = false;
+        var lastLoginTime = Date.now();
+        
+        // 🤖 Авто-кликер лимиты
+        const MAX_AUTO_CLICKERS = 20;
+        const AUTO_CLICKER_BASE_COST = 100;
+        const AUTO_CLICKER_MULTIPLIER = 1.5;
+        const CLICKS_PER_SECOND = 1; // Сколько кликов за секунду дает 1 авто-кликер
+        const MAX_OFFLINE_HOURS = 24; // Максимум накопления offline
+        
+        // 💰 REFERRAL SYSTEM
+        var referralCode = '';
+        var referredBy = '';
+        var totalReferrals = 0;
+        var referralEarnings = 0;
+        
+        // ❤️ LIVES SYSTEM (3 жизни)
+        var petLives = 3; // Начинаем с 3 жизней
+        var deathCount = 0; // Сколько раз умирал
+        
+        // 🐾 10 разных видов животных
+        const SPECIES_EMOJI = {
+            0: '🐱', // Кошка
+            1: '🐶', // Собака
+            2: '🐰', // Кролик
+            3: '🐻', // Медведь
+            4: '🦊', // Лиса
+            5: '🐼', // Панда
+            6: '🐹', // Хомяк
+            7: '🐸', // Лягушка
+            8: '🐢', // Черепаха
+            9: '🦉'  // Сова
+        };
+
+        
+        const RARITY_NAMES = {
+            0: 'Common',
+            1: 'Uncommon',
+            2: 'Rare',
+            3: 'Epic',
+            4: 'Legendary'
+        };
+        
+        const RARITY_STARS = {
+            0: '⭐',
+            1: '⭐⭐',
+            2: '⭐⭐⭐',
+            3: '⭐⭐⭐⭐',
+            4: '⭐⭐⭐⭐⭐'
+        };
+
+        // Buffer polyfill
+        function stringToBytes(str) {
+            return new TextEncoder().encode(str);
+        }
+
+        // Вычислить Anchor discriminator
+        async function getInstructionDiscriminator(instructionName) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(`global:${instructionName}`);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = new Uint8Array(hashBuffer);
+            return hashArray.slice(0, 8);
+        }
+
+        // Инициализация
+        async function init() {
+            // Пробуем разные RPC с коротким timeout
+            for (let i = 0; i < RPC_URLS.length; i++) {
+                try {
+                    const rpcName = RPC_URLS[i].replace('https://', '').split('/')[0];
+                    console.log(`🔗 RPC ${i + 1}/${RPC_URLS.length}: ${rpcName}`);
+                    connection = new window.solanaWeb3.Connection(RPC_URLS[i], 'confirmed');
+                    
+                    // Быстрый тест подключения (5 сек)
+                    await Promise.race([
+                        connection.getVersion(),
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout')), 5000)
+                        )
+                    ]);
+                    
+                    currentRpcIndex = i;
+                    console.log(`✅ Подключено через: ${rpcName}`);
+                    break;
+                } catch (err) {
+                    console.log(`❌ ${RPC_URLS[i].split('/')[2]} недоступен`);
+                    if (i === RPC_URLS.length - 1) {
+                        console.warn('⚠️ Все RPC медленные, использую первый...');
+                        connection = new window.solanaWeb3.Connection(RPC_URLS[0], 'confirmed');
+                        currentRpcIndex = 0;
+                    }
+                }
+            }
+        }
+
+        // Подключить кошелек
+        window.disconnectWallet = async function() {
+            try {
+                if (wallet && wallet.disconnect) {
+                    await wallet.disconnect();
+                }
+                
+                // Очищаем состояние
+                wallet = null;
+                petPubkey = null;
+                realPetData = null;
+                
+                // Останавливаем real-time updates
+                stopRealtimeUpdates();
+                
+                // Сбрасываем UI
+                document.getElementById('connectBtn').style.display = 'block';
+                document.getElementById('walletAddress').style.display = 'none';
+                document.getElementById('createScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'none';
+                
+                showNotification('👋 Кошелек отключен');
+                console.log('✅ Кошелек отключен');
+                
+            } catch (err) {
+                console.error('Ошибка отключения:', err);
+                showNotification('❌ Ошибка отключения кошелька');
+            }
+        }
+        
+        window.connectWallet = async function() {
+            try {
+                if (!window.solana || !window.solana.isPhantom) {
+                    showNotification('❌ Установите Phantom Wallet!');
+                    window.open('https://phantom.app/', '_blank');
+                    return;
+                }
+
+                const resp = await window.solana.connect();
+                wallet = window.solana;
+                
+                const address = resp.publicKey.toString();
+                const short = address.slice(0, 4) + '...' + address.slice(-4);
+                
+                document.getElementById('connectBtn').textContent = short;
+                document.getElementById('walletAddress').style.display = 'block';
+                
+                // 🎯 Обновить TAMA баланс
+                await updateTamaBalance();
+                
+                showNotification('✅ Кошелек подключен!');
+                
+                // Обновляем реферальную ссылку
+                updateReferralLink();
+                
+                // Проверяем сохраненный статус Entry Fee
+                checkSavedEntryFee();
+                
+                // 💾 Загружаем сохраненное состояние
+                loadGameState();
+                
+                // ❤️ Загружаем жизни
+                loadLivesFromStorage();
+                
+                // 💰 Начисляем offline награды
+                claimOfflineRewards();
+                
+                await checkExistingPet();
+                
+            } catch (err) {
+                console.error('Ошибка подключения:', err);
+                showNotification('❌ Ошибка подключения кошелька');
+            }
+        }
+
+        // Проверить существующего питомца
+        var isCheckingPet = false; // Флаг против зацикливания
+        var currentRpcIndex = 0;
+        
+        // Проверить существование контракта
+        async function checkProgramExists() {
+            try {
+                const programInfo = await connection.getAccountInfo(new window.solanaWeb3.PublicKey(PROGRAM_ID));
+                if (!programInfo) {
+                    console.error('❌ Контракт не найден! Program ID:', PROGRAM_ID);
+                    showNotification('❌ Контракт не найден! Проверь деплой.');
+                    return false;
+                }
+                console.log('✅ Контракт найден:', PROGRAM_ID);
+                return true;
+            } catch (err) {
+                console.error('❌ Ошибка проверки контракта:', err);
+                return false;
+            }
+        }
+        
+        // Проверить сохраненный статус Entry Fee
+        function checkSavedEntryFee() {
+            if (!wallet) return false;
+            
+            const walletKey = wallet.publicKey.toString();
+            const savedEntryFee = localStorage.getItem(`entryFeePaid_${walletKey}`);
+            const timestamp = localStorage.getItem(`entryFeeTimestamp_${walletKey}`);
+            
+            if (savedEntryFee === 'true') {
+                entryFeePaid = true;
+                console.log(`✅ Entry Fee был оплачен ранее (${new Date(parseInt(timestamp)).toLocaleString()})`);
+                
+                // Показываем recovery кнопку на экране создания
+                const recoveryBtn = document.getElementById('recoveryBtn');
+                if (recoveryBtn) recoveryBtn.style.display = 'block';
+                
+                return true;
+            }
+            return false;
+        }
+        
+        // Recovery функция - создать питомца если Entry Fee уже оплачен
+        window.recoverEntryFee = async function() {
+            if (!wallet) {
+                showNotification('❌ Подключи кошелек!');
+                return;
+            }
+            
+            const walletKey = wallet.publicKey.toString();
+            const savedEntryFee = localStorage.getItem(`entryFeePaid_${walletKey}`);
+            
+            if (savedEntryFee === 'true') {
+                entryFeePaid = true;
+                showNotification('✅ Entry Fee подтвержден! Создаю питомца...');
+                createPet();
+            } else {
+                showNotification('❌ Entry Fee не найден. Сначала оплати вход.');
+            }
+        }
+        
+        // Manual Refresh - принудительная проверка питомца
+        async function manualRefresh() {
+            if (!wallet) {
+                showNotification('❌ Подключи кошелек!');
+                return;
+            }
+            
+            showNotification('🔄 Проверяю питомца...');
+            
+            // Сбрасываем флаг
+            isCheckingPet = false;
+            
+            // Проверяем снова
+            await checkExistingPet();
+        }
+        
+        async function getAccountInfoWithRetry(pubkey, maxRetries = 12) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const rpcName = RPC_URLS[currentRpcIndex].replace('https://', '').split('/')[0];
+                    console.log(`📡 Попытка ${i + 1}/${maxRetries} | RPC: ${rpcName}`);
+                    
+                    // Уменьшаем timeout до 5 секунд для быстрого переключения
+                    const timeout = 5000;
+                    
+                    const accountInfo = await Promise.race([
+                        connection.getAccountInfo(pubkey),
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout')), timeout)
+                        )
+                    ]);
+                    
+                    console.log('✅ Данные получены!');
+                    return accountInfo;
+                } catch (err) {
+                    console.log(`❌ Попытка ${i + 1} не удалась:`, err.message);
+                    
+                    if (i < maxRetries - 1) {
+                        // Переключаемся на следующий RPC
+                        currentRpcIndex = (currentRpcIndex + 1) % RPC_URLS.length;
+                        const rpcName = RPC_URLS[currentRpcIndex].replace('https://', '').split('/')[0];
+                        console.log(`🔄 Переключаюсь на RPC ${currentRpcIndex + 1}/${RPC_URLS.length}: ${rpcName}`);
+                        connection = new window.solanaWeb3.Connection(RPC_URLS[currentRpcIndex], 'confirmed');
+                        
+                        // Очень короткая пауза перед повтором
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                    } else {
+                        // Если все RPC не работают - возможно аккаунт просто не существует
+                        console.log('⚠️ Не удалось получить данные. Возможно, аккаунт не существует.');
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }
+        
+        async function checkExistingPet() {
+            if (isCheckingPet) {
+                console.log('⏳ Уже проверяю питомца, пропускаю...');
+                return;
+            }
+            
+            isCheckingPet = true;
+            
+            try {
+                console.log('🔍 Проверяю питомца...');
+                showNotification('⏳ Проверяю питомца... Пробую 4 разных RPC...');
+                
+                const [petPda] = await getPetPda(wallet.publicKey);
+                petPubkey = petPda;
+                console.log('📍 Pet PDA:', petPda.toString());
+                
+                // Пробуем получить данные с retry
+                const accountInfo = await getAccountInfoWithRetry(petPda);
+                console.log('📦 Account Info:', accountInfo);
+                
+                if (accountInfo && accountInfo.data) {
+                    console.log('✅ Питомец найден! Десериализация...');
+                    const pet = deserializePet(accountInfo.data);
+                    realPetData = pet;
+                    console.log('🐣 Pet data:', pet);
+                    console.log('💀 Pet is alive:', pet.isAlive);
+                    console.log('❤️ Pet health:', pet.health);
+                    
+                    document.getElementById('createScreen').style.display = 'none';
+                    document.getElementById('gameScreen').style.display = 'block';
+                    updateDisplay(pet);
+                    
+                    document.getElementById('petAccountLink').href = 
+                        `https://explorer.solana.com/address/${petPda.toString()}?cluster=devnet`;
+                    
+                    startRealtimeUpdates();
+                    
+                    showNotification('🎉 Ваш питомец найден!');
+                } else {
+                    console.log('❌ Питомец не найден, показываю экран создания');
+                    document.getElementById('createScreen').style.display = 'block';
+                    document.getElementById('gameScreen').style.display = 'none';
+                }
+            } catch (err) {
+                console.error('❌ Ошибка проверки питомца:', err);
+                
+                // Улучшенное сообщение для RPC ошибок
+                if (err.message.includes('Timeout') || err.message.includes('RPC')) {
+                    showNotification('⚠️ Проблемы с сетью Devnet. Попробуйте обновить страницу или создать питомца.');
+                } else {
+                    showNotification('❌ Ошибка: ' + err.message);
+                }
+                
+                document.getElementById('createScreen').style.display = 'block';
+                document.getElementById('gameScreen').style.display = 'none';
+            } finally {
+                isCheckingPet = false; // Разблокируем
+            }
+        }
+
+        // Получить PDA питомца
+        async function getPetPda(ownerPubkey) {
+            const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+            return await window.solanaWeb3.PublicKey.findProgramAddress(
+                [stringToBytes('pet'), ownerPubkey.toBytes()],
+                programId
+            );
+        }
+
+        // 🎯 Получить PDA для TAMA Token Mint
+        async function getTamaMintPda() {
+            const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+            return await window.solanaWeb3.PublicKey.findProgramAddress(
+                [stringToBytes('tama_mint')],
+                programId
+            );
+        }
+
+        // 🎯 Получить TAMA Token Account пользователя
+        async function getTamaTokenAccount(wallet) {
+            try {
+                const [tamaMint] = await getTamaMintPda();
+                const [address] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [wallet.toBytes(), new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID).toBytes(), tamaMint.toBytes()],
+                    new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL')
+                );
+                return address;
+            } catch (error) {
+                console.log('TAMA Token Account не найден:', error.message);
+                return null;
+            }
+        }
+
+        // 🎯 Получить баланс TAMA токенов
+        async function getTamaBalance(wallet) {
+            try {
+                const tamaAccount = await getTamaTokenAccount(wallet);
+                if (!tamaAccount) {
+                    console.log('TAMA аккаунт не найден');
+                    return 0;
+                }
+                const accountInfo = await connection.getTokenAccountBalance(tamaAccount);
+                return accountInfo.value.uiAmount || 0;
+            } catch (error) {
+                console.log('TAMA аккаунт не найден:', error.message);
+                return 0;
+            }
+        }
+
+        // 🎯 Обновить отображение TAMA баланса
+        async function updateTamaBalance() {
+            if (!wallet || !wallet.publicKey) return;
+            
+            try {
+                const balance = await getTamaBalance(wallet.publicKey);
+                const tamaElement = document.getElementById('tamaAmount');
+                if (tamaElement) {
+                    tamaElement.textContent = balance.toFixed(2);
+                }
+                console.log('🎯 TAMA баланс обновлен:', balance);
+            } catch (error) {
+                console.log('Ошибка обновления TAMA баланса:', error);
+                const tamaElement = document.getElementById('tamaAmount');
+                if (tamaElement) {
+                    tamaElement.textContent = '0';
+                }
+            }
+        }
+
+        // 🎨 Создать NFT питомца за TAMA
+        window.createNFTWithTAMA = async function() {
+            if (!wallet || !wallet.publicKey) return;
+            
+            showNotification('🎨 NFT за TAMA временно отключено! Используй NFT за SOL.');
+            return;
+            
+            try {
+                showNotification('🎨 Создаю NFT за TAMA...');
+                
+                // Проверяем баланс TAMA
+                const tamaBalance = await getTamaBalance(wallet.publicKey);
+                if (tamaBalance < 10) {
+                    showNotification('❌ Недостаточно TAMA! Нужно: 10, у вас: ' + tamaBalance);
+                    return;
+                }
+                
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const [petPubkey] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('pet'), wallet.publicKey.toBytes()],
+                    programId
+                );
+                
+                // Получаем NFT Mint PDA
+                const [nftMint] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('nft_mint'), wallet.publicKey.toBytes()],
+                    programId
+                );
+                
+                // Получаем NFT Token Account
+                const [nftTokenAccount] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [wallet.publicKey.toBytes(), new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID).toBytes(), nftMint.toBytes()],
+                    new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL')
+                );
+                
+                // Получаем TAMA Token Account (временно отключено)
+                // const [tamaMint] = await getTamaMintPda();
+                // const tamaTokenAccount = await getTamaTokenAccount(wallet.publicKey);
+                
+                // Получаем Metadata PDA
+                const [metadata] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('metadata'), nftMint.toBytes()],
+                    programId
+                );
+                
+                const name = `Tamagotchi #${Date.now()}`;
+                const uri = `https://api.tamagotchi.com/metadata/${nftMint.toString()}`;
+                
+                // ✅ Правильный Anchor discriminator для create_pet_nft
+                const data = new Uint8Array([108, 44, 10, 111, 6, 143, 227, 102]); // create_pet_nft instruction
+                
+                const nameBytes = new TextEncoder().encode(name);
+                const uriBytes = new TextEncoder().encode(uri);
+                
+                const fullData = new Uint8Array([
+                    ...data,
+                    nameBytes.length,
+                    ...nameBytes,
+                    uriBytes.length,
+                    ...uriBytes
+                ]);
+                
+                const nftKeys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: nftMint, isSigner: false, isWritable: true },
+                    { pubkey: nftTokenAccount, isSigner: false, isWritable: true },
+                    { pubkey: metadata, isSigner: false, isWritable: true },
+                    { pubkey: new window.solanaWeb3.PublicKey('11111111111111111111111111111111'), isSigner: false, isWritable: false }, // token_metadata_program
+                    { pubkey: new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID), isSigner: false, isWritable: false },
+                    { pubkey: new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'), isSigner: false, isWritable: false }, // associated_token_program
+                    { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                    { pubkey: window.solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+                ];
+                
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: nftKeys,
+                    programId,
+                    data: fullData,
+                });
+                
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+                
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification('🎉 NFT создан за TAMA! 10 TAMA сожжено!');
+                
+                // Обновляем данные
+                await checkExistingPet();
+                await updateTamaBalance();
+                
+            } catch (error) {
+                console.error('Ошибка создания NFT за TAMA:', error);
+                showNotification('❌ Ошибка: ' + error.message);
+            }
+        }
+
+        // 💰 Создать NFT питомца за SOL
+        window.createNFTWithSOL = async function() {
+            if (!wallet || !wallet.publicKey) return;
+            
+            try {
+                showNotification('💰 Создаю NFT за SOL...');
+                
+                // Проверяем баланс SOL
+                const solBalance = await connection.getBalance(wallet.publicKey);
+                const solAmount = solBalance / window.solanaWeb3.LAMPORTS_PER_SOL;
+                
+                if (solAmount < 0.01) {
+                    showNotification('❌ Недостаточно SOL! Нужно: 0.01, у вас: ' + solAmount.toFixed(4));
+                    return;
+                }
+                
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const [petPubkey] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('pet'), wallet.publicKey.toBytes()],
+                    programId
+                );
+                const treasury = new window.solanaWeb3.PublicKey(TREASURY_WALLET);
+                
+                // Получаем NFT Mint PDA
+                const [nftMint] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('nft_mint'), wallet.publicKey.toBytes()],
+                    programId
+                );
+                
+                // Получаем NFT Token Account
+                const [nftTokenAccount] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [wallet.publicKey.toBytes(), new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID).toBytes(), nftMint.toBytes()],
+                    new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL')
+                );
+                
+                // Получаем Metadata PDA
+                const [metadata] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('metadata'), nftMint.toBytes()],
+                    programId
+                );
+                
+                const name = `Tamagotchi #${Date.now()}`;
+                const uri = `https://api.tamagotchi.com/metadata/${nftMint.toString()}`;
+                
+                // ✅ Правильный Anchor discriminator для create_pet_nft_sol
+                const data = new Uint8Array([119, 155, 58, 202, 61, 173, 49, 134]); // create_pet_nft_sol instruction
+                
+                const nameBytes = new TextEncoder().encode(name);
+                const uriBytes = new TextEncoder().encode(uri);
+                
+                const fullData = new Uint8Array([
+                    ...data,
+                    nameBytes.length,
+                    ...nameBytes,
+                    uriBytes.length,
+                    ...uriBytes
+                ]);
+                
+                const solNftKeys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: treasury, isSigner: false, isWritable: true },
+                    { pubkey: nftMint, isSigner: false, isWritable: true },
+                    { pubkey: nftTokenAccount, isSigner: false, isWritable: true },
+                    { pubkey: metadata, isSigner: false, isWritable: true },
+                    { pubkey: new window.solanaWeb3.PublicKey('11111111111111111111111111111111'), isSigner: false, isWritable: false }, // token_metadata_program
+                    { pubkey: new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID), isSigner: false, isWritable: false },
+                    { pubkey: new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'), isSigner: false, isWritable: false }, // associated_token_program
+                    { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                    { pubkey: window.solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+                ];
+                
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: solNftKeys,
+                    programId,
+                    data: fullData,
+                });
+                
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+                
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification('🎉 NFT создан за SOL! 0.01 SOL переведено в treasury!');
+                
+                // Обновляем данные
+                await checkExistingPet();
+                
+            } catch (error) {
+                console.error('Ошибка создания NFT за SOL:', error);
+                showNotification('❌ Ошибка: ' + error.message);
+            }
+        }
+
+        // Создать питомца
+        window.createPet = async function() {
+            if (!wallet) return;
+            
+            try {
+                // Проверяем существование контракта
+                const programExists = await checkProgramExists();
+                if (!programExists) {
+                    showNotification('❌ Контракт не найден! Проверь деплой в Solana Playground.');
+                    return;
+                }
+                
+                showNotification('🐣 Создаю питомца...');
+                const createBtn = document.getElementById('createPetBtn');
+                if (createBtn) createBtn.disabled = true;
+
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const [petPda] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [stringToBytes('pet'), wallet.publicKey.toBytes()],
+                    programId
+                );
+
+                // ✅ Правильный Anchor discriminator для create_pet
+                const data = new Uint8Array([31, 116, 155, 96, 251, 101, 128, 164]); // create_pet instruction
+
+                const createKeys = [
+                    { pubkey: petPda, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                ];
+
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: createKeys,
+                    programId,
+                    data,
+                });
+
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification('✅ Питомец создан!');
+                
+                // ❤️ Инициализируем 3 жизни для нового питомца
+                petLives = 3;
+                deathCount = 0;
+                saveLivesToStorage();
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await checkExistingPet();
+                
+            } catch (err) {
+                console.error('Ошибка создания:', err);
+                
+                // Если питомец уже создан - загружаем его
+                if (err.message && (err.message.includes('already been processed') || err.message.includes('already in use'))) {
+                    console.log('✅ Питомец уже создан!');
+                    showNotification('✅ Pet already exists! Loading...');
+                    
+                    // Ждем немного и проверяем снова
+                    setTimeout(async () => {
+                        await checkExistingPet();
+                    }, 2000);
+                } else {
+                    showNotification('❌ Error: ' + err.message);
+                    const createBtn = document.getElementById('createPetBtn');
+                    if (createBtn) createBtn.disabled = false;
+                }
+            }
+        }
+
+        // Deserialize Pet
+        function deserializePet(data) {
+            let offset = 8; // Пропускаем discriminator
+            
+            // ✅ Читаем все 4 Pubkey из структуры Pet
+            const owner = new window.solanaWeb3.PublicKey(data.slice(offset, offset + 32));
+            offset += 32;
+            
+            const mint = new window.solanaWeb3.PublicKey(data.slice(offset, offset + 32));
+            offset += 32;
+            
+            const nftMint = new window.solanaWeb3.PublicKey(data.slice(offset, offset + 32));
+            offset += 32;
+            
+            const metadata = new window.solanaWeb3.PublicKey(data.slice(offset, offset + 32));
+            offset += 32;
+            
+            const dna = readU64LE(data, offset);
+            offset += 8;
+            
+            const petId = readU32LE(data, offset);
+            offset += 4;
+            
+            const species = data[offset];
+            offset += 1;
+            
+            const accessory = data[offset];
+            offset += 1;
+            
+            const background = data[offset];
+            offset += 1;
+            
+            const rarity = data[offset];
+            offset += 1;
+            
+            const level = data[offset];
+            offset += 1;
+            
+            const experience = readU16LE(data, offset);
+            offset += 2;
+            
+            const health = data[offset];
+            offset += 1;
+            
+            const hunger = data[offset];
+            offset += 1;
+            
+            const happiness = data[offset];
+            offset += 1;
+            
+            const energy = data[offset];
+            offset += 1;
+            
+            const age = readU32LE(data, offset);
+            offset += 4;
+            
+            const birthTime = readI64LE(data, offset);
+            offset += 8;
+            
+            const lastActionTime = readI64LE(data, offset);
+            offset += 8;
+            
+            const lastDecayTime = readI64LE(data, offset);
+            offset += 8;
+            
+            // ✅ Правильный порядок по структуре контракта
+            const totalTokensBurned = readU64LE(data, offset);
+            offset += 8;
+            
+            const actionsCount = readU32LE(data, offset);
+            offset += 4;
+            
+            const isAlive = data[offset] !== 0;
+            offset += 1;
+            
+            const lives = data[offset] || 3;
+            offset += 1;
+            
+            const bump = data[offset];
+            offset += 1;
+            
+            return {
+                owner, dna, petId, species, accessory, background, rarity, level,
+                experience, health, hunger, happiness, energy, age, 
+                birthTime, lastActionTime, lastDecayTime, actionsCount, isAlive,
+                lives, totalTokensBurned
+            };
+        }
+
+        function readU32LE(buffer, offset) {
+            return buffer[offset] + (buffer[offset + 1] << 8) + 
+                   (buffer[offset + 2] << 16) + (buffer[offset + 3] << 24);
+        }
+
+        function readU16LE(buffer, offset) {
+            return buffer[offset] + (buffer[offset + 1] << 8);
+        }
+
+        function readU64LE(buffer, offset) {
+            const low = readU32LE(buffer, offset);
+            const high = readU32LE(buffer, offset + 4);
+            return low + high * 4294967296;
+        }
+
+        function readI64LE(buffer, offset) {
+            const low = readU32LE(buffer, offset);
+            const high = readU32LE(buffer, offset + 4);
+            return low + high * 4294967296;
+        }
+
+
+        // Обновить отображение
+        function updateDisplay(pet) {
+            const species = SPECIES_EMOJI[pet.species] || '🐣';
+            const petSpriteEl = document.getElementById('petSprite');
+            const petDisplayEl = document.getElementById('petDisplay');
+            
+            // 🎨 Показываем emoji с красивыми эффектами
+            petSpriteEl.textContent = pet.isAlive ? species : '💀';
+            
+            // Применяем класс редкости для свечения
+            petDisplayEl.className = 'pet-display rarity-' + pet.rarity;
+            
+            // Добавляем shake если здоровье критично
+            if (pet.health < 30) {
+                petSpriteEl.classList.add('health-critical');
+            } else {
+                petSpriteEl.classList.remove('health-critical');
+            }
+            
+            document.getElementById('petName').textContent = pet.isAlive ? 
+                `Питомец #${pet.petId}` : `💀 Питомец мертв #${pet.petId}`;
+            document.getElementById('petLevel').textContent = `Уровень ${pet.level}`;
+            
+            // Experience bar
+            const expToNext = getExpToNextLevel(pet.level);
+            const expProgress = (pet.experience / expToNext) * 100;
+            document.getElementById('expBar').style.width = Math.min(expProgress, 100) + '%';
+            document.getElementById('expText').textContent = `EXP: ${pet.experience} / ${expToNext}`;
+            
+            updateStatBar('healthBar', pet.health);
+            updateStatBar('hungerBar', pet.hunger);
+            updateStatBar('happinessBar', pet.happiness);
+            updateStatBar('energyBar', pet.energy);
+            
+            document.getElementById('petId').textContent = `#${pet.petId}`;
+            document.getElementById('petDna').textContent = pet.dna.toString().slice(0, 10) + '...';
+            
+            const rarityName = RARITY_NAMES[pet.rarity] || 'Common';
+            const rarityStars = RARITY_STARS[pet.rarity] || '⭐';
+            document.getElementById('petRarity').textContent = `${rarityName} ${rarityStars}`;
+            
+            document.getElementById('totalActions').textContent = pet.actionsCount;
+            document.getElementById('totalBurned').textContent = (pet.totalTokensBurned / 1_000_000_000).toFixed(1);
+            
+            // Возраст
+            const ageMinutes = Math.floor(pet.age / 60);
+            const ageHours = Math.floor(ageMinutes / 60);
+            const ageText = ageHours > 0 ? 
+                `${ageHours}ч ${ageMinutes % 60}м` : `${ageMinutes}м`;
+            document.getElementById('petAge').textContent = ageText;
+            
+            // Обновить отображение жизней
+            updateLivesDisplay();
+            
+            // Показать/скрыть панель воскрешения
+            const resurrectionPanel = document.getElementById('resurrectionPanel');
+            const actionsDiv = document.querySelector('.actions');
+            
+            if (!pet.isAlive) {
+                // Питомец мертв - показываем панель воскрешения
+                resurrectionPanel.style.display = 'block';
+                actionsDiv.style.display = 'none';
+                
+                // Показываем кнопку бесплатного воскрешения если есть жизни
+                const freeBtn = document.getElementById('resurrectFreeBtn');
+                if (freeBtn) {
+                    freeBtn.style.display = petLives > 0 ? 'block' : 'none';
+                }
+                
+                // Отключаем все действия
+                document.getElementById('feedBtn').disabled = true;
+                document.getElementById('playBtn').disabled = true;
+                document.getElementById('healBtn').disabled = true;
+                document.getElementById('restBtn').disabled = true;
+                document.getElementById('autoClickerBtn').disabled = true;
+            } else {
+                // Питомец жив - скрываем панель воскрешения
+                resurrectionPanel.style.display = 'none';
+                actionsDiv.style.display = 'grid';
+                
+                // Включаем все действия
+                const feedBtn = document.getElementById('feedBtn');
+                const playBtn = document.getElementById('playBtn');
+                const healBtn = document.getElementById('healBtn');
+                const restBtn = document.getElementById('restBtn');
+                
+                if (feedBtn) feedBtn.disabled = false;
+                if (playBtn) playBtn.disabled = false;
+                if (healBtn) healBtn.disabled = false;
+                if (restBtn) restBtn.disabled = false;
+            }
+            
+            // Обновить TAMA баланс
+            updateTokenBalance();
+        }
+
+        function getExpToNextLevel(level) {
+            const thresholds = [100, 300, 600, 1000];
+            return thresholds[level - 1] || 1000;
+        }
+
+        function updateStatBar(id, value) {
+            const bar = document.getElementById(id);
+            bar.style.width = value + '%';
+            bar.textContent = value + '%';
+            
+            // Устанавливаем data-value для цвета
+            const rangeValue = Math.floor(value / 10);
+            bar.setAttribute('data-value', rangeValue);
+            
+            // Добавляем пульсацию если критично
+            const stat = bar.parentElement.parentElement;
+            if (value < 30) {
+                stat.classList.add('stat-critical');
+            } else {
+                stat.classList.remove('stat-critical');
+            }
+        }
+
+        // ============================================================================
+        // 🔥 РЕАЛЬНОЕ ВРЕМЯ DECAY
+        // ============================================================================
+
+        function calculateVirtualStats(pet) {
+            if (!pet) return null;
+            
+            const now = Date.now() / 1000;
+            const timePassed = now - pet.lastDecayTime;
+            
+            if (timePassed < 60) {
+                return {
+                    hunger: pet.hunger,
+                    thirst: pet.thirst || 100, // Default to 100 if not set
+                    happiness: pet.happiness,
+                    energy: pet.energy,
+                    health: pet.health,
+                    isAlive: pet.isAlive,
+                    timePassed: timePassed
+                };
+            }
+            
+            const decayCycles = Math.floor(timePassed / 60);
+            
+            // 💡 НОВЫЙ DECAY: -1 за минуту для всех статов
+            let virtualHunger = Math.max(0, pet.hunger - decayCycles);
+            let virtualThirst = Math.max(0, (pet.thirst || 100) - decayCycles);
+            let virtualHappiness = Math.max(0, pet.happiness - decayCycles);
+            let virtualEnergy = Math.max(0, pet.energy - decayCycles);
+            let virtualHealth = pet.health;
+            
+            // Если ЛЮБОЙ stat = 0, health падает -3 за минуту
+            if (virtualHunger === 0 || virtualThirst === 0 || virtualHappiness === 0 || virtualEnergy === 0) {
+                virtualHealth = Math.max(0, virtualHealth - (decayCycles * 3));
+            }
+            
+            const virtualAlive = virtualHealth > 0;
+            
+            return {
+                hunger: virtualHunger,
+                thirst: virtualThirst,
+                happiness: virtualHappiness,
+                energy: virtualEnergy,
+                health: virtualHealth,
+                isAlive: virtualAlive,
+                timePassed: timePassed
+            };
+        }
+
+        function predictDeath(pet) {
+            if (!pet) return null;
+            
+            let virtualPet = { ...pet };
+            let minutes = 0;
+            
+            while (virtualPet.health > 0 && minutes < 10000) {
+                minutes++;
+                
+                // 💡 НОВЫЙ DECAY: -1 за минуту для всех
+                virtualPet.hunger = Math.max(0, virtualPet.hunger - 1);
+                virtualPet.happiness = Math.max(0, virtualPet.happiness - 1);
+                virtualPet.energy = Math.max(0, virtualPet.energy - 1);
+                
+                // Если ЛЮБОЙ stat = 0, health падает -3 за минуту
+                if (virtualPet.hunger === 0 || virtualPet.happiness === 0 || virtualPet.energy === 0) {
+                    virtualPet.health = Math.max(0, virtualPet.health - 3);
+                }
+            }
+            
+            return minutes;
+        }
+
+        function getRecommendations(virtualStats) {
+            const recommendations = [];
+            
+            if (virtualStats.hunger < 70) {
+                recommendations.push({
+                    action: '🍖 Кормить',
+                    urgency: virtualStats.hunger < 30 ? 'critical' : 'medium',
+                    cost: '5 TAMA'
+                });
+            }
+            
+            if (virtualStats.happiness < 70) {
+                recommendations.push({
+                    action: '🎮 Играть',
+                    urgency: virtualStats.happiness < 30 ? 'critical' : 'medium',
+                    cost: '3 TAMA'
+                });
+            }
+            
+            if (virtualStats.energy < 60) {
+                recommendations.push({
+                    action: '😴 Отдохнуть',
+                    urgency: virtualStats.energy < 30 ? 'high' : 'low',
+                    cost: '2 TAMA'
+                });
+            }
+            
+            if (virtualStats.health < 50) {
+                recommendations.push({
+                    action: '💊 Лечить',
+                    urgency: 'critical',
+                    cost: '8 TAMA'
+                });
+            }
+            
+            return recommendations;
+        }
+
+        function updateRealtimeUI() {
+            if (!realPetData) return;
+            
+            const virtualStats = calculateVirtualStats(realPetData);
+            if (!virtualStats) return;
+            
+            updateStatBar('hungerBar', virtualStats.hunger);
+            updateStatBar('happinessBar', virtualStats.happiness);
+            updateStatBar('energyBar', virtualStats.energy);
+            updateStatBar('healthBar', virtualStats.health);
+            
+            if (!virtualStats.isAlive && realPetData.isAlive) {
+                document.getElementById('petSprite').textContent = '💀';
+                document.getElementById('petName').textContent = `💀 Питомец умер #${realPetData.petId}`;
+                
+                // 💀 ПОКАЗЫВАЕМ ПАНЕЛЬ ВОСКРЕШЕНИЯ!
+                const resurrectionPanel = document.getElementById('resurrectionPanel');
+                const actionsDiv = document.querySelector('.actions');
+                
+                if (resurrectionPanel) resurrectionPanel.style.display = 'block';
+                if (actionsDiv) actionsDiv.style.display = 'none';
+                
+                // Показываем кнопку бесплатного воскрешения если есть жизни
+                const freeBtn = document.getElementById('resurrectFreeBtn');
+                if (freeBtn) {
+                    freeBtn.style.display = petLives > 0 ? 'block' : 'none';
+                }
+                
+                // Отключаем кнопки действий
+                const feedBtn = document.getElementById('feedBtn');
+                const playBtn = document.getElementById('playBtn');
+                const healBtn = document.getElementById('healBtn');
+                const restBtn = document.getElementById('restBtn');
+                const autoClickerBtn = document.getElementById('autoClickerBtn');
+                
+                if (feedBtn) feedBtn.disabled = true;
+                if (playBtn) playBtn.disabled = true;
+                if (healBtn) healBtn.disabled = true;
+                if (restBtn) restBtn.disabled = true;
+                if (autoClickerBtn) autoClickerBtn.disabled = true;
+            }
+            
+            if (virtualStats.isAlive) {
+                const deathMinutes = predictDeath(virtualStats);
+                const deathPredEl = document.getElementById('deathPrediction');
+                
+                if (deathMinutes < 300) {
+                    const hours = Math.floor(deathMinutes / 60);
+                    const mins = deathMinutes % 60;
+                    deathPredEl.textContent = `💀 Умрёт через: ${hours > 0 ? hours + 'ч ' : ''}${mins}м`;
+                    deathPredEl.style.display = 'block';
+                } else {
+                    deathPredEl.style.display = 'none';
+                }
+            } else {
+                document.getElementById('deathPrediction').textContent = '💀 Питомец мертв';
+                document.getElementById('deathPrediction').style.display = 'block';
+            }
+            
+            const recommendations = getRecommendations(virtualStats);
+            const recEl = document.getElementById('recommendations');
+            const recListEl = document.getElementById('recommendationsList');
+            
+            if (recommendations.length > 0) {
+                recEl.style.display = 'block';
+                
+                let html = '';
+                recommendations.forEach(rec => {
+                    const urgencyColor = 
+                        rec.urgency === 'critical' ? '#d32f2f' :
+                        rec.urgency === 'high' ? '#f57c00' :
+                        rec.urgency === 'medium' ? '#fbc02d' : '#689f38';
+                    
+                    html += `<div class="recommendation-item" style="color: ${urgencyColor};">
+                        ${rec.action} (${rec.cost})
+                    </div>`;
+                });
+                
+                recListEl.innerHTML = html;
+            } else {
+                recEl.style.display = 'none';
+            }
+            
+            // 💰 Обновляем offline награду в реальном времени
+            if (autoClickers > 0) {
+                const offlineReward = calculateOfflineRewards();
+                const offlineEl = document.getElementById('offlineReward');
+                if (offlineEl) {
+                    offlineEl.textContent = offlineReward > 0 ? offlineReward.toLocaleString() : '0';
+                }
+            }
+        }
+
+        function startRealtimeUpdates() {
+            if (realtimeUpdateInterval) {
+                clearInterval(realtimeUpdateInterval);
+            }
+            
+            realtimeUpdateInterval = setInterval(updateRealtimeUI, 1000);
+            updateRealtimeUI();
+            
+            console.log('✅ Реальное время запущено!');
+        }
+
+        function stopRealtimeUpdates() {
+            if (realtimeUpdateInterval) {
+                clearInterval(realtimeUpdateInterval);
+                realtimeUpdateInterval = null;
+            }
+        }
+
+        // ============================================================================
+        // ДЕЙСТВИЯ
+        // ============================================================================
+
+        var isActionInProgress = false; // 🔒 Защита от двойных кликов
+
+        window.feedPet = async function() {
+            if (isActionInProgress) {
+                showNotification('⏳ Подождите, действие выполняется...');
+                return;
+            }
+            await performAction('feed_pet', '🍖 Кормлю...', '✅ Покормлен!', 5_000_000_000);
+            addToHistory('🍖 Покормил');
+        }
+
+        window.playWithPet = async function() {
+            if (isActionInProgress) {
+                showNotification('⏳ Подождите, действие выполняется...');
+                return;
+            }
+            await performAction('play_with_pet', '🎮 Играю...', '✅ Поиграли!', 3_000_000_000);
+            addToHistory('🎮 Поиграл');
+        }
+
+        window.healPet = async function() {
+            if (isActionInProgress) {
+                showNotification('⏳ Подождите, действие выполняется...');
+                return;
+            }
+            await performAction('heal_pet', '💊 Лечу...', '✅ Вылечен!', 8_000_000_000);
+            addToHistory('💊 Вылечил');
+        }
+
+        window.drinkPet = async function() {
+            if (isActionInProgress) {
+                showNotification('⏳ Подождите, действие выполняется...');
+                return;
+            }
+            await performAction('drink_pet', '🍹 Пою...', '✅ Напоил!', 3_000_000_000);
+            addToHistory('🍹 Напоил');
+        }
+
+        window.restPet = async function() {
+            if (isActionInProgress) {
+                showNotification('⏳ Подождите, действие выполняется...');
+                return;
+            }
+            await performAction('rest_pet', '😴 Отдыхаю...', '✅ Отдохнул!', 2_000_000_000);
+            addToHistory('😴 Отдохнул');
+        }
+
+        async function performAction(actionName, loadingMsg, successMsg, burnAmount) {
+            if (!wallet || !petPubkey || isActionInProgress) return;
+            
+            isActionInProgress = true; // 🔒 Блокируем другие действия
+            
+            try {
+                showNotification(loadingMsg);
+                disableButtons();
+
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const tokenMintPubkey = new window.solanaWeb3.PublicKey(TOKEN_MINT);
+                const tokenProgramId = new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID);
+                const discriminator = await getInstructionDiscriminator(actionName);
+
+                // Вычислить Associated Token Account адрес
+                const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+                const [tokenAccountPubkey] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [
+                        wallet.publicKey.toBuffer(),
+                        tokenProgramId.toBuffer(),
+                        tokenMintPubkey.toBuffer(),
+                    ],
+                    associatedTokenProgram
+                );
+
+                const transaction = new window.solanaWeb3.Transaction();
+
+                // Проверить существует ли token account, если нет - создать
+                try {
+                    const accountInfo = await connection.getAccountInfo(tokenAccountPubkey);
+                    if (!accountInfo) {
+                        console.log('🔨 Создаю Token Account...');
+                        // Создать Associated Token Account
+                        const createATAIx = new window.solanaWeb3.TransactionInstruction({
+                            keys: [
+                                { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                                { pubkey: tokenAccountPubkey, isSigner: false, isWritable: true },
+                                { pubkey: wallet.publicKey, isSigner: false, isWritable: false },
+                                { pubkey: tokenMintPubkey, isSigner: false, isWritable: false },
+                                { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                                { pubkey: tokenProgramId, isSigner: false, isWritable: false },
+                            ],
+                            programId: associatedTokenProgram,
+                            data: Buffer.from([]),
+                        });
+                        transaction.add(createATAIx);
+                    }
+                } catch (err) {
+                    console.warn('Token account check failed:', err);
+                }
+
+                // Все accounts для контракта
+                const actionKeys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: tokenAccountPubkey, isSigner: false, isWritable: true },
+                    { pubkey: tokenMintPubkey, isSigner: false, isWritable: true },
+                    { pubkey: tokenProgramId, isSigner: false, isWritable: false },
+                ];
+
+                const actionInstruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: actionKeys,
+                    programId,
+                    data: discriminator,
+                });
+
+                transaction.add(actionInstruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                // 💫 ОПЫТ ЗА ДЕЙСТВИЕ (+5 EXP)!
+                if (realPetData && realPetData.isAlive) {
+                    realPetData.experience += 5;
+                    checkLevelUp();
+                    addToHistory(`${successMsg} (+5 EXP)`);
+                }
+                
+                showNotification(successMsg + ' (+5 EXP)');
+                await refreshPet();
+                
+                // 🎯 Обновить TAMA баланс после действия
+                await updateTamaBalance();
+                
+            } catch (err) {
+                console.error('Ошибка:', err);
+                
+                // Обработка специфических ошибок
+                if (err.message && err.message.includes('already been processed')) {
+                    showNotification('⏳ Транзакция уже обрабатывается...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    await refreshPet(); // Просто обновляем данные
+                } else {
+                    showNotification('❌ Ошибка: ' + err.message);
+                }
+            } finally {
+                // 🔓 Всегда разблокируем в конце
+                isActionInProgress = false;
+                enableButtons();
+            }
+        }
+
+        async function getAssociatedTokenAddress(tokenMint, owner) {
+            const [address] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                [
+                    owner.toBytes(),
+                    new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID).toBytes(),
+                    tokenMint.toBytes(),
+                ],
+                window.solanaWeb3.ASSOCIATED_TOKEN_PROGRAM_ID
+            );
+            return address;
+        }
+
+        async function getOrCreateTokenAccount() {
+            try {
+                const tokenMintPubkey = new window.solanaWeb3.PublicKey(TOKEN_MINT);
+                const associatedTokenAddress = await window.solanaWeb3.PublicKey.findProgramAddress(
+                    [
+                        wallet.publicKey.toBytes(),
+                        new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID).toBytes(),
+                        tokenMintPubkey.toBytes()
+                    ],
+                    new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL')
+                );
+                
+                return associatedTokenAddress[0];
+            } catch (err) {
+                console.error('Ошибка получения token account:', err);
+                return null;
+            }
+        }
+
+        async function getTokenBalance() {
+            try {
+                const tokenAccount = await getOrCreateTokenAccount();
+                const balance = await connection.getTokenAccountBalance(tokenAccount);
+                return balance.value.amount;
+            } catch (err) {
+                return 0;
+            }
+        }
+
+        async function updateTokenBalance() {
+            try {
+                const balance = await getTokenBalance();
+                const tamaBalance = (balance / 1_000_000_000).toFixed(0);
+                document.getElementById('tamaBalance').textContent = tamaBalance;
+            } catch (err) {
+                document.getElementById('tamaBalance').textContent = '...';
+            }
+        }
+
+        async function refreshPet() {
+            if (!wallet || !petPubkey) return;
+            
+            try {
+                const accountInfo = await connection.getAccountInfo(petPubkey);
+                
+                if (accountInfo && accountInfo.data) {
+                    const pet = deserializePet(accountInfo.data);
+                    realPetData = pet;
+                    
+                    // Обновляем жизни из смарт-контракта
+                    petLives = pet.lives || 3;
+                    
+                    updateDisplay(pet);
+                    updateLivesDisplay();
+                }
+            } catch (err) {
+                console.error('Ошибка обновления:', err);
+            }
+        }
+
+        window.closePetAccount = async function() {
+            if (!wallet || !petPubkey) return;
+            
+            if (!confirm('💀 Закрыть аккаунт питомца?\n\n✅ Rent будет возвращен\n⚠️ Питомец будет удален навсегда')) {
+                return;
+            }
+            
+            try {
+                showNotification('🔄 Закрываю аккаунт...');
+                
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                
+                // ✅ Правильный Anchor discriminator для close_pet
+                const data = new Uint8Array([204, 184, 224, 2, 62, 15, 58, 163]); // close_pet instruction
+                
+                const closeKeys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                ];
+
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: closeKeys,
+                    programId,
+                    data,
+                });
+
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification('✅ Аккаунт закрыт! Rent возвращен.');
+                
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('createScreen').style.display = 'block';
+                petPubkey = null;
+                stopRealtimeUpdates();
+                
+            } catch (err) {
+                showNotification('❌ Ошибка: ' + err.message);
+                console.error('Ошибка закрытия:', err);
+            }
+        }
+        
+        // ❤️ СИСТЕМА ЖИЗНЕЙ
+        
+        function updateLivesDisplay() {
+            const livesEl = document.getElementById('petLives');
+            if (!livesEl) return;
+            
+            // Берем жизни из смарт-контракта или localStorage
+            const lives = realPetData ? realPetData.lives : petLives;
+            const hearts = '❤️'.repeat(lives);
+            const broken = '🖤'.repeat(Math.max(0, 3 - lives));
+            livesEl.textContent = hearts + broken;
+        }
+        
+        function loadLivesFromStorage() {
+            if (!wallet) return;
+            
+            const walletKey = wallet.publicKey.toString();
+            const savedLives = localStorage.getItem(`petLives_${walletKey}`);
+            const savedDeaths = localStorage.getItem(`deathCount_${walletKey}`);
+            
+            if (savedLives) {
+                petLives = parseInt(savedLives) || 3;
+            }
+            if (savedDeaths) {
+                deathCount = parseInt(savedDeaths) || 0;
+            }
+            
+            updateLivesDisplay();
+        }
+        
+        function saveLivesToStorage() {
+            if (!wallet) return;
+            
+            const walletKey = wallet.publicKey.toString();
+            localStorage.setItem(`petLives_${walletKey}`, petLives.toString());
+            localStorage.setItem(`deathCount_${walletKey}`, deathCount.toString());
+        }
+        
+        function useLife() {
+            if (petLives > 0) {
+                petLives--;
+                deathCount++;
+                saveLivesToStorage();
+                updateLivesDisplay();
+                return true;
+            }
+            return false;
+        }
+        
+        // 💀 ВОСКРЕШЕНИЕ ПИТОМЦА
+        
+        window.resurrectFree = async function() {
+            if (!wallet || !petPubkey) return;
+            
+            try {
+                showNotification('✨ Воскрешаю питомца бесплатно...');
+                
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                
+                // ✅ Правильный Anchor discriminator для resurrect_pet
+                const data = new Uint8Array([142, 237, 125, 147, 199, 109, 53, 14]); // resurrect_pet instruction
+                
+                const freeKeys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                ];
+                
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: freeKeys,
+                    programId,
+                    data,
+                });
+                
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+                
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification('✨ Питомец воскрешен бесплатно!');
+                
+                // Обновляем данные
+                await checkExistingPet();
+                
+            } catch (error) {
+                console.error('Ошибка воскрешения:', error);
+                showNotification('❌ Ошибка: ' + error.message);
+            }
+        }
+        
+        window.resurrectWithSOL = async function() {
+            if (!wallet || !petPubkey) return;
+            
+            showNotification('💎 Воскрешение за SOL временно отключено! Используй бесплатное воскрешение.');
+            return;
+        }
+        
+        window.resurrectWithTAMA = async function() {
+            if (!wallet || !petPubkey) return;
+            
+            showNotification('🔥 Воскрешение за TAMA временно отключено! Используй бесплатное воскрешение.');
+            return;
+            
+            if (!confirm('🔥 Воскресить за 5,000 TAMA?\n\n⚠️ Токены будут СОЖЖЕНЫ\n✅ Питомец оживет с 50% статов')) {
+                return;
+            }
+            
+            try {
+                showNotification('💀➡️🐣 Воскрешаю питомца...');
+                
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const discriminator = await getInstructionDiscriminator('resurrect_pet');
+                
+                // Treasury address - Team Wallet
+                const treasury = new window.solanaWeb3.PublicKey(TEAM_WALLET);
+                
+                // use_sol = false (0 byte)
+                const useSol = Buffer.from([0]);
+                const data = Buffer.concat([discriminator, useSol]);
+                
+                const tokenMint = new window.solanaWeb3.PublicKey(TOKEN_MINT);
+                const userTokenAccount = await getAssociatedTokenAddress(tokenMint, wallet.publicKey);
+                const tokenProgramId = new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID);
+                const systemProgramId = window.solanaWeb3.SystemProgram.programId;
+                
+                const resurrectKeys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: treasury, isSigner: false, isWritable: true },
+                    { pubkey: userTokenAccount, isSigner: false, isWritable: true },
+                    { pubkey: tokenMint, isSigner: false, isWritable: true },
+                    { pubkey: tokenProgramId, isSigner: false, isWritable: false },
+                    { pubkey: systemProgramId, isSigner: false, isWritable: false },
+                ];
+                
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys: resurrectKeys,
+                    programId,
+                    data,
+                });
+                
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+                
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification('🎉 Питомец воскрешен! 5,000 TAMA сожжено!');
+                
+                // Обновляем данные
+                await checkExistingPet();
+                await updateTokenBalance();
+                
+            } catch (err) {
+                showNotification('❌ Ошибка: ' + err.message);
+                console.error('Ошибка воскрешения:', err);
+            }
+        }
+
+        // 🔥 ADDICTED.FUN STYLE МЕХАНИКИ
+        
+        // 💾 СОХРАНЕНИЕ/ЗАГРУЗКА ИЗ LOCALSTORAGE
+        function saveGameState() {
+            if (!wallet) return;
+            
+            const walletKey = wallet.publicKey.toString();
+            const gameState = {
+                totalClicks: totalClicks,
+                clickCount: clickCount,
+                autoClickers: autoClickers,
+                lastLoginTime: Date.now()
+            };
+            
+            localStorage.setItem(`gameState_${walletKey}`, JSON.stringify(gameState));
+        }
+        
+        function loadGameState() {
+            if (!wallet) return;
+            
+            const walletKey = wallet.publicKey.toString();
+            const saved = localStorage.getItem(`gameState_${walletKey}`);
+            
+            if (saved) {
+                const gameState = JSON.parse(saved);
+                totalClicks = gameState.totalClicks || 0;
+                clickCount = gameState.clickCount || 0;
+                autoClickers = gameState.autoClickers || 0;
+                lastLoginTime = gameState.lastLoginTime || Date.now();
+                
+                console.log('✅ Загружено состояние игры:', gameState);
+                
+                // Запускаем авто-кликеры если они есть
+                if (autoClickers > 0 && !autoClickInterval) {
+                    startAutoClicks();
+                }
+            }
+        }
+        
+        // 💰 OFFLINE REWARDS
+        function calculateOfflineRewards() {
+            if (!wallet || autoClickers === 0) return 0;
+            
+            const now = Date.now();
+            const timePassed = (now - lastLoginTime) / 1000; // секунды
+            
+            // Максимум 24 часа накопления
+            const maxSeconds = MAX_OFFLINE_HOURS * 60 * 60;
+            const cappedSeconds = Math.min(timePassed, maxSeconds);
+            
+            // Reward = автокликеры × секунды × кликов за секунду
+            const offlineReward = Math.floor(autoClickers * cappedSeconds * CLICKS_PER_SECOND);
+            
+            return offlineReward;
+        }
+        
+        function claimOfflineRewards() {
+            const reward = calculateOfflineRewards();
+            
+            if (reward > 0) {
+                totalClicks += reward;
+                
+                const hours = Math.floor((Date.now() - lastLoginTime) / (1000 * 60 * 60));
+                const minutes = Math.floor(((Date.now() - lastLoginTime) / (1000 * 60)) % 60);
+                
+                let timeText = '';
+                if (hours > 0) {
+                    timeText = `${hours}ч ${minutes}м`;
+                } else {
+                    timeText = `${minutes}м`;
+                }
+                
+                showNotification(`💰 Offline награда: +${reward.toLocaleString()} кликов за ${timeText}!`);
+                console.log(`💰 Offline rewards: ${reward} кликов за ${timeText}`);
+                
+                // Обновляем время
+                lastLoginTime = Date.now();
+                saveGameState();
+            }
+        }
+        
+        async function payEntryFee() {
+            if (!wallet) {
+                showNotification('❌ Сначала подключи кошелек!');
+                return;
+            }
+            
+            // Проверяем localStorage для этого wallet
+            const walletKey = wallet.publicKey.toString();
+            const savedEntryFee = localStorage.getItem(`entryFeePaid_${walletKey}`);
+            
+            // Защита от двойной оплаты
+            if (entryFeePaid || savedEntryFee === 'true') {
+                entryFeePaid = true;
+                showNotification('✅ Вход уже оплачен! Создаю питомца...');
+                createPet();
+                return;
+            }
+            
+            // Блокируем кнопку
+            const btn = document.getElementById('payEntryBtn');
+            if (btn) btn.disabled = true;
+            
+            try {
+                showNotification('💎 Обрабатываю платеж...');
+                
+                // Отправляем 0.1 SOL в Team Treasury
+                const treasuryPubkey = new window.solanaWeb3.PublicKey(TEAM_WALLET);
+                const transaction = new window.solanaWeb3.Transaction().add(
+                    window.solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: wallet.publicKey,
+                        toPubkey: treasuryPubkey,
+                        lamports: 0.1 * window.solanaWeb3.LAMPORTS_PER_SOL
+                    })
+                );
+                
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+                
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                await connection.confirmTransaction(signature);
+                
+                // Даем 1000 TAMA токенов и сохраняем статус
+                entryFeePaid = true;
+                const walletKey = wallet.publicKey.toString();
+                localStorage.setItem(`entryFeePaid_${walletKey}`, 'true');
+                localStorage.setItem(`entryFeeTimestamp_${walletKey}`, Date.now().toString());
+                
+                showNotification('✅ Вход оплачен! Создаю питомца...');
+                
+                // Переходим к созданию питомца
+                createPet();
+                
+            } catch (err) {
+                console.error('Ошибка оплаты:', err);
+                
+                // Если транзакция уже обработана - это успех!
+                if (err.message && err.message.includes('already been processed')) {
+                    console.log('✅ Транзакция уже обработана - оплата прошла!');
+                    entryFeePaid = true;
+                    const walletKey = wallet.publicKey.toString();
+                    localStorage.setItem(`entryFeePaid_${walletKey}`, 'true');
+                    localStorage.setItem(`entryFeeTimestamp_${walletKey}`, Date.now().toString());
+                    showNotification('✅ Вход оплачен! Создаю питомца...');
+                    createPet();
+                } else if (err.message && err.message.includes('insufficient lamports')) {
+                    // Недостаточно SOL
+                    showNotification('❌ Недостаточно SOL! Получи Devnet SOL: faucet.solana.com');
+                    const btn = document.getElementById('payEntryBtn');
+                    if (btn) btn.disabled = false;
+                } else {
+                    // Разблокируем кнопку при реальной ошибке
+                    const btn = document.getElementById('payEntryBtn');
+                    if (btn) btn.disabled = false;
+                    showNotification('❌ Ошибка оплаты: ' + err.message);
+                }
+            }
+        }
+        
+        // ❌ УБРАЛИ ОБЫЧНЫЕ КЛИКИ - ТОЛЬКО АВТОКЛИКЕР!
+        
+        // 🤖 OFFLINE REWARDS
+        function calculateOfflineReward() {
+            if (autoClickers === 0) return 0;
+            
+            const now = Date.now();
+            const timeOffline = (now - lastLoginTime) / 1000; // секунды
+            const maxOfflineSeconds = MAX_OFFLINE_HOURS * 3600; // 24 часа в секундах
+            const cappedTime = Math.min(timeOffline, maxOfflineSeconds);
+            
+            return Math.floor(cappedTime * autoClickers); // 1 TAMA/сек за каждый авто-кликер
+        }
+        
+        function claimOfflineRewards() {
+            const reward = calculateOfflineReward();
+            if (reward > 0) {
+                totalClicks += reward;
+                lastLoginTime = Date.now();
+                updateClickStats();
+                showNotification(`💰 Получено ${reward} TAMA за offline время!`);
+                addToHistory(`💰 Offline: +${reward} TAMA`);
+            }
+        }
+        
+        function getTamaPerClick() {
+            const baseExp = 1;
+            const levelBonus = realPetData.level * 0.5;
+            const autoClickerBonus = autoClickers * 0.1;
+            return Math.floor(baseExp + levelBonus + autoClickerBonus);
+        }
+        
+        async function buyAutoClicker() {
+            // Проверка лимита
+            if (autoClickers >= MAX_AUTO_CLICKERS) {
+                showNotification(`❌ Максимум ${MAX_AUTO_CLICKERS} авто-кликеров достигнут!`);
+                return;
+            }
+            
+            const cost = getAutoClickerCost();
+            const tokenBalance = await getTokenBalance();
+            
+            if (tokenBalance < cost) {
+                showNotification(`❌ Недостаточно TAMA! Нужно: ${cost}`);
+                return;
+            }
+            
+            // Сжигаем токены (имитация)
+            // burnTokens(cost);
+            
+            // Добавляем авто-кликер
+            autoClickers++;
+            
+            // Запускаем авто-клики если еще не запущены
+            if (!autoClickInterval) {
+                startAutoClicks();
+            }
+            
+            // Обновляем UI
+            updateClickStats();
+            
+            // 💾 Сохраняем состояние
+            saveGameState();
+            
+            showNotification(`🤖 Авто-кликер #${autoClickers} куплен! Генерирует ${autoClickers} TAMA/сек`);
+            
+            const remaining = MAX_AUTO_CLICKERS - autoClickers;
+            const nextCost = getAutoClickerCost();
+            
+            if (remaining > 0) {
+                showNotification(`✅ Купил авто-кликер! Теперь: ${autoClickers}/${MAX_AUTO_CLICKERS}\n💰 Следующий: ${nextCost} TAMA`);
+            } else {
+                showNotification(`✅ Купил последний авто-кликер! Всего: ${autoClickers}/${MAX_AUTO_CLICKERS}`);
+            }
+            
+            addToHistory(`🤖 Купил авто-кликер #${autoClickers} за ${cost} TAMA`);
+        }
+        
+        function getAutoClickerCost() {
+            return Math.floor(100 * Math.pow(1.5, autoClickers));
+        }
+        
+        function startAutoClicks() {
+            autoClickInterval = setInterval(() => {
+                if (realPetData && realPetData.isAlive && autoClickers > 0) {
+                    // Генерируем TAMA каждую секунду
+                    const tamaGain = autoClickers; // 1 TAMA за каждый авто-кликер
+                    totalClicks += autoClickers;
+                    
+                    // Обновляем UI
+                    updateClickStats();
+                    
+                    // Добавляем в историю каждые 100 TAMA
+                    if (totalClicks % 100 === 0) {
+                        addToHistory(`🤖 Авто-кликеры: +${tamaGain} TAMA/сек`);
+                    }
+                }
+            }, 1000); // Каждую секунду
+        }
+        
+        function updateClickStats() {
+            if (!realPetData) return;
+            
+            // Обновляем авто-кликеры
+            document.getElementById('autoClickerCount').textContent = `${autoClickers}/${MAX_AUTO_CLICKERS}`;
+            document.getElementById('tamaPerSec').textContent = autoClickers; // TAMA/сек
+            
+            // Offline rewards
+            const offlineReward = calculateOfflineReward();
+            document.getElementById('offlineReward').textContent = offlineReward.toLocaleString();
+            
+            // Время до следующего claim
+            const timeToClaim = Math.max(0, 60 - (Date.now() - lastLoginTime) / 1000);
+            document.getElementById('timeToClaim').textContent = Math.floor(timeToClaim) + 'с';
+            
+            // Обновляем стоимость и кнопку
+            const costEl = document.getElementById('autoClickerCost');
+            const btn = document.getElementById('autoClickerBtn');
+            
+            if (autoClickers >= MAX_AUTO_CLICKERS) {
+                costEl.textContent = 'МАКС';
+                if (btn) btn.disabled = true;
+                document.getElementById('autoClickerProgress').style.display = 'none';
+            } else {
+                const cost = getAutoClickerCost();
+                costEl.textContent = cost + ' TAMA';
+                if (btn) btn.disabled = false;
+                
+                // Показываем прогресс-бар
+                const progressDiv = document.getElementById('autoClickerProgress');
+                const tamaToNextEl = document.getElementById('tamaToNext');
+                const progressBar = document.getElementById('autoClickerProgressBar');
+                
+                if (progressDiv && tamaToNextEl && progressBar) {
+                    progressDiv.style.display = 'block';
+                    
+                    const currentTama = clickCount; // Используем клики как TAMA
+                    const needed = cost - currentTama;
+                    tamaToNextEl.textContent = needed > 0 ? needed.toLocaleString() : '0';
+                    
+                    const progress = Math.min((currentTama / cost) * 100, 100);
+                    progressBar.style.width = progress + '%';
+                }
+            }
+        }
+        
+        function checkLevelUp() {
+            const expToNext = getExpToNextLevel(realPetData.level);
+            if (realPetData.experience >= expToNext) {
+                realPetData.level++;
+                realPetData.experience -= expToNext;
+                showNotification(`🎉 Уровень ${realPetData.level}! Больше TAMA за клик!`);
+                addToHistory(`🎉 Повысил уровень до ${realPetData.level}`);
+                updateDisplay(realPetData);
+            }
+        }
+        
+        function playClickSound() {
+            // Простой звук через Web Audio API
+            try {
+                const audioContext = new AudioContext();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                // Игнорируем ошибки звука
+            }
+        }
+        
+        function petClick() {
+            // Старая функция для совместимости
+            clickPet();
+        }
+        
+        // 💰 REFERRAL SYSTEM FUNCTIONS
+        
+        function toggleReferral() {
+            const panel = document.getElementById('referralPanel');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                // Скрываем другие панели
+                document.getElementById('historyPanel').style.display = 'none';
+                document.getElementById('statsPanel').style.display = 'none';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+        
+        function generateReferralCode() {
+            if (!wallet || !wallet.publicKey) return '';
+            // Используем первые 8 символов wallet address как referral code
+            const address = wallet.publicKey.toString();
+            return address.slice(0, 8);
+        }
+        
+        function updateReferralLink() {
+            if (!wallet) return;
+            
+            referralCode = generateReferralCode();
+            const baseUrl = window.location.origin + window.location.pathname;
+            const referralLink = `${baseUrl}?ref=${referralCode}`;
+            
+            document.getElementById('referralLink').value = referralLink;
+            
+            // Обновляем статистику (для демо)
+            document.getElementById('referralCount').textContent = totalReferrals;
+            document.getElementById('referralEarnings').textContent = (referralEarnings / 1000000000).toFixed(2) + ' SOL';
+        }
+        
+        function copyReferralLink() {
+            const input = document.getElementById('referralLink');
+            input.select();
+            document.execCommand('copy');
+            showNotification('✅ Ссылка скопирована!');
+        }
+        
+        async function shareReferral() {
+            const referralLink = document.getElementById('referralLink').value;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: '🐣 Crypto Tamagotchi',
+                        text: '🎁 Получи 100 TAMA бонус! Присоединяйся к игре:',
+                        url: referralLink
+                    });
+                    showNotification('✅ Поделился!');
+                } catch (err) {
+                    copyReferralLink();
+                }
+            } else {
+                // Fallback для десктопа
+                const text = `🎁 Получи 100 TAMA бонус!\n\n🐣 Crypto Tamagotchi - играй и зарабатывай!\n\n${referralLink}`;
+                
+                // Копируем в буфер обмена
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('✅ Текст скопирован! Поделись с друзьями!');
+                });
+            }
+        }
+        
+        function checkReferralCode() {
+            // Проверяем URL на наличие referral code
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            
+            if (ref) {
+                referredBy = ref;
+                console.log('🎁 Реферальный код:', ref);
+                showNotification('🎁 Бонус за реферала активирован!');
+                
+                // Сохраняем в localStorage
+                localStorage.setItem('referredBy', ref);
+            } else {
+                // Проверяем сохраненный код
+                const savedRef = localStorage.getItem('referredBy');
+                if (savedRef) {
+                    referredBy = savedRef;
+                }
+            }
+        }
+        
+        async function processReferralReward() {
+            if (!referredBy || entryFeePaid) return;
+            
+            // TODO: Отправить 10% от Entry Fee рефереру
+            // TODO: Дать 100 TAMA бонус новому игроку
+            
+            console.log('💰 Реферальная награда обработана для:', referredBy);
+            showNotification('🎁 Получил 100 TAMA бонус за реферала!');
+        }
+
+        function disableButtons() {
+            document.getElementById('feedBtn').disabled = true;
+            document.getElementById('playBtn').disabled = true;
+            document.getElementById('healBtn').disabled = true;
+            document.getElementById('restBtn').disabled = true;
+        }
+
+        function enableButtons() {
+            if (realPetData && realPetData.isAlive) {
+                document.getElementById('feedBtn').disabled = false;
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('healBtn').disabled = false;
+                document.getElementById('restBtn').disabled = false;
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerHTML = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================================
+        // ИСТОРИЯ И СТАТИСТИКА
+        // ============================================================================
+
+        function toggleHistory() {
+            const panel = document.getElementById('historyPanel');
+            panel.classList.toggle('show');
+        }
+
+        function toggleStats() {
+            const panel = document.getElementById('statsPanel');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        function addToHistory(action) {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            
+            actionHistory.unshift({ action, time: timeStr });
+            if (actionHistory.length > 5) {
+                actionHistory.pop();
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const listEl = document.getElementById('historyList');
+            
+            if (actionHistory.length === 0) {
+                listEl.innerHTML = `<div style="text-align: center; color: #999; font-size: 0.85em; padding: 20px;">
+                    Пока нет действий
+                </div>`;
+                return;
+            }
+            
+            let html = '';
+            actionHistory.forEach(item => {
+                html += `<div class="history-item">
+                    <span class="history-action">${item.action}</span>
+                    <span class="history-time">${item.time}</span>
+                </div>`;
+            });
+            
+            listEl.innerHTML = html;
+        }
+
+        // ============================================================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================================================
+
+        window.addEventListener('load', async () => {
+            await init();
+            
+            // Проверяем реферальный код
+            checkReferralCode();
+            
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const resp = await window.solana.connect({ onlyIfTrusted: true });
+                    wallet = window.solana;
+                    
+                    const address = resp.publicKey.toString();
+                    const short = address.slice(0, 4) + '...' + address.slice(-4);
+                    
+                    document.getElementById('connectBtn').textContent = short;
+                    document.getElementById('walletAddress').textContent = '✅ Подключен: ' + short;
+                    document.getElementById('walletAddress').style.display = 'block';
+                    
+                    // Обновляем реферальную ссылку
+                    updateReferralLink();
+                    
+                    // Проверяем сохраненный статус Entry Fee
+                    checkSavedEntryFee();
+                    
+                    await checkExistingPet();
+                } catch (err) {
+                    console.log('Автоподключение не удалось');
+                }
+            }
+        });
+
+        // 👑 АДМИН ФУНКЦИИ
+        function checkAdminAccess() {
+            if (wallet && wallet.publicKey && ADMIN_WALLETS.includes(wallet.publicKey.toString())) {
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminPrices();
+            }
+        }
+
+        function loadAdminPrices() {
+            document.getElementById('nftSolPrice').value = PRICES.NFT_SOL;
+            document.getElementById('feedTamaPrice').value = PRICES.FEED_TAMA;
+            document.getElementById('playTamaPrice').value = PRICES.PLAY_TAMA;
+            document.getElementById('healTamaPrice').value = PRICES.HEAL_TAMA;
+        }
+
+        function updatePrice(priceType) {
+            let newPrice;
+            switch(priceType) {
+                case 'NFT_SOL':
+                    newPrice = parseFloat(document.getElementById('nftSolPrice').value);
+                    PRICES.NFT_SOL = newPrice;
+                    document.getElementById('nftPrice').textContent = newPrice;
+                    break;
+                case 'FEED_TAMA':
+                    newPrice = parseInt(document.getElementById('feedTamaPrice').value);
+                    PRICES.FEED_TAMA = newPrice;
+                    break;
+                case 'PLAY_TAMA':
+                    newPrice = parseInt(document.getElementById('playTamaPrice').value);
+                    PRICES.PLAY_TAMA = newPrice;
+                    break;
+                case 'HEAL_TAMA':
+                    newPrice = parseInt(document.getElementById('healTamaPrice').value);
+                    PRICES.HEAL_TAMA = newPrice;
+                    break;
+            }
+            showNotification(`💰 Цена ${priceType} обновлена: ${newPrice}`);
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Проверяем админ доступ при подключении кошелька
+        const originalConnectWallet = window.connectWallet;
+        window.connectWallet = async function() {
+            const result = await originalConnectWallet();
+            setTimeout(checkAdminAccess, 1000);
+            return result;
+        };
+    </script>
+
+    <!-- 👑 АДМИН ПАНЕЛЬ (показывается только админам) -->
+    <div id="adminPanel" style="display: none; position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 10px; border: 2px solid #FFD700; z-index: 1000; max-width: 300px;">
+        <h3 style="color: #FFD700; margin-bottom: 15px;">👑 Админ панель</h3>
+        
+        <div style="margin-bottom: 10px;">
+            <label>💰 NFT за SOL:</label>
+            <input type="number" id="nftSolPrice" step="0.001" style="width: 80px; margin-left: 10px; padding: 5px; border-radius: 5px; border: none;">
+            <button onclick="updatePrice('NFT_SOL')" style="margin-left: 5px; padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">✓</button>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+            <label>🍖 Кормление TAMA:</label>
+            <input type="number" id="feedTamaPrice" step="1" style="width: 60px; margin-left: 10px; padding: 5px; border-radius: 5px; border: none;">
+            <button onclick="updatePrice('FEED_TAMA')" style="margin-left: 5px; padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">✓</button>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+            <label>🎮 Игра TAMA:</label>
+            <input type="number" id="playTamaPrice" step="1" style="width: 60px; margin-left: 10px; padding: 5px; border-radius: 5px; border: none;">
+            <button onclick="updatePrice('PLAY_TAMA')" style="margin-left: 5px; padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">✓</button>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>💊 Лечение TAMA:</label>
+            <input type="number" id="healTamaPrice" step="1" style="width: 60px; margin-left: 10px; padding: 5px; border-radius: 5px; border: none;">
+            <button onclick="updatePrice('HEAL_TAMA')" style="margin-left: 5px; padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">✓</button>
+        </div>
+        
+        <button onclick="closeAdminPanel()" style="width: 100%; padding: 10px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">❌ Закрыть</button>
+    </div>
+
+    <!-- 💬 CHAT WIDGET -->
+    <div id="chatWidget" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <button id="chatToggle" onclick="toggleChat()" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 3px solid rgba(255,255,255,0.3); cursor: pointer; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4); transition: all 0.3s;">
+            <span style="font-size: 28px;">💬</span>
+        </button>
+        
+        <div id="chatPopup" style="display: none; position: absolute; bottom: 80px; right: 0; width: 350px; height: 500px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); overflow: hidden; border: 2px solid rgba(102, 126, 234, 0.3);">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                <span>🐣 Gotchi Chat</span>
+                <button onclick="toggleChat()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
+            </div>
+            <div id="chatMessages" style="height: 380px; overflow-y: auto; padding: 15px; background: rgba(255,255,255,0.5);">
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <p>🎮 Welcome to Gotchi Game chat!</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Connect wallet to start chatting!</p>
+                </div>
+            </div>
+            <div style="padding: 10px; background: rgba(255,255,255,0.8); border-top: 1px solid rgba(0,0,0,0.1);">
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="chatInput" placeholder="Type message..." style="flex: 1; padding: 10px; border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 20px; outline: none;" onkeypress="if(event.key==='Enter') sendChatMessage()">
+                    <button onclick="sendChatMessage()" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🚰 DEVNET FAUCET BUTTON -->
+    <button id="faucetBtn" onclick="requestDevnetAirdrop()" style="display: none; position: fixed; top: 80px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #00D4AA 0%, #00A8CC 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3); z-index: 999;">
+        🚰 Get Devnet SOL
+    </button>
+
+    <!-- 💰 TAMA TOKEN FAUCET BUTTON -->
+    <button id="tamaFaucetBtn" onclick="requestTamaTokens()" style="display: none; position: fixed; top: 140px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); z-index: 999;">
+        💰 Get Free TAMA
+    </button>
+
+    <!-- 🐛 BUG REPORT BUTTON -->
+    <button onclick="window.open('BUG_REPORT_FORM.html', '_blank')" style="display: block; position: fixed; top: 200px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); z-index: 999;">
+        🐛 Report Bug
+    </button>
+
+    <!-- 🧪 DEVNET WARNING MODAL -->
+    <div id="devnetModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 20px; padding: 40px; max-width: 600px; margin: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+            <h2 style="color: #667eea; margin-bottom: 20px; text-align: center;">🧪 Welcome to Gotchi Game BETA!</h2>
+            
+            <div style="background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 10px;">⚠️ This is TEST version (Devnet)</h3>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li>✅ Free to play (Devnet SOL)</li>
+                    <li>✅ Test all features</li>
+                    <li>✅ Find bugs → Get rewards!</li>
+                    <li>⚠️ NFTs are NOT real (Devnet only)</li>
+                    <li>🎁 Beta testers get bonuses at Mainnet launch!</li>
+                </ul>
+            </div>
+            
+            <div style="background: #f0f0f0; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 10px;">📝 How to start:</h3>
+                <ol style="margin-left: 20px; line-height: 1.8;">
+                    <li>Connect Phantom wallet</li>
+                    <li>Switch to Devnet in wallet settings</li>
+                    <li>Click "Get Devnet SOL" button (top right)</li>
+                    <li>Create your Gotchi!</li>
+                    <li>Play & give feedback!</li>
+                </ol>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); padding: 15px; border-radius: 10px; color: white; text-align: center; margin-bottom: 20px;">
+                <p style="font-weight: bold; font-size: 1.1em;">💎 Mainnet launch with REAL NFTs coming soon!</p>
+                <p style="margin-top: 5px;">All beta testers will receive exclusive rewards!</p>
+            </div>
+            
+            <button onclick="closeDevnetModal()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1em; font-weight: bold;">
+                🚀 Start Testing!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 💬 CHAT FUNCTIONS
+        let chatMessages = [];
+        let currentUser = null;
+
+        function toggleChat() {
+            const popup = document.getElementById('chatPopup');
+            const isVisible = popup.style.display !== 'none';
+            popup.style.display = isVisible ? 'none' : 'block';
+            
+            if (!isVisible && window.solana && window.solana.publicKey) {
+                if (!currentUser) {
+                    currentUser = window.solana.publicKey.toString().slice(0, 4) + '...' + window.solana.publicKey.toString().slice(-4);
+                }
+                loadChatMessages();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            if (!window.solana || !window.solana.publicKey) {
+                showNotification('⚠️ Connect wallet to chat!');
+                return;
+            }
+            
+            const chatMessage = {
+                user: currentUser || 'Anonymous',
+                message: message,
+                timestamp: Date.now(),
+                wallet: window.solana.publicKey.toString()
+            };
+            
+            // Save to localStorage (simple solution)
+            chatMessages.push(chatMessage);
+            if (chatMessages.length > 100) chatMessages.shift(); // Keep last 100
+            localStorage.setItem('gotchiChat', JSON.stringify(chatMessages));
+            
+            displayChatMessage(chatMessage);
+            input.value = '';
+        }
+
+        function displayChatMessage(msg) {
+            const container = document.getElementById('chatMessages');
+            const isOwnMessage = window.solana && msg.wallet === window.solana.publicKey.toString();
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                margin-bottom: 10px;
+                padding: 10px;
+                background: ${isOwnMessage ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'rgba(255,255,255,0.8)'};
+                color: ${isOwnMessage ? 'white' : '#333'};
+                border-radius: 10px;
+                border: 2px solid ${isOwnMessage ? 'rgba(255,255,255,0.3)' : 'rgba(102, 126, 234, 0.2)'};
+            `;
+            
+            const time = new Date(msg.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            messageDiv.innerHTML = `
+                <div style="font-weight: bold; font-size: 0.85em; margin-bottom: 5px;">
+                    ${msg.user} <span style="opacity: 0.7; font-weight: normal;">${time}</span>
+                </div>
+                <div>${msg.message}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function loadChatMessages() {
+            const stored = localStorage.getItem('gotchiChat');
+            if (stored) {
+                chatMessages = JSON.parse(stored);
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = '';
+                chatMessages.forEach(msg => displayChatMessage(msg));
+            }
+        }
+
+        // 🚰 DEVNET FAUCET
+        // 💰 TAMA Token Faucet
+        async function requestTamaTokens() {
+            if (!window.solana || !window.solana.publicKey) {
+                showNotification('⚠️ Connect wallet first!');
+                return;
+            }
+            
+            const walletAddress = window.solana.publicKey.toString();
+            
+            // Show modal with instructions
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; display: flex; justify-content: center; align-items: center; padding: 20px;';
+            modal.innerHTML = `
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 30px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); color: white;">
+                    <h2 style="margin-bottom: 20px; text-align: center;">💰 Get Free TAMA Tokens</h2>
+                    
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px;"><strong>Your Wallet:</strong></p>
+                        <p style="font-size: 0.85em; word-break: break-all; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px;">${walletAddress}</p>
+                    </div>
+                    
+                    <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px;">📝 <strong>How to get TAMA:</strong></p>
+                        <ol style="margin-left: 20px; line-height: 1.8; font-size: 0.9em;">
+                            <li>Copy your wallet address above</li>
+                            <li>Click "Request Tokens" below</li>
+                            <li>You'll receive <strong>1000 TAMA</strong> tokens!</li>
+                            <li>Wait 10 seconds for confirmation</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="background: rgba(76, 175, 80, 0.1); padding: 12px; border-radius: 10px; margin-bottom: 20px;">
+                        <p style="font-size: 0.9em; text-align: center;">
+                            ⚡ Faucet limit: <strong>1000 TAMA</strong> per request<br>
+                            ⏰ Cooldown: <strong>5 minutes</strong>
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="this.closest('div[style*=fixed]').remove()" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer;">
+                            Cancel
+                        </button>
+                        <button onclick="sendTamaAirdrop('${walletAddress}'); this.closest('div[style*=fixed]').remove();" style="flex: 2; padding: 12px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);">
+                            💰 Request 1000 TAMA
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Send TAMA tokens via airdrop script
+        async function sendTamaAirdrop(walletAddress) {
+            try {
+                showNotification('💰 Requesting TAMA tokens...');
+                
+                // Call airdrop script or backend API
+                // For now, show instructions
+                const lastAirdrop = localStorage.getItem('lastTamaAirdrop_' + walletAddress);
+                const now = Date.now();
+                
+                if (lastAirdrop && (now - parseInt(lastAirdrop)) < 5 * 60 * 1000) {
+                    const remainingTime = Math.ceil((5 * 60 * 1000 - (now - parseInt(lastAirdrop))) / 60000);
+                    showNotification(`⏰ Cooldown active! Wait ${remainingTime} more minutes.`);
+                    return;
+                }
+                
+                // Save airdrop time
+                localStorage.setItem('lastTamaAirdrop_' + walletAddress, now.toString());
+                
+                // Show success message with instructions
+                showNotification('✅ TAMA request sent! Check wallet in 10 seconds...');
+                
+                // Simulate airdrop (in production, call backend API)
+                setTimeout(() => {
+                    showNotification('⚠️ TAMA Faucet coming soon! For now, actions are FREE (no TAMA needed)');
+                    updateTamaBalance();
+                }, 3000);
+                
+            } catch (err) {
+                console.error('TAMA Airdrop error:', err);
+                showNotification('❌ Error requesting TAMA. Try again later.');
+            }
+        }
+
+        async function requestDevnetAirdrop() {
+            if (!window.solana || !window.solana.publicKey) {
+                showNotification('⚠️ Connect wallet first!');
+                return;
+            }
+            
+            try {
+                showNotification('🚰 Requesting 2 Devnet SOL...');
+                
+                const signature = await connection.requestAirdrop(
+                    window.solana.publicKey,
+                    2 * window.solanaWeb3.LAMPORTS_PER_SOL
+                );
+                
+                await connection.confirmTransaction(signature);
+                showNotification('✅ Received 2 Devnet SOL!');
+                
+                // Update balance
+                setTimeout(updateBalance, 1000);
+            } catch (err) {
+                console.error('Airdrop error:', err);
+                showNotification('⚠️ Airdrop failed! Use: https://faucet.solana.com');
+                window.open('https://faucet.solana.com', '_blank');
+            }
+        }
+
+        // 🧪 DEVNET MODAL
+        function showDevnetModal() {
+            document.getElementById('devnetModal').style.display = 'flex';
+        }
+
+        function closeDevnetModal() {
+            document.getElementById('devnetModal').style.display = 'none';
+            localStorage.setItem('devnetModalShown', 'true');
+        }
+
+        // Show modal on first visit
+        window.addEventListener('load', () => {
+            const shown = localStorage.getItem('devnetModalShown');
+            if (!shown) {
+                setTimeout(showDevnetModal, 1000);
+            }
+            
+            // Show faucet buttons
+            document.getElementById('faucetBtn').style.display = 'block';
+            document.getElementById('tamaFaucetBtn').style.display = 'block';
+        });
+
+        // 📊 BETA TESTER TRACKING
+        function trackBetaTester(action) {
+            if (!window.solana || !window.solana.publicKey) return;
+            
+            const wallet = window.solana.publicKey.toString();
+            let testerData = JSON.parse(localStorage.getItem('betaTester') || '{}');
+            
+            if (!testerData.wallet) {
+                testerData = {
+                    wallet: wallet,
+                    joinedAt: Date.now(),
+                    actions: [],
+                    petsCreated: 0,
+                    daysActive: []
+                };
+            }
+            
+            testerData.actions.push({
+                action: action,
+                timestamp: Date.now()
+            });
+            
+            const today = new Date().toDateString();
+            if (!testerData.daysActive) testerData.daysActive = [];
+            if (!testerData.daysActive.includes(today)) {
+                testerData.daysActive.push(today);
+            }
+            
+            if (action === 'pet_created') {
+                testerData.petsCreated = (testerData.petsCreated || 0) + 1;
+            }
+            
+            localStorage.setItem('betaTester', JSON.stringify(testerData));
+        }
+
+        // Track actions throughout the game
+        const originalCreatePet = window.createPet;
+        if (originalCreatePet) {
+            window.createPet = async function() {
+                const result = await originalCreatePet();
+                trackBetaTester('pet_created');
+                return result;
+            };
+        }
+    </script>
+
+</body>
+</html>
+
+

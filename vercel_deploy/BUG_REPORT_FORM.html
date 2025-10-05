@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐛 Gotchi Game - Bug Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .reward-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .reward-box h3 {
+            margin-bottom: 10px;
+        }
+
+        .reward-box ul {
+            margin-left: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success {
+            display: none;
+            background: linear-gradient(135deg, #00D4AA 0%, #00A8CC 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .required {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐛 Bug Report</h1>
+        <p class="subtitle">Help us make Gotchi Game better!</p>
+
+        <div class="reward-box">
+            <h3>🎁 Earn Rewards!</h3>
+            <ul>
+                <li>🔥 Critical bug: 0.5 SOL + 50k $GOTCHI</li>
+                <li>⚠️ Major bug: 0.2 SOL + 20k $GOTCHI</li>
+                <li>⚡ Minor bug: 0.05 SOL + 5k $GOTCHI</li>
+            </ul>
+        </div>
+
+        <form id="bugForm">
+            <div class="form-group">
+                <label>Your Wallet Address <span class="required">*</span></label>
+                <input type="text" id="wallet" placeholder="e.g., 7Xp...abc" required>
+            </div>
+
+            <div class="form-group">
+                <label>Bug Severity <span class="required">*</span></label>
+                <select id="severity" required>
+                    <option value="">Select severity...</option>
+                    <option value="critical">🔥 Critical (Game breaking)</option>
+                    <option value="major">⚠️ Major (Important feature broken)</option>
+                    <option value="minor">⚡ Minor (Small issue)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Bug Title <span class="required">*</span></label>
+                <input type="text" id="title" placeholder="e.g., Pet not feeding" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description <span class="required">*</span></label>
+                <textarea id="description" placeholder="Describe the bug in detail..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Steps to Reproduce <span class="required">*</span></label>
+                <textarea id="steps" placeholder="1. Click feed button&#10;2. Wait 10 seconds&#10;3. Nothing happens" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Screenshot/Video URL (optional)</label>
+                <input type="url" id="media" placeholder="https://imgur.com/... or drive link">
+            </div>
+
+            <div class="form-group">
+                <label>Browser <span class="required">*</span></label>
+                <select id="browser" required>
+                    <option value="">Select browser...</option>
+                    <option value="chrome">Chrome</option>
+                    <option value="firefox">Firefox</option>
+                    <option value="safari">Safari</option>
+                    <option value="edge">Edge</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <button type="submit">🚀 Submit Bug Report</button>
+        </form>
+
+        <div class="success" id="success">
+            <h2>✅ Thank you!</h2>
+            <p>Your bug report has been received!</p>
+            <p style="margin-top: 10px;">We'll review it and send rewards to your wallet if confirmed!</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('bugForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                wallet: document.getElementById('wallet').value,
+                severity: document.getElementById('severity').value,
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                steps: document.getElementById('steps').value,
+                media: document.getElementById('media').value,
+                browser: document.getElementById('browser').value,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+
+            // Save to localStorage for now
+            const bugs = JSON.parse(localStorage.getItem('bugReports') || '[]');
+            bugs.push(data);
+            localStorage.setItem('bugReports', JSON.stringify(bugs));
+
+            // Log to console for easy export
+            console.log('Bug Report:', data);
+
+            // Show success message
+            document.getElementById('bugForm').style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

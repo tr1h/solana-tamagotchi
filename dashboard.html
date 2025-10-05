@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Crypto Tamagotchi Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-change {
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .stat-change.positive {
+            color: #4ade80;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        .chart-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 40px;
+        }
+
+        .chart-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .chart-placeholder {
+            background: rgba(0, 0, 0, 0.3);
+            height: 300px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            opacity: 0.6;
+        }
+
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .leaderboard-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .leaderboard-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .leaderboard-rank {
+            font-size: 2em;
+            font-weight: bold;
+            min-width: 50px;
+        }
+
+        .leaderboard-rank.gold {
+            color: #ffd700;
+        }
+
+        .leaderboard-rank.silver {
+            color: #c0c0c0;
+        }
+
+        .leaderboard-rank.bronze {
+            color: #cd7f32;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .leaderboard-stats {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .leaderboard-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .activity-feed {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 40px;
+        }
+
+        .activity-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+        }
+
+        .activity-item {
+            padding: 15px;
+            border-left: 3px solid #667eea;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0 10px 10px 0;
+        }
+
+        .activity-time {
+            font-size: 0.8em;
+            opacity: 0.6;
+            margin-bottom: 5px;
+        }
+
+        .activity-text {
+            font-size: 1em;
+        }
+
+        .token-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .token-info h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .token-address {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            background: white;
+            color: #667eea;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .quick-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+            transition: transform 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .live-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Crypto Tamagotchi Dashboard</h1>
+            <p><span class="live-indicator"></span>Мониторинг токена $TAMA в реальном времени</p>
+        </div>
+
+        <div class="token-info">
+            <h2>🪙 Token $TAMA</h2>
+            <div class="token-address" id="tokenAddress">
+                Адрес появится после деплоя в devnet
+            </div>
+            <div class="quick-links">
+                <a href="#" class="quick-link" id="explorerLink">🔍 Explorer</a>
+                <a href="tamagotchi_devnet.html" class="quick-link">🎮 Играть</a>
+                <a href="#" class="quick-link">📈 Chart</a>
+                <a href="#" class="quick-link">💱 Trade</a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-label">Market Cap</div>
+                <div class="stat-value" id="marketCap">$0</div>
+                <div class="stat-change positive" id="mcChange">+0.00%</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Holders</div>
+                <div class="stat-value" id="holders">0</div>
+                <div class="stat-change positive" id="holdersChange">+0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Volume 24h</div>
+                <div class="stat-value" id="volume">$0</div>
+                <div class="stat-change positive" id="volumeChange">+0.00%</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">💵</div>
+                <div class="stat-label">Price</div>
+                <div class="stat-value" id="price">$0.000</div>
+                <div class="stat-change positive" id="priceChange">+0.00%</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🐣</div>
+                <div class="stat-label">Active Players</div>
+                <div class="stat-value" id="activePlayers">0</div>
+                <div class="stat-change positive">В сети</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🎮</div>
+                <div class="stat-label">Pets Created</div>
+                <div class="stat-value" id="petsCreated">0</div>
+                <div class="stat-change positive">Всего</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-label">Transactions</div>
+                <div class="stat-value" id="transactions">0</div>
+                <div class="stat-change positive">За 24ч</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-label">Achievements</div>
+                <div class="stat-value" id="achievements">0</div>
+                <div class="stat-change positive">Разблокировано</div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">📈 Price Chart (24h)</div>
+            <div class="chart-placeholder">
+                График цены появится после запуска токена
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">👥 Holders Growth</div>
+            <div class="chart-placeholder">
+                График роста холдеров появится после запуска токена
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <div class="leaderboard-title">🏆 Топ Игроков</div>
+            
+            <div class="leaderboard-item">
+                <div class="leaderboard-rank gold">🥇</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">Player#1</div>
+                    <div class="leaderboard-stats">Легендарный питомец • Уровень 15</div>
+                </div>
+                <div class="leaderboard-value">15,000 ⭐</div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="leaderboard-rank silver">🥈</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">Player#2</div>
+                    <div class="leaderboard-stats">Взрослый питомец • Уровень 12</div>
+                </div>
+                <div class="leaderboard-value">12,500 ⭐</div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="leaderboard-rank bronze">🥉</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">Player#3</div>
+                    <div class="leaderboard-stats">Взрослый питомец • Уровень 10</div>
+                </div>
+                <div class="leaderboard-value">10,200 ⭐</div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="leaderboard-rank">4</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">Player#4</div>
+                    <div class="leaderboard-stats">Подросток • Уровень 8</div>
+                </div>
+                <div class="leaderboard-value">8,800 ⭐</div>
+            </div>
+
+            <div class="leaderboard-item">
+                <div class="leaderboard-rank">5</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">Player#5</div>
+                    <div class="leaderboard-stats">Подросток • Уровень 7</div>
+                </div>
+                <div class="leaderboard-value">7,500 ⭐</div>
+            </div>
+        </div>
+
+        <div class="activity-feed">
+            <div class="activity-title">📰 Последняя активность</div>
+            
+            <div class="activity-item">
+                <div class="activity-time">2 минуты назад</div>
+                <div class="activity-text">🎉 Player#123 достиг легендарной стадии!</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">5 минут назад</div>
+                <div class="activity-text">🏆 Player#456 разблокировал достижение "Богач"</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">10 минут назад</div>
+                <div class="activity-text">🐣 Новый питомец создан! Всего: 1,234</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">15 минут назад</div>
+                <div class="activity-text">💱 Крупная покупка: 50,000 $TAMA</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">30 минут назад</div>
+                <div class="activity-text">🎮 100+ игроков онлайн!</div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshData()" title="Обновить данные">
+        🔄
+    </button>
+
+    <script>
+        // Конфигурация (встроенная)
+        const config = {
+            tokenMint: '74KGR9mdiiiqVW9QCnFmZz8cyj39ZoCaKexrSxF8fpQD',
+            walletAddress: '3grSgLGKkbd8pR7tzNssXMHn8ctTX7r6TE6uhRToF55h',
+            network: 'devnet'
+        };
+
+        // Загрузка конфигурации devnet
+        async function loadConfig() {
+            try {
+                if (config.tokenMint) {
+                    document.getElementById('tokenAddress').textContent = config.tokenMint;
+                    
+                    const explorerUrl = `https://explorer.solana.com/address/${config.tokenMint}?cluster=devnet`;
+                    document.getElementById('explorerLink').href = explorerUrl;
+                }
+                console.log('✅ Config loaded:', config);
+            } catch (error) {
+                console.log('Config error:', error);
+            }
+        }
+
+        // Обновление данных
+        function refreshData() {
+            console.log('Обновление данных...');
+            
+            // Генерация случайных данных для демонстрации
+            document.getElementById('marketCap').textContent = '$' + (Math.random() * 100000).toFixed(0);
+            document.getElementById('holders').textContent = Math.floor(Math.random() * 1000);
+            document.getElementById('volume').textContent = '$' + (Math.random() * 50000).toFixed(0);
+            document.getElementById('price').textContent = '$' + (Math.random() * 0.01).toFixed(6);
+            document.getElementById('activePlayers').textContent = Math.floor(Math.random() * 100);
+            document.getElementById('petsCreated').textContent = Math.floor(Math.random() * 5000);
+            document.getElementById('transactions').textContent = Math.floor(Math.random() * 10000);
+            document.getElementById('achievements').textContent = Math.floor(Math.random() * 1000);
+            
+            // Анимация кнопки обновления
+            const btn = event.target;
+            btn.style.transform = 'scale(1.1) rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }, 500);
+        }
+
+        // Инициализация
+        window.addEventListener('load', () => {
+            loadConfig();
+            
+            // Автообновление каждые 30 секунд
+            setInterval(() => {
+                loadConfig();
+            }, 30000);
+        });
+    </script>
+</body>
+</html>

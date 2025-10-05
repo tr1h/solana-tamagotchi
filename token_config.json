@@ -1,0 +1,164 @@
+{
+  "token": {
+    "name": "Crypto Tamagotchi",
+    "symbol": "TAMA",
+    "decimals": 9,
+    "totalSupply": 1000000000,
+    "description": "Play-to-Earn Tamagotchi game token on Solana",
+    "image": "https://your-domain.com/tama-logo.png",
+    "website": "https://cryptotamagotchi.io",
+    "twitter": "https://twitter.com/CryptoTamagotchi",
+    "telegram": "https://t.me/CryptoTamagotchi"
+  },
+  "distribution": {
+    "liquidityPool": {
+      "percentage": 40,
+      "amount": 400000000,
+      "platform": "PumpFun",
+      "locked": true,
+      "lockPeriod": "6 months"
+    },
+    "playToEarn": {
+      "percentage": 25,
+      "amount": 250000000,
+      "description": "Rewards for players"
+    },
+    "marketing": {
+      "percentage": 20,
+      "amount": 200000000,
+      "description": "Marketing and development"
+    },
+    "team": {
+      "percentage": 10,
+      "amount": 100000000,
+      "vesting": "6 months",
+      "cliff": "3 months"
+    },
+    "airdrop": {
+      "percentage": 5,
+      "amount": 50000000,
+      "description": "Early adopters airdrop"
+    }
+  },
+  "gameEconomics": {
+    "actions": {
+      "mintPet": {
+        "cost": 10,
+        "reward": "NFT Pet"
+      },
+      "feed": {
+        "cost": 5,
+        "minReward": 2,
+        "maxReward": 4
+      },
+      "play": {
+        "cost": 3,
+        "minReward": 3,
+        "maxReward": 6
+      },
+      "heal": {
+        "cost": 8,
+        "minReward": 1,
+        "maxReward": 2
+      },
+      "rest": {
+        "cost": 2,
+        "minReward": 2,
+        "maxReward": 4
+      }
+    },
+    "evolution": {
+      "stage1": {
+        "name": "Baby",
+        "bonus": 50
+      },
+      "stage2": {
+        "name": "Teen",
+        "bonus": 100
+      },
+      "stage3": {
+        "name": "Adult",
+        "bonus": 150
+      },
+      "stage4": {
+        "name": "Legendary",
+        "bonus": 250
+      }
+    },
+    "dailyRewards": {
+      "maxPerDay": 100,
+      "streakBonus": true
+    }
+  },
+  "tokenomics": {
+    "buyback": {
+      "percentage": 2,
+      "description": "2% of transactions go to token buyback"
+    },
+    "burn": {
+      "percentage": 1,
+      "description": "1% burned on pet creation"
+    },
+    "lottery": {
+      "enabled": true,
+      "frequency": "weekly",
+      "prizePool": "5% of weekly fees"
+    }
+  },
+  "smartContract": {
+    "network": "Solana Mainnet",
+    "programId": "TBD",
+    "tokenMint": "TBD",
+    "features": [
+      "SPL Token",
+      "Metadata",
+      "No Mint Authority",
+      "Renounced Ownership"
+    ]
+  },
+  "pumpfun": {
+    "launchPlatform": "https://pump.fun",
+    "initialLiquidity": 400000000,
+    "bondingCurve": true,
+    "graduationThreshold": "Market cap threshold"
+  },
+  "roadmap": {
+    "phase1": {
+      "name": "MVP",
+      "status": "completed",
+      "features": [
+        "Basic game mechanics",
+        "Evolution system",
+        "Wallet connection"
+      ]
+    },
+    "phase2": {
+      "name": "Token Launch",
+      "status": "in_progress",
+      "features": [
+        "PumpFun launch",
+        "Liquidity addition",
+        "Marketing campaign"
+      ]
+    },
+    "phase3": {
+      "name": "Smart Contracts",
+      "status": "planned",
+      "features": [
+        "On-chain pets",
+        "Staking",
+        "Lottery"
+      ]
+    },
+    "phase4": {
+      "name": "NFT & Marketplace",
+      "status": "planned",
+      "features": [
+        "NFT pets",
+        "Marketplace",
+        "Breeding"
+      ]
+    }
+  }
+}
+

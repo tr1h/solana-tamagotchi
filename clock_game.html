@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕐 Учим Время!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(8px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            max-width: 700px;
+            width: 95%;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .score-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid white;
+        }
+        
+        .score-value {
+            font-size: 1.8em;
+            color: #ffd43b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .clock-container {
+            margin: 30px auto;
+            position: relative;
+        }
+        
+        .clock {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: white;
+            border: 15px solid #333;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+                        inset 0 0 30px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+        
+        .clock-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .number {
+            position: absolute;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        
+        .hour-hand {
+            position: absolute;
+            width: 8px;
+            height: 100px;
+            background: #333;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 4px 4px 0 0;
+            z-index: 3;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .minute-hand {
+            position: absolute;
+            width: 6px;
+            height: 140px;
+            background: #666;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 3px 3px 0 0;
+            z-index: 2;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .question {
+            font-size: 2.5em;
+            margin: 30px 0;
+            font-weight: bold;
+            color: #ffd43b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .answer-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .answer-btn {
+            padding: 25px;
+            font-size: 1.8em;
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            border: 4px solid white;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-family: 'Comic Sans MS', cursive;
+        }
+        
+        .answer-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .answer-btn.correct {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            animation: correctPulse 0.5s;
+        }
+        
+        .answer-btn.wrong {
+            background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+            animation: shake 0.5s;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .feedback {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 60px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .feedback.correct {
+            color: #51cf66;
+            animation: bounce 0.5s;
+        }
+        
+        .feedback.wrong {
+            color: #ff6b6b;
+            animation: shake 0.5s;
+        }
+        
+        .next-btn {
+            padding: 20px 50px;
+            font-size: 2em;
+            background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%);
+            border: 4px solid white;
+            border-radius: 20px;
+            color: #333;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            font-family: 'Comic Sans MS', cursive;
+            margin-top: 20px;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-btn {
+            padding: 15px 30px;
+            font-size: 1.3em;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid white;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        
+        .difficulty-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%);
+            color: #333;
+            transform: scale(1.1);
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd43b;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕐 Учим Время! 🕐</h1>
+        
+        <div class="score-board">
+            <div class="score-item">
+                <div>Правильно</div>
+                <div class="score-value" id="correct">0</div>
+            </div>
+            <div class="score-item">
+                <div>Всего</div>
+                <div class="score-value" id="total">0</div>
+            </div>
+        </div>
+        
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" onclick="setDifficulty('easy')">😊 Легко</button>
+            <button class="difficulty-btn" onclick="setDifficulty('medium')">🤔 Средне</button>
+            <button class="difficulty-btn" onclick="setDifficulty('hard')">🤓 Сложно</button>
+        </div>
+        
+        <div class="question">Какое время показывают часы?</div>
+        
+        <div class="clock-container">
+            <div class="clock" id="clock">
+                <div class="hour-hand" id="hourHand"></div>
+                <div class="minute-hand" id="minuteHand"></div>
+                <div class="clock-center"></div>
+            </div>
+        </div>
+        
+        <div class="answer-buttons" id="answerButtons"></div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <button class="next-btn" id="nextBtn" onclick="nextQuestion()" style="display: none;">
+            Следующий вопрос! 🎯
+        </button>
+    </div>
+
+    <script>
+        let correctAnswer = '';
+        let score = { correct: 0, total: 0 };
+        let difficulty = 'easy';
+        let answered = false;
+        
+        // Расставляем цифры на часах
+        function setupClock() {
+            const clock = document.getElementById('clock');
+            const radius = 180;
+            
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i - 3) * 30 * Math.PI / 180;
+                const x = 200 + radius * Math.cos(angle);
+                const y = 200 + radius * Math.sin(angle);
+                
+                const number = document.createElement('div');
+                number.className = 'number';
+                number.textContent = i;
+                number.style.left = (x - 15) + 'px';
+                number.style.top = (y - 20) + 'px';
+                clock.appendChild(number);
+            }
+        }
+        
+        function setDifficulty(level) {
+            difficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            nextQuestion();
+        }
+        
+        function generateTime() {
+            let hours, minutes;
+            
+            switch(difficulty) {
+                case 'easy':
+                    // Только ровные часы (1:00, 2:00, и т.д.)
+                    hours = Math.floor(Math.random() * 12) + 1;
+                    minutes = 0;
+                    break;
+                case 'medium':
+                    // Часы с получасами (1:00, 1:30, и т.д.)
+                    hours = Math.floor(Math.random() * 12) + 1;
+                    minutes = Math.random() < 0.5 ? 0 : 30;
+                    break;
+                case 'hard':
+                    // Любое время с шагом 5 минут
+                    hours = Math.floor(Math.random() * 12) + 1;
+                    minutes = Math.floor(Math.random() * 12) * 5;
+                    break;
+            }
+            
+            return { hours, minutes };
+        }
+        
+        function formatTime(hours, minutes) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
+        function setClockHands(hours, minutes) {
+            const hourHand = document.getElementById('hourHand');
+            const minuteHand = document.getElementById('minuteHand');
+            
+            const minuteAngle = minutes * 6; // 360 / 60 = 6 градусов на минуту
+            const hourAngle = (hours % 12) * 30 + minutes * 0.5; // 30 градусов на час + 0.5 градуса на минуту
+            
+            hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+            minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+        }
+        
+        function generateAnswers(correctTime) {
+            const answers = [correctTime];
+            const used = new Set([correctTime]);
+            
+            while (answers.length < 4) {
+                const wrongTime = generateTime();
+                const wrongTimeStr = formatTime(wrongTime.hours, wrongTime.minutes);
+                
+                if (!used.has(wrongTimeStr)) {
+                    answers.push(wrongTimeStr);
+                    used.add(wrongTimeStr);
+                }
+            }
+            
+            // Перемешиваем ответы
+            for (let i = answers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [answers[i], answers[j]] = [answers[j], answers[i]];
+            }
+            
+            return answers;
+        }
+        
+        function nextQuestion() {
+            answered = false;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            const time = generateTime();
+            correctAnswer = formatTime(time.hours, time.minutes);
+            
+            setClockHands(time.hours, time.minutes);
+            
+            const answers = generateAnswers(correctAnswer);
+            const buttonsContainer = document.getElementById('answerButtons');
+            buttonsContainer.innerHTML = '';
+            
+            answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer;
+                button.onclick = () => checkAnswer(answer, button);
+                buttonsContainer.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(answer, button) {
+            if (answered) return;
+            
+            answered = true;
+            score.total++;
+            
+            const feedback = document.getElementById('feedback');
+            const allButtons = document.querySelectorAll('.answer-btn');
+            
+            // Отключаем все кнопки
+            allButtons.forEach(btn => btn.style.pointerEvents = 'none');
+            
+            if (answer === correctAnswer) {
+                score.correct++;
+                button.classList.add('correct');
+                feedback.textContent = '🎉 Молодец! Правильно! 🎉';
+                feedback.className = 'feedback correct';
+                createConfetti();
+            } else {
+                button.classList.add('wrong');
+                feedback.textContent = '😔 Неправильно! Попробуй ещё раз!';
+                feedback.className = 'feedback wrong';
+                
+                // Показываем правильный ответ
+                allButtons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        setTimeout(() => {
+                            btn.classList.add('correct');
+                        }, 500);
+                    }
+                });
+            }
+            
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+        
+        function updateScore() {
+            document.getElementById('correct').textContent = score.correct;
+            document.getElementById('total').textContent = score.total;
+        }
+        
+        function createConfetti() {
+            const colors = ['#ffd43b', '#51cf66', '#ff6b6b', '#4dabf7', '#f06595'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+        
+        // Пробел для следующего вопроса
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && answered) {
+                e.preventDefault();
+                nextQuestion();
+            }
+        });
+        
+        // Инициализация
+        setupClock();
+        nextQuestion();
+    </script>
+</body>
+</html>

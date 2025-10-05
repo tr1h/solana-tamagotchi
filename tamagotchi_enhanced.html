@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Tamagotchi 🐣 | Enhanced Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #ffd32a 0%, #ffb142 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: badgeShine 2s infinite;
+        }
+
+        @keyframes badgeShine {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .wallet-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .connect-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .connect-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .wallet-connected {
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .pet-display {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .pet-sprite {
+            font-size: 150px;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+            position: relative;
+        }
+
+        .pet-sprite:hover {
+            transform: scale(1.1);
+        }
+
+        .pet-sprite::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 10px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.2), transparent);
+            border-radius: 50%;
+            animation: shadowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-25px); }
+        }
+
+        @keyframes shadowPulse {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .pet-name {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-top: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .pet-level {
+            font-size: 1.1em;
+            color: #764ba2;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .mood-indicator {
+            margin-top: 10px;
+            font-size: 1.5em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .stat-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 24px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease, background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .stat-bar.health { 
+            background: linear-gradient(90deg, #ff6b6b, #ee5a6f);
+            box-shadow: inset 0 2px 8px rgba(255,255,255,0.3);
+        }
+        .stat-bar.hunger { 
+            background: linear-gradient(90deg, #ffa502, #ff6348);
+            box-shadow: inset 0 2px 8px rgba(255,255,255,0.3);
+        }
+        .stat-bar.happiness { 
+            background: linear-gradient(90deg, #ffd32a, #ffb142);
+            box-shadow: inset 0 2px 8px rgba(255,255,255,0.3);
+        }
+        .stat-bar.energy { 
+            background: linear-gradient(90deg, #48dbfb, #0abde3);
+            box-shadow: inset 0 2px 8px rgba(255,255,255,0.3);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn:active:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .token-cost {
+            font-size: 0.8em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            padding: 8px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .achievements {
+            background: linear-gradient(135deg, #ffd32a 0%, #ffb142 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(255, 211, 42, 0.3);
+        }
+
+        .achievements-title {
+            color: white;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 1.1em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+        }
+
+        .achievement {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .achievement:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .achievement.locked {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+
+        .achievement-icon {
+            font-size: 2em;
+        }
+
+        .achievement-name {
+            font-size: 0.7em;
+            margin-top: 5px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 18px 28px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+            max-width: 350px;
+            border-left: 4px solid #667eea;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .emotion {
+            position: absolute;
+            font-size: 35px;
+            animation: emotionFloat 2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes emotionFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) scale(1.8);
+            }
+        }
+
+        .evolution-notice {
+            background: linear-gradient(135deg, #ffd32a 0%, #ffb142 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(255, 211, 42, 0.5);
+            font-size: 1.1em;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 22px 55px;
+            border-radius: 25px;
+            font-size: 1.4em;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8), transparent);
+            border-radius: 50%;
+            animation: particleFloat 3s infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .combo-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);
+            display: none;
+        }
+
+        .combo-counter.show {
+            display: block;
+            animation: comboPulse 0.5s;
+        }
+
+        @keyframes comboPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="combo-counter" id="comboCounter">🔥 COMBO x0</div>
+
+        <div class="header">
+            <h1>🐣 Crypto Tamagotchi</h1>
+            <div class="badge-container">
+                <div class="badge">✨ Enhanced Edition</div>
+                <div class="badge">🎮 Play-to-Earn</div>
+            </div>
+            <p style="color: #764ba2; margin-top: 12px; font-weight: 500;">
+                Заботься о питомце, получай токены и достижения!
+            </p>
+        </div>
+
+        <div class="wallet-section" id="walletSection">
+            <button class="connect-btn" id="connectWallet" onclick="connectWallet()">
+                🔗 Подключить кошелек
+            </button>
+            <div id="walletInfo" class="wallet-connected" style="display: none;"></div>
+        </div>
+
+        <div id="startScreen" class="start-screen">
+            <div class="pet-display">
+                <div style="font-size: 120px;">🥚</div>
+                <p style="margin-top: 25px; color: #667eea; font-size: 1.3em; font-weight: 600;">
+                    Начни свое приключение!
+                </p>
+            </div>
+            <button class="start-btn" onclick="startGame()">
+                🎮 Завести питомца
+            </button>
+            <p style="text-align: center; margin-top: 18px; color: #666; font-size: 0.95em;">
+                Стоимость: 10 токенов
+            </p>
+        </div>
+
+        <div id="gameScreen" style="display: none;">
+            <div id="evolutionNotice"></div>
+
+            <div class="achievements">
+                <div class="achievements-title">🏆 Достижения</div>
+                <div class="achievements-grid" id="achievementsGrid"></div>
+            </div>
+
+            <div class="pet-display" id="petDisplay">
+                <div class="particles" id="particles"></div>
+                <div class="pet-sprite" id="petSprite" onclick="petClick()">🐣</div>
+                <div class="pet-name" id="petName">Питомец</div>
+                <div class="pet-level" id="petLevel">Уровень 1 • Младенец</div>
+                <div class="mood-indicator" id="moodIndicator">😊</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">❤️ Здоровье</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar health" id="healthBar">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">🍖 Голод</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar hunger" id="hungerBar">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">😊 Счастье</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar happiness" id="happinessBar">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">⚡ Энергия</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar energy" id="energyBar">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="action-btn" onclick="feedPet()">
+                    🍖 Кормить
+                    <div class="token-cost">5 токенов</div>
+                </button>
+                <button class="action-btn" onclick="playWithPet()">
+                    🎮 Играть
+                    <div class="token-cost">3 токена</div>
+                </button>
+                <button class="action-btn" onclick="healPet()">
+                    💊 Лечить
+                    <div class="token-cost">8 токенов</div>
+                </button>
+                <button class="action-btn" onclick="restPet()">
+                    😴 Спать
+                    <div class="token-cost">2 токена</div>
+                </button>
+            </div>
+
+            <div class="info-panel">
+                <div class="info-row">
+                    <span class="info-label">🪙 Баланс токенов:</span>
+                    <span class="info-value" id="tokenBalance">1000</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">⭐ Опыт:</span>
+                    <span class="info-value" id="experience">0 / 100</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">⏰ Возраст:</span>
+                    <span class="info-value" id="age">0 дней</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🎯 Заработано:</span>
+                    <span class="info-value" id="earnedTokens">0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🔥 Серия действий:</span>
+                    <span class="info-value" id="actionStreak">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="tamagotchi_engine.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Tamagotchi 🐣 | Solana Devnet - Full</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .devnet-badge {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .wallet-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .connect-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .connect-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .wallet-connected {
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .pet-display {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pet-sprite {
+            font-size: 120px;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .pet-sprite:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .pet-name {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .pet-level {
+            font-size: 1em;
+            color: #764ba2;
+            margin-top: 5px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .stat-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stat-bar.health { background: linear-gradient(90deg, #ff6b6b, #ee5a6f); }
+        .stat-bar.hunger { background: linear-gradient(90deg, #ffa502, #ff6348); }
+        .stat-bar.happiness { background: linear-gradient(90deg, #ffd32a, #ffb142); }
+        .stat-bar.energy { background: linear-gradient(90deg, #48dbfb, #0abde3); }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .token-cost {
+            font-size: 0.7em;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+
+        .info-panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 25px;
+            font-size: 1.3em;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐣 Crypto Tamagotchi</h1>
+            <div class="devnet-badge">🎮 DEVNET - FULL VERSION</div>
+            <p style="color: #764ba2; margin-top: 10px;">Создавай и играй!</p>
+            <p style="color: #4caf50; margin-top: 5px; font-size: 0.9em;">✨ Все в блокчейне!</p>
+        </div>
+
+        <div class="wallet-section" id="walletSection">
+            <button class="connect-btn" id="connectWalletBtn" onclick="connectWallet()">
+                🔗 Подключить кошелек (Devnet)
+            </button>
+            <div id="walletInfo" class="wallet-connected" style="display: none;">
+                <div id="walletAddress"></div>
+                <div id="solBalance" style="margin-top: 10px; font-size: 0.9em;">SOL: ...</div>
+                <div id="tamaBalance" style="margin-top: 5px; font-size: 0.9em; color: #ffd700;">🪙 TAMA: ...</div>
+                <button class="connect-btn" onclick="requestAirdrop()" style="margin-top: 10px; background: #4caf50;">
+                    💰 Получить Devnet SOL
+                </button>
+                <button class="connect-btn" onclick="disconnectWallet()" style="margin-top: 10px; background: #ff6b6b;">
+                    🔌 Отключить
+                </button>
+            </div>
+        </div>
+
+        <div id="startScreen" class="start-screen" style="text-align: center;">
+            <div class="pet-display">
+                <div style="font-size: 100px;">🥚</div>
+                <p style="margin-top: 20px; color: #667eea; font-size: 1.2em;">
+                    Начни свое приключение!
+                </p>
+            </div>
+            <button class="start-btn" id="createPetBtn" onclick="createPet()" disabled>
+                🎮 Завести питомца
+            </button>
+            <p style="text-align: center; margin-top: 15px; color: #4CAF50; font-size: 0.9em; font-weight: bold;">
+                ✨ Создание БЕСПЛАТНО! Все действия тоже!
+            </p>
+        </div>
+
+        <div id="gameScreen" style="display: none;">
+            <div class="pet-display" id="petDisplay">
+                <div class="pet-sprite" id="petSprite" onclick="petClick()">🐣</div>
+                <div class="pet-name" id="petName">Питомец</div>
+                <div class="pet-level" id="petLevel">Уровень 1</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">❤️ Здоровье</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar health" id="healthBar">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">🍖 Голод</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar hunger" id="hungerBar">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">😊 Счастье</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar happiness" id="happinessBar">100%</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">⚡ Энергия</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar energy" id="energyBar">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Реальное время информация -->
+            <div id="realtimeInfo" style="margin-bottom: 15px; padding: 12px; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-radius: 15px; border: 2px solid #ff9800;">
+                <div style="text-align: center; font-weight: bold; color: #e65100; margin-bottom: 8px; font-size: 0.95em;">
+                    ⏰ Реальное время
+                </div>
+                <div id="decayTimer" style="text-align: center; font-size: 0.9em; color: #f57c00; margin-bottom: 5px;">
+                    Следующий decay через: --
+                </div>
+                <div id="deathPrediction" style="text-align: center; font-size: 0.85em; color: #d84315; display: none;">
+                    💀 Прогноз: --
+                </div>
+                <div id="recommendations" style="margin-top: 8px; display: none;">
+                    <div style="text-align: center; font-size: 0.85em; color: #e65100; font-weight: bold; margin-bottom: 5px;">
+                        💡 Рекомендации:
+                    </div>
+                    <div id="recommendationsList" style="font-size: 0.8em; color: #f57c00;"></div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="action-btn" onclick="feedPet()" id="feedBtn">🍖 Кормить<div class="token-cost">5 TAMA</div></button>
+                <button class="action-btn" onclick="playWithPet()" id="playBtn">🎮 Играть<div class="token-cost">3 TAMA</div></button>
+                <button class="action-btn" onclick="healPet()" id="healBtn">💊 Лечить<div class="token-cost">8 TAMA</div></button>
+                <button class="action-btn" onclick="restPet()" id="restBtn">😴 Отдохнуть<div class="token-cost">2 TAMA</div></button>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button class="action-btn" onclick="manualUpdateDecay()" id="decayBtn" style="width: 100%; background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);">
+                    🔄 Обновить Статы (БЕСПЛАТНО!)
+                </button>
+                <div style="margin-top: 10px; padding: 10px; background: rgba(76,175,80,0.1); border-radius: 10px; font-size: 0.85em; color: #2e7d32;">
+                    ✨ <strong>AUTO DECAY включен!</strong> Статы обновляются автоматически при каждом действии.
+                </div>
+            </div>
+
+            <div class="info-panel" id="petInfoPanel" style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border: 2px solid #667eea;">
+                <div style="text-align: center; font-weight: bold; color: #667eea; margin-bottom: 10px; font-size: 1.1em;">
+                    🐣 Питомец из Blockchain
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🆔 Pet ID:</span>
+                    <span class="info-value" id="petId">#????</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🧬 DNA:</span>
+                    <span class="info-value" id="petDna">...</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">✨ Редкость:</span>
+                    <span class="info-value" id="petRarity">⭐</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">📊 Уровень:</span>
+                    <span class="info-value" id="petLevelInfo">1</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">⭐ Опыт:</span>
+                    <span class="info-value" id="petExp">0</span>
+                </div>
+                <button class="action-btn" onclick="refreshPet()" style="width: 100%; margin-top: 10px;">
+                    🔄 Обновить данные
+                </button>
+                <button class="action-btn" onclick="closePetAccount()" id="closeBtn" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); display: none;">
+                    💀 Закрыть аккаунт (вернуть rent)
+                </button>
+            </div>
+
+            <div id="explorerLink" style="text-align: center; margin-top: 10px;">
+                <a href="#" id="petAccountLink" target="_blank" style="color: #667eea; text-decoration: none; font-size: 0.9em;">
+                    🔍 Смотреть в Explorer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <!-- Solana Web3.js -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+
+    <script>
+        // 🎯 КОНФИГУРАЦИЯ
+        const PROGRAM_ID = 'uY5hZR2uYzkquJDuDkFBj29tfzZRPE96BBTHYGaYnwX';
+        const RPC_URL = 'https://api.devnet.solana.com';
+        const TOKEN_MINT = '74KGR9mdiiiqVW9QCnFmZz8cyj39ZoCaKexrSxF8fpQD'; // TAMA токен
+        const TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+        
+        // Глобальные переменные (инициализируем в самом начале!)
+        var connection = null;
+        var wallet = null;
+        var petPubkey = null;
+        
+        // Реальные данные питомца из blockchain
+        var realPetData = null;
+        var realtimeUpdateInterval = null;
+        
+        // Buffer polyfill для браузера
+        function stringToBytes(str) {
+            return new TextEncoder().encode(str);
+        }
+
+        // Вычислить Anchor discriminator для инструкции
+        async function getInstructionDiscriminator(name) {
+            const preimage = `global:${name}`;
+            const data = new TextEncoder().encode(preimage);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = new Uint8Array(hashBuffer);
+            return hashArray.slice(0, 8);
+        }
+
+        // Получить Associated Token Account
+        async function getAssociatedTokenAddress(mint, owner) {
+            const ASSOCIATED_TOKEN_PROGRAM_ID = new window.solanaWeb3.PublicKey(
+                'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+            );
+            
+            const [address] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                [
+                    owner.toBytes(),
+                    new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID).toBytes(),
+                    mint.toBytes()
+                ],
+                ASSOCIATED_TOKEN_PROGRAM_ID
+            );
+            
+            return address;
+        }
+
+        // Проверить/создать Token Account
+        async function getOrCreateTokenAccount() {
+            if (!wallet) return null;
+            
+            try {
+                const mintPubkey = new window.solanaWeb3.PublicKey(TOKEN_MINT);
+                const ata = await getAssociatedTokenAddress(mintPubkey, wallet.publicKey);
+                
+                // Проверить существует ли
+                const accountInfo = await connection.getAccountInfo(ata);
+                
+                if (!accountInfo) {
+                    showNotification("⚠️ У вас нет TAMA токенов! Нужно получить airdrop.");
+                    return null;
+                }
+                
+                return ata;
+            } catch (err) {
+                console.error('Ошибка token account:', err);
+                return null;
+            }
+        }
+
+        // Получить баланс TAMA токенов
+        async function getTokenBalance() {
+            if (!wallet) return 0;
+            
+            try {
+                const tokenAccount = await getOrCreateTokenAccount();
+                if (!tokenAccount) return 0;
+                
+                const balance = await connection.getTokenAccountBalance(tokenAccount);
+                return balance.value.uiAmount || 0;
+            } catch (err) {
+                console.error('Ошибка получения баланса токенов:', err);
+                return 0;
+            }
+        }
+
+        // Редкости
+        const RARITY_NAMES = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
+        const RARITY_STARS = ['⭐', '⭐⭐', '⭐⭐⭐', '⭐⭐⭐⭐', '⭐⭐⭐⭐⭐'];
+        
+        // Виды питомцев
+        const SPECIES_EMOJI = ['🐣', '🐱', '🐶', '🐉', '🦊', '🐻', '🐰', '🐼', '🦝', '🐹'];
+
+        // Инициализация
+        async function init() {
+            connection = new window.solanaWeb3.Connection(RPC_URL, 'confirmed');
+            console.log('✅ Подключено к Solana Devnet');
+        }
+
+        // Подключение кошелька
+        async function connectWallet() {
+            try {
+                if (!window.solana || !window.solana.isPhantom) {
+                    showNotification("❌ Установите Phantom кошелек!");
+                    window.open('https://phantom.app/', '_blank');
+                    return;
+                }
+
+                const resp = await window.solana.connect();
+                wallet = window.solana;
+                
+                const publicKey = resp.publicKey.toString();
+                
+                document.getElementById('connectWalletBtn').style.display = 'none';
+                document.getElementById('walletInfo').style.display = 'block';
+                document.getElementById('walletAddress').innerHTML = `✅ ${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`;
+                
+                // Обновить баланс
+                await updateBalance();
+                
+                // Включить кнопку создания
+                document.getElementById('createPetBtn').disabled = false;
+                
+                showNotification("✅ Кошелек подключен!");
+                
+                // Проверить есть ли уже питомец
+                await checkExistingPet();
+                
+            } catch (err) {
+                showNotification("❌ Ошибка: " + err.message);
+                console.error(err);
+            }
+        }
+
+        // Отключение кошелька
+        async function disconnectWallet() {
+            try {
+                if (wallet) {
+                    await wallet.disconnect();
+                }
+                wallet = null;
+                petPubkey = null;
+                
+                document.getElementById('connectWalletBtn').style.display = 'block';
+                document.getElementById('walletInfo').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('startScreen').style.display = 'block';
+                document.getElementById('createPetBtn').disabled = true;
+                
+                showNotification("👋 Кошелек отключен!");
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Обновить баланс SOL и TAMA
+        async function updateBalance() {
+            if (!wallet) return;
+            
+            try {
+                // SOL баланс
+                const balance = await connection.getBalance(wallet.publicKey);
+                const solBalance = (balance / window.solanaWeb3.LAMPORTS_PER_SOL).toFixed(4);
+                document.getElementById('solBalance').textContent = `SOL: ${solBalance}`;
+                
+                // TAMA баланс
+                const tamaBalance = await getTokenBalance();
+                document.getElementById('tamaBalance').textContent = `🪙 TAMA: ${tamaBalance.toFixed(2)}`;
+                
+                // Предупреждения
+                if (balance < 10000000) { // < 0.01 SOL
+                    showNotification("⚠️ Низкий баланс SOL!");
+                }
+                
+                if (tamaBalance < 10) {
+                    showNotification(`⚠️ Низкий баланс TAMA! У вас: ${tamaBalance.toFixed(2)}`);
+                }
+            } catch (err) {
+                console.error('Ошибка проверки баланса:', err);
+            }
+        }
+
+        // Запросить airdrop SOL
+        async function requestAirdrop() {
+            if (!wallet) return;
+            
+            try {
+                showNotification("💰 Запрашиваю 1 SOL... <div class='loading'></div>");
+                
+                const signature = await connection.requestAirdrop(
+                    wallet.publicKey,
+                    1 * window.solanaWeb3.LAMPORTS_PER_SOL
+                );
+                
+                showNotification("⏳ Подтверждение airdrop...");
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                showNotification("✅ Получено 1 SOL!");
+                
+                // Обновить баланс
+                await updateBalance();
+                
+            } catch (err) {
+                console.error('Ошибка airdrop:', err);
+                
+                if (err.message.includes('429')) {
+                    showNotification("⚠️ Лимит airdrop! Попробуй через Phantom или https://faucet.solana.com/");
+                } else {
+                    showNotification("❌ Ошибка airdrop: " + err.message);
+                }
+            }
+        }
+
+        // Получить PDA питомца
+        async function getPetPda(walletPubkey) {
+            const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+            const seeds = [
+                stringToBytes("pet"),
+                walletPubkey.toBytes()
+            ];
+            
+            const [pda, bump] = await window.solanaWeb3.PublicKey.findProgramAddress(
+                seeds,
+                programId
+            );
+            
+            return [pda, bump];
+        }
+
+        // Проверить существующего питомца
+        async function checkExistingPet() {
+            try {
+                const [petPda] = await getPetPda(wallet.publicKey);
+                petPubkey = petPda;
+                
+                console.log('🔍 Ищу питомца по адресу:', petPda.toString());
+                
+                const accountInfo = await connection.getAccountInfo(petPda);
+                
+                if (accountInfo && accountInfo.data) {
+                    console.log('✅ Питомец найден!');
+                    const pet = deserializePet(accountInfo.data);
+                    
+                    // Сохраняем реальные данные для расчета виртуальных статов
+                    realPetData = pet;
+                    
+                    document.getElementById('startScreen').style.display = 'none';
+                    document.getElementById('gameScreen').style.display = 'block';
+                    updateDisplay(pet);
+                    
+                    // Добавить ссылку на Explorer
+                    document.getElementById('petAccountLink').href = 
+                        `https://explorer.solana.com/address/${petPda.toString()}?cluster=devnet`;
+                    
+                    // Запускаем реальное время обновлений!
+                    startRealtimeUpdates();
+                    
+                    showNotification("🎉 Ваш питомец найден!");
+                } else {
+                    console.log('ℹ️ Питомец не найден - можно создать!');
+                }
+            } catch (err) {
+                console.error('Ошибка проверки питомца:', err);
+            }
+        }
+
+        // Создать питомца
+        async function createPet() {
+            if (!wallet) {
+                showNotification("❌ Подключите кошелек!");
+                return;
+            }
+
+            try {
+                // Сначала проверим, может уже есть?
+                const [petPda] = await getPetPda(wallet.publicKey);
+                const existingAccount = await connection.getAccountInfo(petPda);
+                
+                if (existingAccount) {
+                    showNotification("ℹ️ Питомец уже существует! Показываю...");
+                    await checkExistingPet();
+                    return;
+                }
+                
+                showNotification("🐣 Создаю питомца... <div class='loading'></div>");
+                document.getElementById('createPetBtn').disabled = true;
+
+                // petPda уже объявлен выше
+                petPubkey = petPda;
+
+                // Создать инструкцию
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                
+                // Вычислить правильный discriminator для create_pet
+                const discriminator = await getInstructionDiscriminator('create_pet');
+                console.log('Create Pet discriminator:', Array.from(discriminator));
+                
+                const data = discriminator;
+
+                const keys = [
+                    { pubkey: petPda, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                ];
+
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys,
+                    programId,
+                    data,
+                });
+
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                // Подписать и отправить
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                showNotification("⏳ Подтверждение...");
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                console.log('✅ Питомец создан! TX:', signature);
+                showNotification("🎉 Питомец создан!");
+
+                // Обновить баланс
+                await updateBalance();
+
+                // Подождать немного и загрузить данные
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await checkExistingPet();
+                
+            } catch (err) {
+                console.error('Ошибка создания:', err);
+                
+                // Проверить, может питомец уже создан?
+                if (err.message.includes('already been processed') || err.message.includes('already exists')) {
+                    showNotification("⏳ Проверяю существующего питомца...");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    await checkExistingPet();
+                } else {
+                    showNotification("❌ Ошибка: " + err.message);
+                    document.getElementById('createPetBtn').disabled = false;
+                }
+            }
+        }
+
+        // Обновить decay (автоматическое уменьшение параметров)
+        async function updateDecay(silent = true) {
+            if (!wallet || !petPubkey) return;
+            
+            try {
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const discriminator = await getInstructionDiscriminator('update_decay');
+                
+                const keys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                ];
+
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys,
+                    programId,
+                    data: discriminator,
+                });
+
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                console.log('✅ Decay updated:', signature);
+                await refreshPet();
+                
+                if (!silent) {
+                    showNotification("✅ Decay обновлён!");
+                }
+                
+            } catch (err) {
+                // Игнорируем ошибку "already processed" для автоматических вызовов
+                if (err.message.includes('already been processed') && silent) {
+                    console.log('ℹ️ Decay уже обновлён недавно');
+                } else if (!silent) {
+                    showNotification("❌ Ошибка decay: " + err.message);
+                    console.error('Ошибка update_decay:', err);
+                }
+            }
+        }
+
+        // Ручной вызов decay с уведомлением
+        async function manualUpdateDecay() {
+            showNotification("⏰ Обновляю decay...");
+            await updateDecay(false); // не silent, показываем уведомления
+            await refreshPet();
+        }
+
+        // Кормить питомца
+        async function feedPet() {
+            await performAction('feedPet', '🍖 Кормлю...', '✅ Покормлен!');
+        }
+
+        // Играть
+        async function playWithPet() {
+            await performAction('playWithPet', '🎮 Играю...', '✅ Поиграли!');
+        }
+
+        // Лечить
+        async function healPet() {
+            await performAction('healPet', '💊 Лечу...', '✅ Вылечен!');
+        }
+
+        // Отдых
+        async function restPet() {
+            await performAction('restPet', '😴 Отдыхаю...', '✅ Отдохнул!');
+        }
+
+        // Универсальная функция для действий
+        async function performAction(actionName, loadingMsg, successMsg) {
+            if (!wallet || !petPubkey) return;
+            
+            try {
+                // Небольшая задержка чтобы избежать дубликатов
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                showNotification(loadingMsg);
+                disableButtons();
+
+                // Получить token account
+                const tokenAccount = await getOrCreateTokenAccount();
+                if (!tokenAccount) {
+                    showNotification("❌ Сначала получите TAMA токены!");
+                    enableButtons();
+                    return;
+                }
+
+                // Проверить баланс
+                const tokenBalance = await getTokenBalance();
+                console.log(`💰 TAMA баланс: ${tokenBalance}`);
+                
+                if (tokenBalance < 1) {
+                    showNotification("❌ Недостаточно TAMA токенов!");
+                    enableButtons();
+                    return;
+                }
+
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const tokenMintPubkey = new window.solanaWeb3.PublicKey(TOKEN_MINT);
+                const tokenProgramPubkey = new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID);
+                
+                // Вычислить правильный discriminator
+                const functionNames = {
+                    feedPet: 'feed_pet',
+                    playWithPet: 'play_with_pet',
+                    healPet: 'heal_pet',
+                    restPet: 'rest_pet'
+                };
+                
+                const discriminator = await getInstructionDiscriminator(functionNames[actionName]);
+                console.log(`${actionName} discriminator:`, Array.from(discriminator));
+                
+                const data = discriminator;
+
+                // ВСЕ аккаунты которые требует контракт
+                const keys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                    { pubkey: tokenAccount, isSigner: false, isWritable: true }, // user_token_account
+                    { pubkey: tokenMintPubkey, isSigner: false, isWritable: true }, // token_mint
+                    { pubkey: tokenProgramPubkey, isSigner: false, isWritable: false }, // token_program
+                ];
+
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys,
+                    programId,
+                    data,
+                });
+
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                console.log(`✅ ${actionName} TX:`, signature);
+                showNotification(successMsg);
+
+                // Обновить баланс и данные
+                await updateBalance();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await refreshPet();
+                
+            } catch (err) {
+                console.error(`Ошибка ${actionName}:`, err);
+                
+                // Если транзакция уже обработана - это не ошибка, просто обновляем
+                if (err.message.includes('already been processed')) {
+                    showNotification("⏳ Обновляю данные...");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    await refreshPet();
+                    showNotification(successMsg + " (обновлено)");
+                } else {
+                    showNotification("❌ Ошибка: " + err.message);
+                }
+            } finally {
+                enableButtons();
+            }
+        }
+
+        function disableButtons() {
+            ['feedBtn', 'playBtn', 'healBtn', 'restBtn'].forEach(id => {
+                document.getElementById(id).disabled = true;
+            });
+        }
+
+        function enableButtons() {
+            ['feedBtn', 'playBtn', 'healBtn', 'restBtn'].forEach(id => {
+                document.getElementById(id).disabled = false;
+            });
+        }
+
+        // Десериализация данных питомца
+        function deserializePet(data) {
+            let offset = 8;
+            
+            const owner = new window.solanaWeb3.PublicKey(data.slice(offset, offset + 32));
+            offset += 32;
+            
+            const dna = readU64LE(data, offset);
+            offset += 8;
+            
+            const petId = readU32LE(data, offset);
+            offset += 4;
+            
+            const species = data[offset];
+            offset += 1;
+            
+            const accessory = data[offset];
+            offset += 1;
+            
+            const background = data[offset];
+            offset += 1;
+            
+            const rarity = data[offset];
+            offset += 1;
+            
+            const level = data[offset];
+            offset += 1;
+            
+            const experience = readU16LE(data, offset);
+            offset += 2;
+            
+            const health = data[offset];
+            offset += 1;
+            
+            const hunger = data[offset];
+            offset += 1;
+            
+            const happiness = data[offset];
+            offset += 1;
+            
+            const energy = data[offset];
+            offset += 1;
+            
+            const age = readU32LE(data, offset);
+            offset += 4;
+            
+            const birthTime = readI64LE(data, offset);
+            offset += 8;
+            
+            const lastActionTime = readI64LE(data, offset);
+            offset += 8;
+            
+            const lastDecayTime = readI64LE(data, offset);
+            offset += 8;
+            
+            const actionsCount = readU32LE(data, offset);
+            offset += 4;
+            
+            const isAlive = data[offset] !== 0;
+            
+            return {
+                owner, dna, petId, species, accessory, background, rarity, level,
+                experience, health, hunger, happiness, energy, age, 
+                birthTime, lastActionTime, lastDecayTime, actionsCount, isAlive
+            };
+        }
+
+        function readU32LE(buffer, offset) {
+            return buffer[offset] + (buffer[offset + 1] << 8) + 
+                   (buffer[offset + 2] << 16) + (buffer[offset + 3] << 24);
+        }
+
+        function readU16LE(buffer, offset) {
+            return buffer[offset] + (buffer[offset + 1] << 8);
+        }
+
+        function readU64LE(buffer, offset) {
+            const low = readU32LE(buffer, offset);
+            const high = readU32LE(buffer, offset + 4);
+            return low + high * 4294967296;
+        }
+
+        function readI64LE(buffer, offset) {
+            const low = readU32LE(buffer, offset);
+            const high = readU32LE(buffer, offset + 4);
+            // Unix timestamp в секундах
+            return low + high * 4294967296;
+        }
+
+        // Обновить отображение
+        function updateDisplay(pet) {
+            const species = SPECIES_EMOJI[pet.species] || '🐣';
+            document.getElementById('petSprite').textContent = pet.isAlive ? species : '💀';
+            document.getElementById('petName').textContent = pet.isAlive ? `Питомец #${pet.petId}` : `💀 Питомец мертв #${pet.petId}`;
+            document.getElementById('petLevel').textContent = `Уровень ${pet.level}`;
+            
+            updateStatBar('healthBar', pet.health);
+            updateStatBar('hungerBar', pet.hunger);
+            updateStatBar('happinessBar', pet.happiness);
+            updateStatBar('energyBar', pet.energy);
+            
+            document.getElementById('petId').textContent = `#${pet.petId}`;
+            document.getElementById('petDna').textContent = pet.dna.toString().slice(0, 10) + '...';
+            
+            const rarityName = RARITY_NAMES[pet.rarity] || 'Common';
+            const rarityStars = RARITY_STARS[pet.rarity] || '⭐';
+            document.getElementById('petRarity').textContent = `${rarityName} ${rarityStars}`;
+            
+            document.getElementById('petLevelInfo').textContent = pet.level;
+            document.getElementById('petExp').textContent = pet.experience;
+            
+            // Показать/скрыть кнопку закрытия аккаунта
+            const closeBtn = document.getElementById('closeBtn');
+            if (!pet.isAlive) {
+                closeBtn.style.display = 'block';
+                // Отключить кнопки действий
+                document.getElementById('feedBtn').disabled = true;
+                document.getElementById('playBtn').disabled = true;
+                document.getElementById('healBtn').disabled = true;
+                document.getElementById('restBtn').disabled = true;
+                showNotification("💀 Питомец мертв! Закройте аккаунт и создайте нового.");
+            } else {
+                closeBtn.style.display = 'none';
+                // Включить кнопки действий
+                document.getElementById('feedBtn').disabled = false;
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('healBtn').disabled = false;
+                document.getElementById('restBtn').disabled = false;
+            }
+        }
+
+        function updateStatBar(id, value) {
+            const bar = document.getElementById(id);
+            bar.style.width = value + '%';
+            bar.textContent = value + '%';
+        }
+
+        // ============================================================================
+        // 🔥 РЕАЛЬНОЕ ВРЕМЯ DECAY (БЕЗ ТРАНЗАКЦИЙ!)
+        // ============================================================================
+
+        // Рассчитать виртуальные статы на основе времени
+        function calculateVirtualStats(pet) {
+            if (!pet) return null;
+            
+            const now = Date.now() / 1000; // текущее время в секундах
+            const timePassed = now - pet.lastDecayTime;
+            
+            // Если прошло меньше минуты - ничего не меняем
+            if (timePassed < 60) {
+                return {
+                    hunger: pet.hunger,
+                    happiness: pet.happiness,
+                    energy: pet.energy,
+                    health: pet.health,
+                    isAlive: pet.isAlive,
+                    timePassed: timePassed
+                };
+            }
+            
+            // Считаем decay циклы
+            const decayCycles = Math.floor(timePassed / 60);
+            
+            let virtualHunger = Math.max(0, pet.hunger - decayCycles);
+            let virtualHappiness = Math.max(0, pet.happiness - Math.floor(decayCycles / 2));
+            let virtualEnergy = Math.max(0, pet.energy - Math.floor(decayCycles / 3));
+            let virtualHealth = pet.health;
+            
+            // Если голод или счастье критично - здоровье падает
+            if (virtualHunger < 30 || virtualHappiness < 30) {
+                virtualHealth = Math.max(0, virtualHealth - Math.floor(decayCycles / 2));
+            }
+            
+            // Проверка на смерть
+            const virtualAlive = virtualHealth > 0;
+            
+            return {
+                hunger: virtualHunger,
+                happiness: virtualHappiness,
+                energy: virtualEnergy,
+                health: virtualHealth,
+                isAlive: virtualAlive,
+                timePassed: timePassed
+            };
+        }
+
+        // Прогноз смерти
+        function predictDeath(pet) {
+            if (!pet) return null;
+            
+            let virtualPet = { ...pet };
+            let minutes = 0;
+            
+            // Симулируем decay до смерти
+            while (virtualPet.health > 0 && minutes < 10000) {
+                minutes++;
+                
+                virtualPet.hunger = Math.max(0, virtualPet.hunger - 1);
+                virtualPet.happiness = Math.max(0, virtualPet.happiness - 0.5);
+                virtualPet.energy = Math.max(0, virtualPet.energy - 0.33);
+                
+                if (virtualPet.hunger < 30 || virtualPet.happiness < 30) {
+                    virtualPet.health = Math.max(0, virtualPet.health - 0.5);
+                }
+            }
+            
+            return minutes;
+        }
+
+        // Получить рекомендации
+        function getRecommendations(virtualStats) {
+            const recommendations = [];
+            
+            if (virtualStats.hunger < 70) {
+                recommendations.push({
+                    action: '🍖 Кормить',
+                    urgency: virtualStats.hunger < 30 ? 'critical' : 'medium',
+                    cost: '5 TAMA'
+                });
+            }
+            
+            if (virtualStats.happiness < 70) {
+                recommendations.push({
+                    action: '🎮 Играть',
+                    urgency: virtualStats.happiness < 30 ? 'critical' : 'medium',
+                    cost: '3 TAMA'
+                });
+            }
+            
+            if (virtualStats.energy < 60) {
+                recommendations.push({
+                    action: '😴 Отдохнуть',
+                    urgency: virtualStats.energy < 30 ? 'high' : 'low',
+                    cost: '2 TAMA'
+                });
+            }
+            
+            if (virtualStats.health < 50) {
+                recommendations.push({
+                    action: '💊 Лечить',
+                    urgency: 'critical',
+                    cost: '8 TAMA'
+                });
+            }
+            
+            return recommendations;
+        }
+
+        // Обновление UI в реальном времени
+        function updateRealtimeUI() {
+            if (!realPetData) return;
+            
+            // Получаем виртуальные статы
+            const virtualStats = calculateVirtualStats(realPetData);
+            if (!virtualStats) return;
+            
+            // Обновляем статы
+            updateStatBar('hungerBar', virtualStats.hunger);
+            updateStatBar('happinessBar', virtualStats.happiness);
+            updateStatBar('energyBar', virtualStats.energy);
+            updateStatBar('healthBar', virtualStats.health);
+            
+            // Обновляем спрайт если умер
+            if (!virtualStats.isAlive && realPetData.isAlive) {
+                document.getElementById('petSprite').textContent = '💀';
+                document.getElementById('petName').textContent = `💀 Питомец умер #${realPetData.petId}`;
+            }
+            
+            // Таймер до следующего decay
+            const secondsToNextDecay = 60 - (virtualStats.timePassed % 60);
+            document.getElementById('decayTimer').textContent = 
+                `Следующий decay через: ${Math.floor(secondsToNextDecay)}с`;
+            
+            // Прогноз смерти
+            if (virtualStats.isAlive) {
+                const deathMinutes = predictDeath(virtualStats);
+                const deathPredEl = document.getElementById('deathPrediction');
+                
+                if (deathMinutes < 300) { // Если меньше 5 часов
+                    const hours = Math.floor(deathMinutes / 60);
+                    const mins = deathMinutes % 60;
+                    deathPredEl.textContent = `💀 Умрёт через: ${hours > 0 ? hours + 'ч ' : ''}${mins}м`;
+                    deathPredEl.style.display = 'block';
+                } else {
+                    deathPredEl.style.display = 'none';
+                }
+            } else {
+                document.getElementById('deathPrediction').textContent = '💀 Питомец мертв';
+                document.getElementById('deathPrediction').style.display = 'block';
+            }
+            
+            // Рекомендации
+            const recommendations = getRecommendations(virtualStats);
+            const recEl = document.getElementById('recommendations');
+            const recListEl = document.getElementById('recommendationsList');
+            
+            if (recommendations.length > 0) {
+                recEl.style.display = 'block';
+                
+                let html = '';
+                recommendations.forEach(rec => {
+                    const urgencyColor = 
+                        rec.urgency === 'critical' ? '#d32f2f' :
+                        rec.urgency === 'high' ? '#f57c00' :
+                        rec.urgency === 'medium' ? '#fbc02d' : '#689f38';
+                    
+                    html += `<div style="color: ${urgencyColor}; margin: 3px 0; text-align: center;">
+                        ${rec.action} (${rec.cost})
+                    </div>`;
+                });
+                
+                recListEl.innerHTML = html;
+            } else {
+                recEl.style.display = 'none';
+            }
+        }
+
+        // Запуск реального времени
+        function startRealtimeUpdates() {
+            // Останавливаем предыдущий интервал если есть
+            if (realtimeUpdateInterval) {
+                clearInterval(realtimeUpdateInterval);
+            }
+            
+            // Обновляем каждую секунду!
+            realtimeUpdateInterval = setInterval(updateRealtimeUI, 1000);
+            
+            // Первое обновление сразу
+            updateRealtimeUI();
+            
+            console.log('✅ Реальное время обновлений запущено!');
+        }
+
+        // Остановка реального времени
+        function stopRealtimeUpdates() {
+            if (realtimeUpdateInterval) {
+                clearInterval(realtimeUpdateInterval);
+                realtimeUpdateInterval = null;
+            }
+        }
+
+        // ============================================================================
+
+        // Клик по питомцу
+        function petClick() {
+            const sprite = document.getElementById('petSprite');
+            sprite.style.animation = 'none';
+            setTimeout(() => {
+                sprite.style.animation = 'float 3s ease-in-out infinite';
+            }, 10);
+            showNotification("❤️ Погладил питомца!");
+        }
+
+        // Обновить данные
+        async function refreshPet() {
+            if (!wallet || !petPubkey) return;
+            
+            try {
+                const accountInfo = await connection.getAccountInfo(petPubkey);
+                
+                if (accountInfo && accountInfo.data) {
+                    const pet = deserializePet(accountInfo.data);
+                    
+                    // Обновляем реальные данные
+                    realPetData = pet;
+                    
+                    updateDisplay(pet);
+                }
+            } catch (err) {
+                console.error('Ошибка обновления:', err);
+            }
+        }
+
+        // Закрыть аккаунт питомца (вернуть rent)
+        async function closePetAccount() {
+            if (!wallet || !petPubkey) return;
+            
+            if (!confirm('💀 Закрыть аккаунт питомца?\n\n✅ Rent будет возвращен на кошелек\n⚠️ Питомец будет удален навсегда\n\nПосле этого можно создать нового питомца.')) {
+                return;
+            }
+            
+            try {
+                showNotification("🔄 Закрываю аккаунт...");
+                
+                const programId = new window.solanaWeb3.PublicKey(PROGRAM_ID);
+                const discriminator = await getInstructionDiscriminator('close_pet');
+                
+                const keys = [
+                    { pubkey: petPubkey, isSigner: false, isWritable: true },
+                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                ];
+
+                const instruction = new window.solanaWeb3.TransactionInstruction({
+                    keys,
+                    programId,
+                    data: discriminator,
+                });
+
+                const transaction = new window.solanaWeb3.Transaction().add(instruction);
+                transaction.feePayer = wallet.publicKey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+                const signed = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signed.serialize());
+                
+                await connection.confirmTransaction(signature, 'confirmed');
+                
+                console.log('✅ Аккаунт закрыт:', signature);
+                showNotification("✅ Аккаунт закрыт! Rent возвращен. Теперь можно создать нового питомца!");
+                
+                // Переключаемся на экран создания
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('createScreen').style.display = 'block';
+                petPubkey = null;
+                
+            } catch (err) {
+                showNotification("❌ Ошибка: " + err.message);
+                console.error('Ошибка закрытия аккаунта:', err);
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerHTML = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // ✅ DECAY ТЕПЕРЬ АВТОМАТИЧЕСКИЙ!
+        // Decay применяется автоматически внутри каждого действия (feed, play, heal, rest)
+        // Не нужно вызывать его отдельно!
+        function startDecayTimer() {
+            // Автоматический decay теперь встроен в контракт!
+            console.log('✅ Auto Decay активирован в контракте');
+            console.log('⏰ Decay применяется автоматически при каждом действии');
+        }
+
+        // Инициализация
+        window.addEventListener('load', async () => {
+            await init();
+            
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    const resp = await window.solana.connect({ onlyIfTrusted: true });
+                    if (resp) {
+                        await connectWallet();
+                        startDecayTimer(); // Запустить таймер
+                    }
+                } catch (e) {
+                    console.log('Автоподключение не удалось');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
