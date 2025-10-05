@@ -1107,6 +1107,7 @@
 
     <!-- Solana Web3.js -->
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@latest/lib/index.iife.js"></script>
 
     <script>
         // 🎯 КОНФИГУРАЦИЯ
@@ -2397,41 +2398,41 @@
                 const tokenProgramId = new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID);
                 const discriminator = await getInstructionDiscriminator(actionName);
 
-                // Вычислить Associated Token Account адрес
-                const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
-                const [tokenAccountPubkey] = await window.solanaWeb3.PublicKey.findProgramAddress(
-                    [
-                        wallet.publicKey.toBuffer(),
-                        tokenProgramId.toBuffer(),
-                        tokenMintPubkey.toBuffer(),
-                    ],
-                    associatedTokenProgram
+                // ✅ Правильное вычисление Associated Token Account с помощью SPL Token
+                const tokenAccountPubkey = window.splToken.getAssociatedTokenAddressSync(
+                    tokenMintPubkey,
+                    wallet.publicKey,
+                    false, // allowOwnerOffCurve
+                    tokenProgramId
                 );
+                
+                console.log('🔑 Token Account (ATA):', tokenAccountPubkey.toString());
 
                 const transaction = new window.solanaWeb3.Transaction();
 
-                // Проверить существует ли token account, если нет - создать
+                // ✅ Проверить и создать ATA если нужно
                 try {
                     const accountInfo = await connection.getAccountInfo(tokenAccountPubkey);
                     if (!accountInfo) {
-                        console.log('🔨 Создаю Token Account...');
-                        // Создать Associated Token Account
-                        const createATAIx = new window.solanaWeb3.TransactionInstruction({
-                            keys: [
-                                { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
-                                { pubkey: tokenAccountPubkey, isSigner: false, isWritable: true },
-                                { pubkey: wallet.publicKey, isSigner: false, isWritable: false },
-                                { pubkey: tokenMintPubkey, isSigner: false, isWritable: false },
-                                { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
-                                { pubkey: tokenProgramId, isSigner: false, isWritable: false },
-                            ],
-                            programId: associatedTokenProgram,
-                            data: new Uint8Array([]),
-                        });
+                        console.log('🔨 Создаю Associated Token Account...');
+                        
+                        // Используем правильную инструкцию из SPL Token
+                        const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+                        const createATAIx = window.splToken.createAssociatedTokenAccountInstruction(
+                            wallet.publicKey,     // payer
+                            tokenAccountPubkey,   // ata
+                            wallet.publicKey,     // owner
+                            tokenMintPubkey,      // mint
+                            tokenProgramId,       // token program
+                            associatedTokenProgram // ata program
+                        );
                         transaction.add(createATAIx);
+                        console.log('✅ ATA instruction added');
+                    } else {
+                        console.log('✅ Token Account already exists');
                     }
                 } catch (err) {
-                    console.warn('Token account check failed:', err);
+                    console.warn('⚠️ Token account check failed:', err);
                 }
 
                 // Все accounts для контракта
@@ -2534,9 +2535,11 @@
             try {
                 const balance = await getTokenBalance();
                 const tamaBalance = (balance / 1_000_000_000).toFixed(0);
-                document.getElementById('tamaBalance').textContent = tamaBalance;
+                const tamaEl = document.getElementById('tamaBalance');
+                if (tamaEl) tamaEl.textContent = tamaBalance;
             } catch (err) {
-                document.getElementById('tamaBalance').textContent = '...';
+                const tamaEl = document.getElementById('tamaBalance');
+                if (tamaEl) tamaEl.textContent = '...';
             }
         }
 
@@ -3920,7 +3923,7 @@
 
         // 📊 Обновить leaderboard с реальными данными
         async function updateLeaderboardData() {
-            if (!wallet || !petData) return;
+            if (!wallet || !realPetData) return;
             
             try {
                 await fetch(`${WORKERS_API}/leaderboard/update`, {
@@ -3928,9 +3931,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         wallet: wallet.publicKey.toString(),
-                        level: petData.level,
-                        experience: petData.experience,
-                        petName: `Питомец #${petData.petId}`
+                        level: realPetData.level || 1,
+                        experience: realPetData.experience || 0,
+                        petName: `Питомец #${realPetData.petId || '???'}`
                     })
                 });
                 
