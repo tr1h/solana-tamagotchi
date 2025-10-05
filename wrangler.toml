@@ -4,11 +4,4 @@ compatibility_date = "2024-01-01"
 # Cloudflare Pages configuration
 pages_build_output_dir = "vercel_deploy"
 
-[env.production]
-name = "crypto-tamagotchi"
-route = "crypto-tamagotchi.pages.dev"
-
-[env.preview]
-name = "crypto-tamagotchi-preview"
-
 
