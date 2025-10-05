@@ -44,10 +44,84 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 40px 20px 80px 20px;
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
+        }
+        
+        /* 🐞 Debug Console (компактная консоль) */
+        .debug-console {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            z-index: 9999;
+            transition: all 0.3s;
+            max-height: 40px;
+            overflow: hidden;
+        }
+        
+        .debug-console.expanded {
+            max-height: 250px;
+        }
+        
+        .debug-header {
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.95);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .debug-header:hover {
+            background: rgba(20, 20, 20, 0.95);
+        }
+        
+        .debug-content {
+            padding: 10px 15px;
+            max-height: 210px;
+            overflow-y: auto;
+        }
+        
+        .debug-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .debug-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .debug-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 0, 0.5);
+            border-radius: 4px;
+        }
+        
+        .debug-line {
+            margin: 3px 0;
+            padding: 2px 0;
+        }
+        
+        .debug-line.error {
+            color: #ff4444;
+        }
+        
+        .debug-line.success {
+            color: #00ff00;
+        }
+        
+        .debug-line.info {
+            color: #4facfe;
+        }
+        
+        .debug-line.warn {
+            color: #ffaa00;
         }
         
         /* 🖥️ DESKTOP OPTIMIZATION */
@@ -1351,11 +1425,95 @@
 
     <div class="notification" id="notification"></div>
 
+    <!-- 🐞 DEBUG CONSOLE -->
+    <div class="debug-console" id="debugConsole">
+        <div class="debug-header" onclick="toggleDebugConsole()">
+            <span>🐞 Console Logs (<span id="logCount">0</span>) - Click to expand/collapse</span>
+            <span id="consoleToggle">▲</span>
+        </div>
+        <div class="debug-content" id="debugContent">
+            <div class="debug-line info">💬 Console ready. Logs will appear here...</div>
+        </div>
+    </div>
+
     <!-- Solana Web3.js -->
     <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
     <script src="https://unpkg.com/@solana/spl-token@latest/lib/index.iife.js"></script>
 
     <script>
+        // 🐞 DEBUG CONSOLE FUNCTIONS
+        let logCount = 0;
+        let debugLogs = [];
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn,
+            info: console.info
+        };
+        
+        function toggleDebugConsole() {
+            const debugConsole = document.getElementById('debugConsole');
+            const toggleIcon = document.getElementById('consoleToggle');
+            debugConsole.classList.toggle('expanded');
+            toggleIcon.textContent = debugConsole.classList.contains('expanded') ? '▼' : '▲';
+        }
+        
+        function addDebugLog(message, type = 'info') {
+            const debugContent = document.getElementById('debugContent');
+            const logCountEl = document.getElementById('logCount');
+            
+            logCount++;
+            debugLogs.push({ message, type, time: new Date().toLocaleTimeString() });
+            
+            // Ограничить до 100 логов
+            if (debugLogs.length > 100) {
+                debugLogs.shift();
+            }
+            
+            const logLine = document.createElement('div');
+            logLine.className = `debug-line ${type}`;
+            logLine.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            debugContent.appendChild(logLine);
+            
+            // Auto-scroll to bottom
+            debugContent.scrollTop = debugContent.scrollHeight;
+            
+            // Update count
+            logCountEl.textContent = logCount;
+            
+            // Limit DOM elements
+            if (debugContent.children.length > 100) {
+                debugContent.removeChild(debugContent.firstChild);
+            }
+        }
+        
+        // Override console methods
+        console.log = function(...args) {
+            originalConsole.log.apply(console, args);
+            addDebugLog(args.join(' '), 'info');
+        };
+        
+        console.error = function(...args) {
+            originalConsole.error.apply(console, args);
+            addDebugLog('❌ ' + args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalConsole.warn.apply(console, args);
+            addDebugLog('⚠️ ' + args.join(' '), 'warn');
+        };
+        
+        console.info = function(...args) {
+            originalConsole.info.apply(console, args);
+            addDebugLog('ℹ️ ' + args.join(' '), 'info');
+        };
+        
+        // Catch unhandled errors
+        window.addEventListener('error', (e) => {
+            addDebugLog(`ERROR: ${e.message} at ${e.filename}:${e.lineno}`, 'error');
+        });
+        
         // 🎯 КОНФИГУРАЦИЯ
         const PROGRAM_ID = 'uY5hZR2uYzkquJDuDkFBj29tfzZRPE96BBTHYGaYnwX';
         
