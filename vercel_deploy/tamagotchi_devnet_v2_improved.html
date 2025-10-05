@@ -42,7 +42,7 @@
             animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             padding: 40px 20px;
             position: relative;
@@ -1311,6 +1311,41 @@
                 </button>
             </div>
         </div>
+    </div>
+
+    <!-- 💬 COMMUNITY CHAT SECTION -->
+    <div class="container" style="margin-top: 20px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+        <h2 style="text-align: center; color: white; margin-bottom: 15px;">💬 Community Chat</h2>
+        <p style="text-align: center; color: white; margin-bottom: 20px; font-size: 14px; opacity: 0.9;">
+            Chat with other Tamagotchi players! 🎮
+        </p>
+        
+        <!-- Chat Messages -->
+        <div id="chatMessages" style="background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; margin-bottom: 15px; max-height: 400px; overflow-y: auto; min-height: 250px;">
+            <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
+                <p style="font-size: 48px; margin-bottom: 10px;">💬</p>
+                <p>Connect wallet to chat with players!</p>
+            </div>
+        </div>
+        
+        <!-- Chat Input -->
+        <div style="display: flex; gap: 10px;">
+            <input 
+                type="text" 
+                id="chatInput" 
+                placeholder="Type your message..."
+                maxlength="200"
+                style="flex: 1; padding: 15px; border-radius: 12px; border: none; font-size: 14px; font-family: inherit;"
+                onkeypress="if(event.key==='Enter') sendChatMessage()"
+            >
+            <button onclick="sendChatMessage()" style="background: white; color: #43e97b; border: none; padding: 15px 25px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; white-space: nowrap; transition: transform 0.2s;">
+                📤 Send
+            </button>
+        </div>
+        
+        <p style="text-align: center; color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 12px;">
+            Messages are stored in Cloudflare KV • Max 200 characters
+        </p>
     </div>
 
     <div class="notification" id="notification"></div>
@@ -4339,6 +4374,116 @@
             };
         }
 
+        // 💬 CHAT FUNCTIONS
+        let chatMessages = [];
+        
+        async function loadChatMessages() {
+            try {
+                const response = await fetch(`${WORKERS_API}/chat/messages`);
+                const messages = await response.json();
+                chatMessages = messages || [];
+                displayChatMessages();
+                console.log('💬 Chat loaded:', chatMessages.length, 'messages');
+            } catch (err) {
+                console.log('⚠️ Failed to load chat:', err);
+                chatMessages = [
+                    {
+                        wallet: 'System',
+                        message: 'Welcome to Tamagotchi Chat! 🎮',
+                        timestamp: Date.now()
+                    }
+                ];
+                displayChatMessages();
+            }
+        }
+        
+        function displayChatMessages() {
+            const chatContainer = document.getElementById('chatMessages');
+            if (!chatContainer) return;
+            
+            if (chatMessages.length === 0) {
+                chatContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
+                        <p style="font-size: 48px; margin-bottom: 10px;">💬</p>
+                        <p>No messages yet. Be the first to chat!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            chatMessages.slice(-50).reverse().forEach(msg => {
+                const date = new Date(msg.timestamp);
+                const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                const walletShort = msg.wallet === 'System' ? 'System 🤖' : msg.wallet.slice(0, 4) + '...' + msg.wallet.slice(-4);
+                const isCurrentUser = wallet && msg.wallet === wallet.publicKey.toString();
+                
+                html += `
+                    <div style="margin-bottom: 15px; ${isCurrentUser ? 'text-align: right;' : ''}">
+                        <div style="display: inline-block; max-width: 80%; text-align: left; background: ${isCurrentUser ? 'rgba(67, 233, 123, 0.3)' : 'rgba(255,255,255,0.2)'}; padding: 12px 15px; border-radius: 15px; ${isCurrentUser ? 'border-bottom-right-radius: 5px;' : 'border-bottom-left-radius: 5px;'}">
+                            <div style="color: rgba(255,255,255,0.8); font-size: 12px; margin-bottom: 5px; font-weight: 600;">
+                                ${walletShort} • ${timeStr}
+                            </div>
+                            <div style="color: white; font-size: 14px; word-wrap: break-word;">
+                                ${escapeHtml(msg.message)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            chatContainer.innerHTML = html;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function sendChatMessage() {
+            if (!wallet) {
+                showNotification('❌ Connect wallet to chat!');
+                return;
+            }
+            
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                showNotification('❌ Message cannot be empty!');
+                return;
+            }
+            
+            if (message.length > 200) {
+                showNotification('❌ Message too long! Max 200 characters.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${WORKERS_API}/chat/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wallet: wallet.publicKey.toString(),
+                        message: message
+                    })
+                });
+                
+                if (response.ok) {
+                    input.value = '';
+                    await loadChatMessages();
+                    showNotification('✅ Message sent!');
+                } else {
+                    showNotification('❌ Failed to send message');
+                }
+            } catch (err) {
+                console.error('Chat error:', err);
+                showNotification('❌ Chat error');
+            }
+        }
+        
         // 🚀 Initialize API features on page load
         window.addEventListener('load', () => {
             console.log('⚡ Initializing Cloudflare Workers API...');
@@ -4348,11 +4493,13 @@
             // Load stats and leaderboard
             loadGameStats();
             loadLeaderboard();
+            loadChatMessages();  // Load chat
             
             // Update every 30 seconds
             setInterval(() => {
                 loadGameStats();
                 loadLeaderboard();
+                loadChatMessages();  // Refresh chat
             }, 30000);
             
             console.log('✅ API features initialized!');

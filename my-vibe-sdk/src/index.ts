@@ -367,6 +367,61 @@ export default {
 			}
 		}
 
+		// 💬 CHAT: Получить последние сообщения
+		if (url.pathname === '/chat/messages') {
+			try {
+				const chatKey = 'chat_messages';
+				let messages = await env.HISTORY.get(chatKey, { type: 'json' }) || [];
+				
+				// Возвращаем последние 50 сообщений
+				messages = messages.slice(-50);
+				
+				return Response.json(messages, { headers: corsHeaders });
+			} catch (err) {
+				return Response.json({ error: 'Failed to load chat', message: err.message }, { status: 500, headers: corsHeaders });
+			}
+		}
+
+		// 💬 CHAT: Отправить сообщение
+		if (url.pathname === '/chat/send' && request.method === 'POST') {
+			try {
+				const { wallet, message } = await request.json();
+				
+				if (!wallet || !message) {
+					return Response.json({ error: 'Wallet and message required' }, { status: 400, headers: corsHeaders });
+				}
+				
+				if (message.length > 200) {
+					return Response.json({ error: 'Message too long' }, { status: 400, headers: corsHeaders });
+				}
+				
+				// Получить существующие сообщения
+				const chatKey = 'chat_messages';
+				let messages = await env.HISTORY.get(chatKey, { type: 'json' }) || [];
+				
+				// Добавить новое сообщение
+				const newMessage = {
+					wallet,
+					message,
+					timestamp: Date.now()
+				};
+				
+				messages.push(newMessage);
+				
+				// Хранить только последние 100 сообщений
+				if (messages.length > 100) {
+					messages = messages.slice(-100);
+				}
+				
+				// Сохранить в KV
+				await env.HISTORY.put(chatKey, JSON.stringify(messages));
+				
+				return Response.json({ status: 'ok', message: newMessage }, { headers: corsHeaders });
+			} catch (err) {
+				return Response.json({ error: 'Failed to send message', message: err.message }, { status: 500, headers: corsHeaders });
+			}
+		}
+
 		// 🏠 Главная страница с UI
 		return new Response(`
 			<!DOCTYPE html>
