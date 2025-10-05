@@ -103,24 +103,25 @@
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 25px;
-            max-width: 500px;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 450px;
             width: 100%;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3), 
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25), 
                         inset 0 0 0 1px rgba(255, 255, 255, 0.2);
             position: relative;
             z-index: 10;
             animation: containerFloat 6s ease-in-out infinite;
+            margin-bottom: 15px;
         }
         
         /* 🖥️ Desktop Enhanced Container */
         @media (min-width: 1024px) {
             .container {
-                max-width: 600px;
-                padding: 40px;
-                border-radius: 40px;
-                box-shadow: 0 30px 90px rgba(0, 0, 0, 0.4), 
+                max-width: 500px;
+                padding: 25px;
+                border-radius: 25px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 
                             inset 0 0 0 1px rgba(255, 255, 255, 0.25);
             }
         }
@@ -228,7 +229,7 @@
 
         .header h1 {
             color: white;
-            font-size: clamp(1.5em, 5vw, 2em);
+            font-size: clamp(1.2em, 4vw, 1.5em);
             margin-bottom: 8px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
@@ -286,11 +287,11 @@
         /* 🐣 Pet Display with Rarity Effects */
         .pet-display {
             background: linear-gradient(135deg, rgba(224, 231, 255, 0.9) 0%, rgba(243, 232, 255, 0.9) 100%);
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 15px;
+            padding: 15px;
             text-align: center;
-            margin-bottom: 15px;
-            min-height: 200px;
+            margin-bottom: 12px;
+            min-height: 150px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -348,7 +349,7 @@
         }
 
         .pet-sprite {
-            font-size: clamp(80px, 20vw, 120px);
+            font-size: clamp(60px, 15vw, 80px);
             animation: float 3s ease-in-out infinite;
             cursor: pointer;
             transition: transform 0.3s;
@@ -847,7 +848,7 @@
             }
             
             .pet-sprite {
-                font-size: 100px !important;
+                font-size: 80px !important;
             }
             
             /* Кнопки */
