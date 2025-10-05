@@ -1960,49 +1960,70 @@
             const petDisplayEl = document.getElementById('petDisplay');
             
             // 🎨 Показываем emoji с красивыми эффектами
-            petSpriteEl.textContent = pet.isAlive ? species : '💀';
-            
-            // Применяем класс редкости для свечения
-            petDisplayEl.className = 'pet-display rarity-' + pet.rarity;
-            
-            // Добавляем shake если здоровье критично
-            if (pet.health < 30) {
-                petSpriteEl.classList.add('health-critical');
-            } else {
-                petSpriteEl.classList.remove('health-critical');
+            if (petSpriteEl) {
+                petSpriteEl.textContent = pet.isAlive ? species : '💀';
+                
+                // Добавляем shake если здоровье критично
+                if (pet.health < 30) {
+                    petSpriteEl.classList.add('health-critical');
+                } else {
+                    petSpriteEl.classList.remove('health-critical');
+                }
             }
             
-            document.getElementById('petName').textContent = pet.isAlive ? 
-                `Питомец #${pet.petId}` : `💀 Питомец мертв #${pet.petId}`;
-            document.getElementById('petLevel').textContent = `Уровень ${pet.level}`;
+            // Применяем класс редкости для свечения
+            if (petDisplayEl) {
+                petDisplayEl.className = 'pet-display rarity-' + pet.rarity;
+            }
+            
+            const petNameEl = document.getElementById('petName');
+            if (petNameEl) {
+                petNameEl.textContent = pet.isAlive ? 
+                    `Питомец #${pet.petId}` : `💀 Питомец мертв #${pet.petId}`;
+            }
+            
+            const petLevelEl = document.getElementById('petLevel');
+            if (petLevelEl) {
+                petLevelEl.textContent = `Уровень ${pet.level}`;
+            }
             
             // Experience bar
             const expToNext = getExpToNextLevel(pet.level);
             const expProgress = (pet.experience / expToNext) * 100;
-            document.getElementById('expBar').style.width = Math.min(expProgress, 100) + '%';
-            document.getElementById('expText').textContent = `EXP: ${pet.experience} / ${expToNext}`;
+            const expBarEl = document.getElementById('expBar');
+            const expTextEl = document.getElementById('expText');
+            if (expBarEl) expBarEl.style.width = Math.min(expProgress, 100) + '%';
+            if (expTextEl) expTextEl.textContent = `EXP: ${pet.experience} / ${expToNext}`;
             
             updateStatBar('healthBar', pet.health);
             updateStatBar('hungerBar', pet.hunger);
             updateStatBar('happinessBar', pet.happiness);
             updateStatBar('energyBar', pet.energy);
             
-            document.getElementById('petId').textContent = `#${pet.petId}`;
-            document.getElementById('petDna').textContent = pet.dna.toString().slice(0, 10) + '...';
+            const petIdEl = document.getElementById('petId');
+            if (petIdEl) petIdEl.textContent = `#${pet.petId}`;
+            
+            const petDnaEl = document.getElementById('petDna');
+            if (petDnaEl) petDnaEl.textContent = pet.dna.toString().slice(0, 10) + '...';
             
             const rarityName = RARITY_NAMES[pet.rarity] || 'Common';
             const rarityStars = RARITY_STARS[pet.rarity] || '⭐';
-            document.getElementById('petRarity').textContent = `${rarityName} ${rarityStars}`;
+            const petRarityEl = document.getElementById('petRarity');
+            if (petRarityEl) petRarityEl.textContent = `${rarityName} ${rarityStars}`;
             
-            document.getElementById('totalActions').textContent = pet.actionsCount;
-            document.getElementById('totalBurned').textContent = (pet.totalTokensBurned / 1_000_000_000).toFixed(1);
+            const totalActionsEl = document.getElementById('totalActions');
+            if (totalActionsEl) totalActionsEl.textContent = pet.actionsCount;
+            
+            const totalBurnedEl = document.getElementById('totalBurned');
+            if (totalBurnedEl) totalBurnedEl.textContent = (pet.totalTokensBurned / 1_000_000_000).toFixed(1);
             
             // Возраст
             const ageMinutes = Math.floor(pet.age / 60);
             const ageHours = Math.floor(ageMinutes / 60);
             const ageText = ageHours > 0 ? 
                 `${ageHours}ч ${ageMinutes % 60}м` : `${ageMinutes}м`;
-            document.getElementById('petAge').textContent = ageText;
+            const petAgeEl = document.getElementById('petAge');
+            if (petAgeEl) petAgeEl.textContent = ageText;
             
             // Обновить отображение жизней
             updateLivesDisplay();
