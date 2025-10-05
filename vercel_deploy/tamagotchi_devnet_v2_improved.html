@@ -4597,6 +4597,125 @@
             }
         }
         
+        // 📜 HISTORY FUNCTIONS
+        window.loadHistory = async function() {
+            try {
+                if (!wallet) {
+                    showNotification('❌ Connect wallet first!');
+                    return;
+                }
+                
+                const response = await fetch(`${WORKERS_API}/history/get?wallet=${wallet.publicKey.toString()}`);
+                const history = await response.json();
+                
+                const historyList = document.getElementById('historyList');
+                if (!historyList) return;
+                
+                if (!history || history.length === 0) {
+                    historyList.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">No history yet. Start playing!</div>';
+                    return;
+                }
+                
+                let html = '';
+                history.slice(-20).reverse().forEach(item => {
+                    const date = new Date(item.timestamp);
+                    html += `
+                        <div style="padding: 12px; margin: 8px 0; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                            <div style="color: white; font-weight: bold;">${item.action}</div>
+                            <div style="color: rgba(255,255,255,0.7); font-size: 12px;">${date.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+                historyList.innerHTML = html;
+                console.log('📜 History loaded:', history.length, 'items');
+            } catch (err) {
+                console.error('History error:', err);
+                showNotification('❌ Failed to load history');
+            }
+        }
+        
+        // 🤖 AI ADVISOR FUNCTIONS
+        window.askAIAdvisor = async function() {
+            const question = document.getElementById('aiQuestion')?.value;
+            if (!question) {
+                showNotification('❌ Please type a question!');
+                return;
+            }
+            
+            try {
+                showNotification('🤖 AI is thinking...');
+                
+                const petStats = (typeof realPetData !== 'undefined' && realPetData) ? {
+                    health: realPetData.health,
+                    hunger: realPetData.hunger,
+                    happiness: realPetData.happiness,
+                    energy: realPetData.energy,
+                    level: realPetData.level
+                } : null;
+                
+                const response = await fetch(`${WORKERS_API}/ai/advisor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question, petStats })
+                });
+                
+                const data = await response.json();
+                
+                const aiResponse = document.getElementById('aiResponse');
+                const aiAdviceText = document.getElementById('aiAdviceText');
+                if (aiResponse && aiAdviceText) {
+                    aiResponse.style.display = 'block';
+                    aiAdviceText.textContent = data.advice || data.response || 'No response';
+                }
+                
+                showNotification('✅ AI responded!');
+            } catch (err) {
+                console.error('AI error:', err);
+                showNotification('❌ AI advisor failed');
+            }
+        }
+        
+        // 🎁 REFERRAL FUNCTIONS
+        window.createReferralLink = async function() {
+            if (!wallet) {
+                showNotification('❌ Connect wallet first!');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${WORKERS_API}/referral/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet: wallet.publicKey.toString() })
+                });
+                
+                const data = await response.json();
+                
+                const referralCode = document.getElementById('referralCode');
+                const referralLink = document.getElementById('referralLink');
+                const referralResult = document.getElementById('referralResult');
+                
+                if (referralCode) referralCode.textContent = data.code;
+                if (referralLink) referralLink.value = data.link;
+                if (referralResult) referralResult.style.display = 'block';
+                
+                showNotification('✅ Referral link created!');
+                console.log('🎁 Referral created:', data);
+            } catch (err) {
+                console.error('Referral error:', err);
+                showNotification('❌ Failed to create referral');
+            }
+        }
+        
+        window.copyReferralLink = function() {
+            const referralLink = document.getElementById('referralLink');
+            if (referralLink) {
+                referralLink.select();
+                document.execCommand('copy');
+                showNotification('✅ Link copied!');
+            }
+        }
+        
         // 🚀 Initialize API features on page load
         window.addEventListener('load', () => {
             console.log('⚡ Initializing Cloudflare Workers API...');
