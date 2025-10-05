@@ -2577,25 +2577,25 @@
             while (virtualPet.health > 0 && minutes < 10000) {
                 minutes++;
                 
-                // 💡 УЛУЧШЕННЫЙ DECAY: Разные скорости уменьшения
+                // 💡 ЗАМЕДЛЕННЫЙ DECAY: Разные скорости (x4 медленнее)
                 // Hunger падает быстрее всех (питомец голодный!)
-                virtualPet.hunger = Math.max(0, virtualPet.hunger - 1.2);
+                virtualPet.hunger = Math.max(0, virtualPet.hunger - 0.3);
                 
                 // Energy падает средне (устает от игр)
-                virtualPet.energy = Math.max(0, virtualPet.energy - 0.8);
+                virtualPet.energy = Math.max(0, virtualPet.energy - 0.2);
                 
                 // Happiness падает медленнее (настроение дольше держится)
-                virtualPet.happiness = Math.max(0, virtualPet.happiness - 0.5);
+                virtualPet.happiness = Math.max(0, virtualPet.happiness - 0.15);
                 
-                // Если ЛЮБОЙ stat < 20, health падает быстрее
-                const criticalStats = virtualPet.hunger < 20 || virtualPet.happiness < 20 || virtualPet.energy < 20;
+                // Если ЛЮБОЙ stat < 15, health падает медленно
+                const criticalStats = virtualPet.hunger < 15 || virtualPet.happiness < 15 || virtualPet.energy < 15;
                 if (criticalStats) {
-                    virtualPet.health = Math.max(0, virtualPet.health - 2);
+                    virtualPet.health = Math.max(0, virtualPet.health - 0.5);
                 }
                 
-                // Если stat = 0, health падает очень быстро
+                // Если stat = 0, health падает быстрее (но не очень)
                 if (virtualPet.hunger === 0 || virtualPet.happiness === 0 || virtualPet.energy === 0) {
-                    virtualPet.health = Math.max(0, virtualPet.health - 5);
+                    virtualPet.health = Math.max(0, virtualPet.health - 1);
                 }
             }
             
@@ -4555,7 +4555,7 @@
             return div.innerHTML;
         }
         
-        async function sendChatMessage() {
+        window.sendChatMessage = async function() {
             if (!wallet) {
                 showNotification('❌ Connect wallet to chat!');
                 return;
