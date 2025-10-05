@@ -2826,26 +2826,7 @@
                 // ✅ ПРАВИЛЬНОЕ вычисление Associated Token Account (MANUAL)
                 const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
                 
-                // 1. Вычислить TAMA Mint PDA (нужен для контракта)
-                const tamaMintSeeds = new Uint8Array([116, 97, 109, 97, 95, 109, 105, 110, 116]); // "tama_mint" в bytes
-                const [tamaMintPDA] = window.solanaWeb3.PublicKey.findProgramAddressSync(
-                    [tamaMintSeeds],
-                    programId
-                );
-                console.log('🔑 TAMA Mint PDA:', tamaMintPDA.toString());
-                
-                // 2. Вычислить user_tama_account (ATA для TAMA Mint PDA)
-                const [userTamaAccount] = window.solanaWeb3.PublicKey.findProgramAddressSync(
-                    [
-                        wallet.publicKey.toBuffer(),
-                        tokenProgramId.toBuffer(),
-                        tamaMintPDA.toBuffer()
-                    ],
-                    associatedTokenProgram
-                );
-                console.log('🔑 User TAMA Account:', userTamaAccount.toString());
-                
-                // 3. Вычислить user_token_account (ATA для нашего токена 74KGR...)
+                // Вычислить user_token_account (ATA для нашего токена 74KGR...)
                 const [tokenAccountPubkey] = window.solanaWeb3.PublicKey.findProgramAddressSync(
                     [
                         wallet.publicKey.toBuffer(),
@@ -2886,52 +2867,22 @@
                     console.warn('⚠️ user_token_account check failed:', err);
                 }
                 
-                // ✅ Проверить и создать user_tama_account если нужно
-                try {
-                    const tamaAccountInfo = await connection.getAccountInfo(userTamaAccount);
-                    if (!tamaAccountInfo) {
-                        console.log('🔨 Создаю user_tama_account (ATA for TAMA PDA)...');
-                        
-                        const createTamaATAIx = new window.solanaWeb3.TransactionInstruction({
-                            keys: [
-                                { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
-                                { pubkey: userTamaAccount, isSigner: false, isWritable: true },
-                                { pubkey: wallet.publicKey, isSigner: false, isWritable: false },
-                                { pubkey: tamaMintPDA, isSigner: false, isWritable: false },
-                                { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
-                                { pubkey: tokenProgramId, isSigner: false, isWritable: false },
-                            ],
-                            programId: associatedTokenProgram,
-                            data: new Uint8Array([]),
-                        });
-                        transaction.add(createTamaATAIx);
-                        console.log('✅ user_tama_account instruction added');
-                    } else {
-                        console.log('✅ user_tama_account already exists');
-                    }
-                } catch (err) {
-                    console.warn('⚠️ user_tama_account check failed:', err);
-                }
-
-                // ✅ Все accounts для контракта (в правильном порядке!)
+                // ✅ ОБНОВЛЕНО: TAMA система отключена в контракте
+                // Теперь передаём только 5 аккаунтов вместо 7
                 const actionKeys = [
                     { pubkey: petPubkey, isSigner: false, isWritable: true },              // 1. pet
                     { pubkey: wallet.publicKey, isSigner: true, isWritable: true },        // 2. owner
                     { pubkey: tokenAccountPubkey, isSigner: false, isWritable: true },     // 3. user_token_account
-                    { pubkey: tamaMintPDA, isSigner: false, isWritable: true },            // 4. tama_mint (PDA)
-                    { pubkey: userTamaAccount, isSigner: false, isWritable: true },        // 5. user_tama_account
-                    { pubkey: tokenMintPubkey, isSigner: false, isWritable: true },        // 6. token_mint (74KGR...)
-                    { pubkey: tokenProgramId, isSigner: false, isWritable: false },        // 7. token_program
+                    { pubkey: tokenMintPubkey, isSigner: false, isWritable: true },        // 4. token_mint (74KGR...)
+                    { pubkey: tokenProgramId, isSigner: false, isWritable: false },        // 5. token_program
                 ];
                 
-                console.log('📋 Action Keys (7 accounts):');
+                console.log('📋 Action Keys (5 accounts):');
                 console.log('  1. pet:', petPubkey.toString());
                 console.log('  2. owner:', wallet.publicKey.toString());
                 console.log('  3. user_token_account:', tokenAccountPubkey.toString());
-                console.log('  4. tama_mint:', tamaMintPDA.toString());
-                console.log('  5. user_tama_account:', userTamaAccount.toString());
-                console.log('  6. token_mint:', tokenMintPubkey.toString());
-                console.log('  7. token_program:', tokenProgramId.toString());
+                console.log('  4. token_mint:', tokenMintPubkey.toString());
+                console.log('  5. token_program:', tokenProgramId.toString());
 
                 const actionInstruction = new window.solanaWeb3.TransactionInstruction({
                     keys: actionKeys,

@@ -648,26 +648,13 @@ pub struct ActionPet<'info> {
     #[account(mut)]
     pub user_token_account: Account<'info, TokenAccount>,
     
-    // 🎯 TAMA Token Mint
-    #[account(
-        mut,
-        seeds = [b"tama_mint"],
-        bump
-    )]
-    pub tama_mint: Account<'info, Mint>,
-    
-    // 🎯 User's TAMA Token Account
-    #[account(
-        mut,
-        associated_token::mint = tama_mint,
-        associated_token::authority = owner,
-    )]
-    pub user_tama_account: Account<'info, TokenAccount>,
-    
     #[account(mut)]
     pub token_mint: Account<'info, Mint>,
     
     pub token_program: Program<'info, Token>,
+    
+    // 🎯 TAMA система временно отключена (награды не работают)
+    // Убраны tama_mint и user_tama_account
 }
 
 #[derive(Accounts)]
