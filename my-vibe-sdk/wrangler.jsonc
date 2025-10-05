@@ -12,6 +12,13 @@
 	],
 	"observability": {
 		"enabled": true
+	},
+	/**
+	 * AI Binding - Workers AI
+	 * https://developers.cloudflare.com/workers-ai/
+	 */
+	"ai": {
+		"binding": "AI"
 	}
 	/**
 	 * Smart Placement

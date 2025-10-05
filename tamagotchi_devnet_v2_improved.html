@@ -984,143 +984,7 @@
                 </div>
             </div>
 
-            <!-- Toggle History -->
-            <button class="toggle-btn" onclick="toggleHistory()">
-                📜 Action History
-            </button>
-            
-            <!-- 💰 REFERRAL SYSTEM -->
-            <button class="toggle-btn" onclick="toggleReferral()" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
-                💰 Referral System
-            </button>
-            
-            <button class="toggle-btn" onclick="toggleStats()" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                📊 Statistics
-            </button>
-            
-            <!-- History -->
-            <div class="history-panel" id="historyPanel">
-                <div class="history-title">Recent Actions</div>
-                <div class="history-list" id="historyList">
-                    <div style="text-align: center; color: #999; font-size: 0.85em; padding: 20px;">
-                        No actions yet
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 💰 REFERRAL PANEL -->
-            <div class="history-panel" id="referralPanel" style="display: none;">
-                <div class="history-title">💰 Referral Program</div>
-                <div style="padding: 15px;">
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
-                        <h3 style="color: #ffd700; margin-bottom: 10px;">🎁 Your Referral Link:</h3>
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                            <input type="text" id="referralLink" readonly 
-                                style="flex: 1; padding: 10px; border-radius: 10px; border: 2px solid #ffd700; background: rgba(255,255,255,0.9); font-family: monospace; font-size: 0.9em;" 
-                                value="Connect wallet"/>
-                            <button onclick="copyReferralLink()" style="padding: 10px 20px; background: #ffd700; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
-                                📋 Copy
-                            </button>
-                        </div>
-                        <button onclick="shareReferral()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px;">
-                            📢 Share
-                        </button>
-                    </div>
-                    
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
-                        <h3 style="color: #4caf50; margin-bottom: 15px;">💰 Your Rewards:</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                                <div style="font-size: 2em;">👥</div>
-                                <div style="font-size: 1.5em; font-weight: bold; color: white;" id="referralCount">0</div>
-                                <div style="font-size: 0.85em; color: #ccc;">Referred</div>
-                            </div>
-                            <div style="text-align: center; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                                <div style="font-size: 2em;">💎</div>
-                                <div style="font-size: 1.5em; font-weight: bold; color: #ffd700;" id="referralEarnings">0 SOL</div>
-                                <div style="font-size: 0.85em; color: #ccc;">Earned</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(76, 175, 80, 0.2); border-radius: 15px; padding: 20px; border: 2px solid #4caf50;">
-                        <h3 style="color: #4caf50; margin-bottom: 10px;">🎯 How it works:</h3>
-                        <ul style="color: white; line-height: 1.8; padding-left: 20px; font-size: 14px;">
-                            <li>🎁 Friend creates pet via your link → you get <strong style="color: #ffd700;">10% of entry fee</strong></li>
-                            <li>💎 More referrals = more rewards</li>
-                            <li>🚀 Passive income forever!</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 📊 STATS PANEL -->
-            <div class="history-panel" id="statsPanel" style="display: none;">
-                <div class="history-title">📊 Statistics</div>
-                <div style="padding: 15px;">
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px;">
-                        <h3 style="color: #00d4ff; margin-bottom: 15px;">🎮 Your Stats:</h3>
-                        <div style="display: grid; gap: 12px;">
-                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                                <span style="color: #ccc;">Total Actions:</span>
-                                <span style="color: white; font-weight: bold;" id="totalActions">0</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                                <span style="color: #ccc;">Pet Age:</span>
-                                <span style="color: white; font-weight: bold;" id="petAge">0 days</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                                <span style="color: #ccc;">Deaths:</span>
-                                <span style="color: white; font-weight: bold;" id="deathCount">0</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                                <span style="color: #ccc;">Lives Remaining:</span>
-                                <span style="color: white; font-weight: bold;" id="livesRemaining">3</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Toggle Статистика -->
-            <button class="toggle-btn" onclick="toggleStats()">
-                📊 Статистика
-            </button>
-
-            <!-- Панель статистики -->
-            <div class="info-panel" id="statsPanel" style="display: none;">
-                <div class="info-title">🐣 Статистика питомца</div>
-                <div class="info-row">
-                    <span class="info-label">🆔 Pet ID:</span>
-                    <span class="info-value" id="petId">#????</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">🧬 DNA:</span>
-                    <span class="info-value" id="petDna">...</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">✨ Редкость:</span>
-                    <span class="info-value" id="petRarity">⭐</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">🎮 Всего действий:</span>
-                    <span class="info-value" id="totalActions">0</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">🔥 Сожжено TAMA:</span>
-                    <span class="info-value" id="totalBurned">0</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">💰 TAMA баланс:</span>
-                    <span class="info-value" id="tamaBalance">...</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">🎂 Возраст:</span>
-                    <span class="info-value" id="petAge">...</span>
-                </div>
-            </div>
-
-            <!-- Кнопка закрытия аккаунта -->
+            <!-- Explorer Link -->
             <button class="close-btn hidden" id="closeBtn" onclick="closePetAccount()">
                 💀 Закрыть аккаунт (вернуть rent)
             </button>
@@ -1164,6 +1028,31 @@
             <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
                 Loading leaderboard...
             </div>
+        </div>
+    </div>
+
+    <!-- 🤖 AI ADVISOR SECTION -->
+    <div class="container" style="margin-top: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <h2 style="text-align: center; color: white; margin-bottom: 15px;">🤖 AI Advisor - Ask for Help!</h2>
+        <p style="text-align: center; color: white; margin-bottom: 20px; font-size: 14px; opacity: 0.9;">
+            Powered by Cloudflare Workers AI 🔮
+        </p>
+        
+        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 15px;">
+            <textarea 
+                id="aiQuestion" 
+                placeholder="Ask anything: 'What should I do?', 'How to level up faster?', 'My pet looks sad...'"
+                style="width: 100%; min-height: 80px; padding: 15px; border-radius: 10px; border: none; font-size: 14px; resize: vertical; font-family: inherit;"
+            ></textarea>
+        </div>
+        
+        <button onclick="askAIAdvisor()" style="background: white; color: #667eea; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 15px; transition: transform 0.2s;">
+            🤖 Ask AI
+        </button>
+        
+        <div id="aiResponse" style="display: none; background: rgba(255,255,255,0.15); padding: 20px; border-radius: 15px; margin-top: 15px;">
+            <h3 style="color: white; margin-bottom: 10px; font-size: 16px;">💡 AI Advice:</h3>
+            <p id="aiAdviceText" style="color: white; line-height: 1.6; font-size: 14px;"></p>
         </div>
     </div>
 
@@ -3932,6 +3821,51 @@
             } catch (err) {
                 console.error('❌ Error generating pet:', err);
                 return null;
+            }
+        }
+
+        // 🤖 AI Advisor
+        window.askAIAdvisor = async function() {
+            const question = document.getElementById('aiQuestion').value.trim();
+            
+            if (!question) {
+                showNotification('❌ Please enter a question!');
+                return;
+            }
+            
+            try {
+                showNotification('🤖 AI is thinking...');
+                
+                // Get pet stats if available
+                const petStats = petData ? {
+                    health: petData.health,
+                    hunger: petData.hunger,
+                    happiness: petData.happiness
+                } : null;
+                
+                const response = await fetch(`${WORKERS_API}/ai/advisor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question,
+                        petStats: petStats
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.advice && data.advice.response) {
+                    document.getElementById('aiAdviceText').textContent = data.advice.response;
+                    document.getElementById('aiResponse').style.display = 'block';
+                    showNotification('✅ AI responded!');
+                } else {
+                    showNotification('❌ AI response failed');
+                }
+                
+                console.log('🤖 AI Advice:', data);
+            } catch (err) {
+                showNotification('❌ Error contacting AI');
+                console.error(err);
             }
         }
 

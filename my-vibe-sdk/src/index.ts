@@ -1,6 +1,7 @@
 /**
  * 🐣 Crypto Tamagotchi API
  * Backend для NFT Tamagotchi игры на Solana
+ * Powered by Cloudflare Workers AI
  */
 
 export default {
@@ -91,10 +92,125 @@ export default {
 					link: `https://crypto-tamagotchi.pages.dev?ref=${referralCode}`,
 					bonus: 100
 				}, {
-					headers: { 'Access-Control-Allow-Origin': '*' }
+					headers: corsHeaders
 				});
 			} catch (err) {
-				return Response.json({ error: 'Invalid request' }, { status: 400 });
+				return Response.json({ error: 'Invalid request' }, { 
+					status: 400,
+					headers: corsHeaders 
+				});
+			}
+		}
+
+		// 🤖 AI: Генерация питомца по описанию
+		if (url.pathname === '/ai/generate-pet' && request.method === 'POST') {
+			try {
+				const { description } = await request.json();
+
+				const response = await env.AI.run('@cf/meta/llama-2-7b-chat-int8', {
+					messages: [
+						{
+							role: 'system',
+							content: 'You are a creative fantasy pet designer. Generate unique pet traits in JSON format with: species, color, rarity (Common/Rare/Epic/Legendary), special_ability, personality. Be creative and unique!'
+						},
+						{
+							role: 'user',
+							content: `Create a unique fantasy pet based on: ${description || 'random creative idea'}`
+						}
+					]
+				});
+
+				return Response.json({
+					ai_response: response,
+					description: description,
+					timestamp: new Date().toISOString()
+				}, {
+					headers: corsHeaders
+				});
+			} catch (err) {
+				return Response.json({ 
+					error: 'AI generation failed',
+					message: err.message 
+				}, { 
+					status: 500,
+					headers: corsHeaders 
+				});
+			}
+		}
+
+		// 💬 AI: Советник по уходу за питомцем
+		if (url.pathname === '/ai/advisor' && request.method === 'POST') {
+			try {
+				const { question, petStats } = await request.json();
+
+				const statsContext = petStats 
+					? `Pet stats - Health: ${petStats.health}, Hunger: ${petStats.hunger}, Happiness: ${petStats.happiness}`
+					: 'General question';
+
+				const response = await env.AI.run('@cf/meta/llama-2-7b-chat-int8', {
+					messages: [
+						{
+							role: 'system',
+							content: 'You are a helpful Tamagotchi game advisor. Give short, practical advice in 2-3 sentences. Be friendly and encouraging!'
+						},
+						{
+							role: 'user',
+							content: `${statsContext}\n\nQuestion: ${question}`
+						}
+					]
+				});
+
+				return Response.json({
+					advice: response,
+					question: question,
+					timestamp: new Date().toISOString()
+				}, {
+					headers: corsHeaders
+				});
+			} catch (err) {
+				return Response.json({ 
+					error: 'AI advisor failed',
+					message: err.message 
+				}, { 
+					status: 500,
+					headers: corsHeaders 
+				});
+			}
+		}
+
+		// 🎨 AI: Генерация описания для NFT
+		if (url.pathname === '/ai/describe-nft' && request.method === 'POST') {
+			try {
+				const { species, rarity, level } = await request.json();
+
+				const response = await env.AI.run('@cf/meta/llama-2-7b-chat-int8', {
+					messages: [
+						{
+							role: 'system',
+							content: 'You are a creative NFT description writer. Write engaging 2-3 sentence descriptions for digital pets. Be creative and vivid!'
+						},
+						{
+							role: 'user',
+							content: `Write NFT description for: ${rarity} ${species}, Level ${level}`
+						}
+					]
+				});
+
+				return Response.json({
+					description: response,
+					metadata: { species, rarity, level },
+					timestamp: new Date().toISOString()
+				}, {
+					headers: corsHeaders
+				});
+			} catch (err) {
+				return Response.json({ 
+					error: 'NFT description failed',
+					message: err.message 
+				}, { 
+					status: 500,
+					headers: corsHeaders 
+				});
 			}
 		}
 
