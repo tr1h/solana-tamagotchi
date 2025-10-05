@@ -770,6 +770,134 @@
             }
         }
 
+        /* 📱 MOBILE OPTIMIZATION - Улучшенный дизайн для телефона */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px 5px;
+                align-items: flex-start;
+            }
+
+            .container {
+                padding: 15px;
+                max-width: 100%;
+                margin: 5px 0;
+                border-radius: 20px;
+                animation: none; /* Отключаем плавающую анимацию на мобильных */
+            }
+
+            /* 🎯 Кнопки в один ряд по 2 */
+            .action-buttons {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px !important;
+                margin-top: 15px;
+            }
+
+            .action-buttons button {
+                width: 100%;
+                padding: 12px 8px !important;
+                font-size: 14px !important;
+                white-space: nowrap;
+            }
+
+            /* 📊 Статистика компактно */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .stat-item {
+                padding: 10px !important;
+            }
+
+            .stat-value {
+                font-size: 18px !important;
+            }
+
+            /* 🏆 Leaderboard компактно */
+            .leaderboard-item {
+                padding: 10px !important;
+                font-size: 13px !important;
+            }
+
+            /* 💾 Уменьшаем отступы */
+            h1 {
+                font-size: 24px !important;
+                margin-bottom: 10px !important;
+            }
+
+            h2 {
+                font-size: 18px !important;
+                margin-bottom: 10px !important;
+            }
+
+            h3 {
+                font-size: 16px !important;
+            }
+
+            p {
+                font-size: 14px !important;
+            }
+
+            /* 🐣 Pet display */
+            .pet-display {
+                padding: 15px !important;
+            }
+
+            .pet-sprite {
+                font-size: 60px !important;
+            }
+
+            /* 📊 Progress bars */
+            .stat-row {
+                margin: 8px 0 !important;
+            }
+
+            .stat-bar {
+                height: 18px !important;
+            }
+
+            /* 🎨 Убираем лишние отступы */
+            .notification {
+                bottom: 70px !important;
+                left: 10px;
+                right: 10px;
+                width: auto !important;
+            }
+
+            /* ✨ Floating particles - меньше на мобильных */
+            .particle {
+                display: none; /* Отключаем частицы для производительности */
+            }
+
+            body::before,
+            body::after {
+                opacity: 0.3; /* Уменьшаем яркость декоративных элементов */
+            }
+        }
+
+        /* 📱 ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (< 400px) */
+        @media (max-width: 400px) {
+            .container {
+                padding: 12px;
+                border-radius: 15px;
+            }
+
+            .action-buttons button {
+                padding: 10px 6px !important;
+                font-size: 13px !important;
+            }
+
+            h1 {
+                font-size: 20px !important;
+            }
+
+            .pet-sprite {
+                font-size: 50px !important;
+            }
+        }
+
     </style>
 
 </head>
@@ -931,7 +1059,7 @@
             </div>
 
             <!-- Actions -->
-            <div class="actions">
+            <div class="actions action-buttons">
                 <button class="action-btn" onclick="feedPet()" id="feedBtn">
                     🍖 Feed
                     <div class="token-cost">5 TAMA</div>
@@ -2398,13 +2526,29 @@
                 const tokenProgramId = new window.solanaWeb3.PublicKey(TOKEN_PROGRAM_ID);
                 const discriminator = await getInstructionDiscriminator(actionName);
 
-                // ✅ Правильное вычисление Associated Token Account с помощью SPL Token
-                const tokenAccountPubkey = window.splToken.getAssociatedTokenAddressSync(
-                    tokenMintPubkey,
-                    wallet.publicKey,
-                    false, // allowOwnerOffCurve
-                    tokenProgramId
-                );
+                // ✅ Правильное вычисление Associated Token Account
+                // Fallback если библиотека не загрузилась
+                let tokenAccountPubkey;
+                
+                if (window.splToken && window.splToken.getAssociatedTokenAddressSync) {
+                    tokenAccountPubkey = window.splToken.getAssociatedTokenAddressSync(
+                        tokenMintPubkey,
+                        wallet.publicKey,
+                        false,
+                        tokenProgramId
+                    );
+                } else {
+                    // Fallback: вычисляем ATA вручную
+                    const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+                    [tokenAccountPubkey] = window.solanaWeb3.PublicKey.findProgramAddressSync(
+                        [
+                            wallet.publicKey.toBuffer(),
+                            tokenProgramId.toBuffer(),
+                            tokenMintPubkey.toBuffer(),
+                        ],
+                        associatedTokenProgram
+                    );
+                }
                 
                 console.log('🔑 Token Account (ATA):', tokenAccountPubkey.toString());
 
@@ -2416,16 +2560,34 @@
                     if (!accountInfo) {
                         console.log('🔨 Создаю Associated Token Account...');
                         
-                        // Используем правильную инструкцию из SPL Token
                         const associatedTokenProgram = new window.solanaWeb3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
-                        const createATAIx = window.splToken.createAssociatedTokenAccountInstruction(
-                            wallet.publicKey,     // payer
-                            tokenAccountPubkey,   // ata
-                            wallet.publicKey,     // owner
-                            tokenMintPubkey,      // mint
-                            tokenProgramId,       // token program
-                            associatedTokenProgram // ata program
-                        );
+                        
+                        // Используем SPL Token если доступен, иначе manual instruction
+                        let createATAIx;
+                        if (window.splToken && window.splToken.createAssociatedTokenAccountInstruction) {
+                            createATAIx = window.splToken.createAssociatedTokenAccountInstruction(
+                                wallet.publicKey,
+                                tokenAccountPubkey,
+                                wallet.publicKey,
+                                tokenMintPubkey,
+                                tokenProgramId,
+                                associatedTokenProgram
+                            );
+                        } else {
+                            // Fallback: manual instruction
+                            createATAIx = new window.solanaWeb3.TransactionInstruction({
+                                keys: [
+                                    { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+                                    { pubkey: tokenAccountPubkey, isSigner: false, isWritable: true },
+                                    { pubkey: wallet.publicKey, isSigner: false, isWritable: false },
+                                    { pubkey: tokenMintPubkey, isSigner: false, isWritable: false },
+                                    { pubkey: window.solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+                                    { pubkey: tokenProgramId, isSigner: false, isWritable: false },
+                                ],
+                                programId: associatedTokenProgram,
+                                data: new Uint8Array([]),
+                            });
+                        }
                         transaction.add(createATAIx);
                         console.log('✅ ATA instruction added');
                     } else {
@@ -4038,8 +4200,8 @@
                     await updateLeaderboardData();
                     await addToHistory(actionType, {
                         timestamp: Date.now(),
-                        petLevel: petData?.level,
-                        petHealth: petData?.health
+                        petLevel: realPetData?.level || 1,
+                        petHealth: realPetData?.health || 100
                     });
                 }
                 
