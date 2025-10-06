@@ -9,10 +9,12 @@ export default {
 		const url = new URL(request.url);
 
 		// 🔧 CORS Headers для всех запросов
-		const corsHeaders = {
+        const corsHeaders = {
 			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-			'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            // 🔒 Basic CSP for beta (tighten for prod)
+            'Content-Security-Policy': "default-src 'self' *; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' https:; connect-src *;"
 		};
 
 		// ✅ Handle OPTIONS preflight request
@@ -291,10 +293,40 @@ export default {
 			}
 		}
 
-		// 💬 AI: Советник по уходу за питомцем
+        // Helpers: sanitize & rate-limit
+        const sanitize = (str: string): string => {
+            return String(str)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        };
+
+        const rateLimit = async (env: Env, key: string, limit: number, windowSec: number) => {
+            const nowBucket = Math.floor(Date.now() / 1000 / windowSec);
+            const rlKey = `rl:${key}:${nowBucket}`;
+            const current = await env.CACHE.get(rlKey);
+            const count = current ? parseInt(current) : 0;
+            if (count >= limit) return false;
+            await env.CACHE.put(rlKey, String(count + 1), { expirationTtl: windowSec });
+            return true;
+        };
+
+        // 💬 AI: Советник по уходу за питомцем
 		if (url.pathname === '/ai/advisor' && request.method === 'POST') {
 			try {
-				const { question, petStats } = await request.json();
+                // Simple body size guard
+                const raw = await request.clone().text();
+                if (raw.length > 10_000) {
+                    return Response.json({ error: 'Payload too large' }, { status: 413, headers: corsHeaders });
+                }
+                const { question, petStats } = JSON.parse(raw || '{}');
+
+                // Rate limit per IP (12 req/min)
+                const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+                const allowed = await rateLimit(env, `ai:${ip}`, 12, 60);
+                if (!allowed) {
+                    return Response.json({ error: 'Rate limit exceeded' }, { status: 429, headers: corsHeaders });
+                }
 
 				const statsContext = petStats 
 					? `Pet stats - Health: ${petStats.health}, Hunger: ${petStats.hunger}, Happiness: ${petStats.happiness}`
@@ -321,7 +353,7 @@ export default {
 					headers: corsHeaders
 				});
 			} catch (err) {
-				return Response.json({ 
+                return Response.json({ 
 					error: 'AI advisor failed',
 					message: err.message 
 				}, { 
@@ -368,7 +400,7 @@ export default {
 		}
 
 		// 💬 CHAT: Получить последние сообщения
-		if (url.pathname === '/chat/messages') {
+        if (url.pathname === '/chat/messages') {
 			try {
 				const chatKey = 'chat_messages';
 				let messages = await env.HISTORY.get(chatKey, { type: 'json' }) || [];
@@ -383,17 +415,32 @@ export default {
 		}
 
 		// 💬 CHAT: Отправить сообщение
-		if (url.pathname === '/chat/send' && request.method === 'POST') {
+        if (url.pathname === '/chat/send' && request.method === 'POST') {
 			try {
-				const { wallet, message } = await request.json();
+                // Guard body size
+                const raw = await request.clone().text();
+                if (raw.length > 5000) {
+                    return Response.json({ error: 'Payload too large' }, { status: 413, headers: corsHeaders });
+                }
+                const { wallet, message } = JSON.parse(raw || '{}');
 				
 				if (!wallet || !message) {
 					return Response.json({ error: 'Wallet and message required' }, { status: 400, headers: corsHeaders });
 				}
 				
-				if (message.length > 200) {
+                if (message.length > 200) {
 					return Response.json({ error: 'Message too long' }, { status: 400, headers: corsHeaders });
 				}
+
+                // Rate limit by IP+wallet (10 msgs/60s)
+                const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+                const ok = await rateLimit(env, `chat:${ip}:${wallet}`, 10, 60);
+                if (!ok) {
+                    return Response.json({ error: 'Rate limit exceeded' }, { status: 429, headers: corsHeaders });
+                }
+
+                // Sanitize text
+                const clean = sanitize(message);
 				
 				// Получить существующие сообщения
 				const chatKey = 'chat_messages';
@@ -402,7 +449,7 @@ export default {
 				// Добавить новое сообщение
 				const newMessage = {
 					wallet,
-					message,
+                    message: clean,
 					timestamp: Date.now()
 				};
 				
