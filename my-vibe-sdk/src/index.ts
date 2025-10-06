@@ -9,12 +9,14 @@ export default {
 		const url = new URL(request.url);
 
 		// 🔧 CORS Headers для всех запросов
-        const corsHeaders = {
+		const corsHeaders = {
 			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            // 🔒 Basic CSP for beta (tighten for prod)
-            'Content-Security-Policy': "default-src 'self' *; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' https:; connect-src *;"
+			'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+			'Access-Control-Allow-Credentials': 'true',
+			'Vary': 'Origin',
+			// 🔒 Basic CSP for beta (tighten for prod)
+			'Content-Security-Policy': "default-src 'self' *; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' https:; connect-src *;"
 		};
 
 		// ✅ Handle OPTIONS preflight request
@@ -121,8 +123,26 @@ export default {
 			}
 		}
 
-		// 📝 Обновить leaderboard
-		if (url.pathname === '/leaderboard/update' && request.method === 'POST') {
+	// 🗑️ Очистить leaderboard (admin)
+	if (url.pathname === '/leaderboard/clear' && request.method === 'POST') {
+		try {
+			const list = await env.LEADERBOARD.list();
+			for (const key of list.keys) {
+				await env.LEADERBOARD.delete(key.name);
+			}
+			return Response.json({ success: true, cleared: list.keys.length }, {
+				headers: corsHeaders
+			});
+		} catch (err) {
+			return Response.json({ error: err.message }, { 
+				status: 500,
+				headers: corsHeaders 
+			});
+		}
+	}
+
+	// 📝 Обновить leaderboard
+	if (url.pathname === '/leaderboard/update' && request.method === 'POST') {
 			try {
 				const { wallet, level, experience, petName } = await request.json();
 				
@@ -518,12 +538,67 @@ export default {
             const health_penalty_base_per10m = await getFlag(env, 'health_penalty_base_per10m', '1');
             const health_penalty_if_hunger0_per10m = await getFlag(env, 'health_penalty_if_hunger0_per10m', '1');
             const health_penalty_if_two_zero_per10m = await getFlag(env, 'health_penalty_if_two_zero_per10m', '1');
-            return Response.json({ 
-                chat_enabled, ai_enabled, decay_multiplier,
-                hunger_decay_per10m, energy_decay_per10m, happiness_decay_per10m,
-                health_penalty_base_per10m, health_penalty_if_hunger0_per10m, health_penalty_if_two_zero_per10m
-            }, { headers: corsHeaders });
+			return Response.json({ 
+				chat_enabled, ai_enabled, decay_multiplier,
+				hunger_decay_per10m, energy_decay_per10m, happiness_decay_per10m,
+				health_penalty_base_per10m, health_penalty_if_hunger0_per10m, health_penalty_if_two_zero_per10m
+			}, { headers: corsHeaders });
         }
+
+		// 🖱️ Click EXP: limited by IP+wallet and daily cap in KV
+		if (url.pathname === '/click/exp' && request.method === 'POST') {
+			try {
+				const raw = await request.clone().text();
+				if (raw.length > 2000) return Response.json({ error: 'Payload too large' }, { status: 413, headers: corsHeaders });
+				const { wallet } = JSON.parse(raw || '{}');
+				if (!wallet) return Response.json({ error: 'Wallet required' }, { status: 400, headers: corsHeaders });
+
+				// Basic anti-bot: require visible referer origin if available (best-effort)
+				const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+				const ok = await rateLimit(env, `click:${ip}:${wallet}`, 10, 1); // 10 req/sec
+				if (!ok) return Response.json({ error: 'Too fast' }, { status: 429, headers: corsHeaders });
+
+				// Daily cap 600 EXP per wallet
+				const dayBucket = new Date();
+				const dayKey = `clickexp:${wallet}:${dayBucket.getUTCFullYear()}-${String(dayBucket.getUTCMonth()+1).padStart(2,'0')}-${String(dayBucket.getUTCDate()).padStart(2,'0')}`;
+				const cur = await env.CACHE.get(dayKey);
+				const used = cur ? parseInt(cur) : 0;
+				const DAILY_CAP = 600;
+				if (used >= DAILY_CAP) {
+					return Response.json({ ok: false, reason: 'cap', cap: DAILY_CAP, used }, { headers: corsHeaders });
+				}
+
+				// Award small exp per click with combo multiplier server-side (short window)
+				const comboKey = `combo:${wallet}`;
+				const comboRaw = await env.CACHE.get(comboKey);
+				let combo = comboRaw ? parseInt(comboRaw) : 0;
+				combo = Math.min(3, combo + 1); // x1..x3
+				await env.CACHE.put(comboKey, String(combo), { expirationTtl: 3 }); // reset after 3s idle
+
+				const base = 1; // 1 EXP per click
+				const gain = base * combo;
+				const next = Math.min(DAILY_CAP, used + gain);
+
+				// Set TTL to end of UTC day
+				const endOfDay = new Date(Date.UTC(dayBucket.getUTCFullYear(), dayBucket.getUTCMonth(), dayBucket.getUTCDate() + 1, 0, 0, 0));
+				const ttlSec = Math.max(60, Math.floor((endOfDay.getTime() - Date.now()) / 1000));
+				await env.CACHE.put(dayKey, String(next), { expirationTtl: ttlSec });
+
+				// Optionally update leaderboard score lightweight (experience only)
+				try {
+					const existing = await env.LEADERBOARD.get(wallet, 'json');
+					const level = existing?.level || 1;
+					const experience = (existing?.experience || 0) + gain;
+					const petName = existing?.petName || 'Pet';
+					const score = (level * 1000) + experience;
+					await env.LEADERBOARD.put(wallet, JSON.stringify({ wallet, level, experience, score, petName, lastUpdated: Date.now() }));
+				} catch {}
+
+				return Response.json({ ok: true, gain, combo, used: next, cap: DAILY_CAP }, { headers: corsHeaders });
+			} catch (err) {
+				return Response.json({ error: 'click exp failed', message: err.message }, { status: 500, headers: corsHeaders });
+			}
+		}
 
         if (url.pathname === '/admin/chat/mute' && request.method === 'POST') {
             const raw = await request.clone().text();
@@ -814,7 +889,10 @@ export default {
 			</body>
 			</html>
 		`, {
-			headers: { 'Content-Type': 'text/html; charset=utf-8' }
+			headers: { 
+				'Content-Type': 'text/html; charset=utf-8',
+				...corsHeaders
+			}
 		});
 	},
 } satisfies ExportedHandler<Env>;
