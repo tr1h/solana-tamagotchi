@@ -2981,6 +2981,9 @@
                 // 🎯 Обновить TAMA баланс после действия
                 await updateTamaBalance();
                 
+                // 📊 Обновить leaderboard
+                await updateLeaderboardData();
+                
             } catch (err) {
                 console.error('Ошибка:', err);
                 
@@ -4458,25 +4461,7 @@
             }
         }
 
-        // 🔄 Обновляем leaderboard после действий
-        const originalPerformAction = window.performAction;
-        if (originalPerformAction) {
-            window.performAction = async function(actionType) {
-                const result = await originalPerformAction(actionType);
-                
-                // После успешного действия обновляем leaderboard и историю
-                if (result !== false) {
-                    await updateLeaderboardData();
-                    await addToHistory(actionType, {
-                        timestamp: Date.now(),
-                        petLevel: realPetData?.level || 1,
-                        petHealth: realPetData?.health || 100
-                    });
-                }
-                
-                return result;
-            };
-        }
+        // Leaderboard обновляется внутри performAction автоматически
 
         // 💬 CHAT FUNCTIONS (reuse existing chatMessages)
         // let chatMessages = [];
