@@ -427,14 +427,14 @@ pub mod tamagotchi {
         let clock = Clock::get()?;
 
         let time_passed = clock.unix_timestamp - pet.last_decay_time;
-        if time_passed < 60 {
-            return Ok(()); // Минимум 1 минута между обновлениями
+        if time_passed < 600 {
+            return Ok(()); // Минимум 10 минут между обновлениями
         }
 
-        // Decay каждую минуту (CASUAL режим: -1 за минуту)
-        let decay_cycles = (time_passed / 60) as u8;
+        // 🐢 ОЧЕНЬ МЕДЛЕННЫЙ Decay: -1 каждые 10 минут (x10 медленнее!)
+        let decay_cycles = (time_passed / 600) as u8; // 600 секунд = 10 минут
 
-        // Уменьшение параметров (более мягкий баланс)
+        // Уменьшение параметров (ОЧЕНЬ мягкий баланс для игры без постоянного внимания)
         pet.hunger = pet.hunger.saturating_sub(decay_cycles);
         pet.happiness = pet.happiness.saturating_sub(decay_cycles);
         pet.energy = pet.energy.saturating_sub(decay_cycles);
