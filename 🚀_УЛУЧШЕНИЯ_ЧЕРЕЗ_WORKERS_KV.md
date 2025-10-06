@@ -478,3 +478,5 @@ await env.STATS.put('global', JSON.stringify(stats));
 Полноценная игра с базой данных!
 
 **ВЫБИРАЙ!** 💪
+
+

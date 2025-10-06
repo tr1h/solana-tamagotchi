@@ -460,3 +460,5 @@ https://crypto-tamagotchi.pages.dev/tamagotchi_devnet_v2_improved.html
 ---
 
 **ГОТОВО! ТЕСТИРУЙ!** 🎉🚀💾
+
+

@@ -24,3 +24,5 @@ git push -u origin main
 echo.
 echo ✅ ГОТОВО! Проверь: https://github.com/tr1h/crypto-tamagotchi
 pause
+
+

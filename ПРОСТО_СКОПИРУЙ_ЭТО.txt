@@ -59,3 +59,5 @@ solana address -k target/deploy/tamagotchi-keypair.json
 
 
 
+
+

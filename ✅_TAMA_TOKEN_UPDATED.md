@@ -195,3 +195,5 @@ Game: https://crypto-tamagotchi.pages.dev/tamagotchi_devnet_v2_improved.html
 Token: 74KGR9mdiiiqVW9QCnFmZz8cyj39ZoCaKexrSxF8fpQD
 Network: Devnet
 ```
+
+

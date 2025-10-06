@@ -162,3 +162,5 @@ Write-Host "   - Используйте: solana-keygen pubkey $walletPath для
 
 
 
+
+

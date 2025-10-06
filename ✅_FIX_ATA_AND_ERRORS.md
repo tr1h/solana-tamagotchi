@@ -276,3 +276,5 @@ const ata = splToken.getAssociatedTokenAddressSync(mint, owner);
 - ✅ Нет ошибок
 
 **ДЕПЛОЙ И ТЕСТИРУЙ!** 🚀
+
+

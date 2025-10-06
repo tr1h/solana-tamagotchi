@@ -2539,10 +2539,9 @@
             const now = Date.now() / 1000;
             const timePassed = now - pet.lastDecayTime;
             
-            if (timePassed < 60) {
+            if (timePassed < 600) {
                 return {
                     hunger: pet.hunger,
-                    thirst: pet.thirst || 100, // Default to 100 if not set
                     happiness: pet.happiness,
                     energy: pet.energy,
                     health: pet.health,
@@ -2551,25 +2550,32 @@
                 };
             }
             
-            const decayCycles = Math.floor(timePassed / 60);
+            // Decay каждые 10 минут, согласовано со смарт-контрактом
+            const decayCycles = Math.floor(timePassed / 600);
             
-            // 💡 НОВЫЙ DECAY: -1 за минуту для всех статов
-            let virtualHunger = Math.max(0, pet.hunger - decayCycles);
-            let virtualThirst = Math.max(0, (pet.thirst || 100) - decayCycles);
-            let virtualHappiness = Math.max(0, pet.happiness - decayCycles);
-            let virtualEnergy = Math.max(0, pet.energy - decayCycles);
+            // Разные скорости убывания статов
+            const hungerDecay = decayCycles * 2; // -2 за 10 минут
+            const energyDecay = decayCycles * 1; // -1 за 10 минут
+            const happinessDecay = decayCycles * 1; // -1 за 10 минут
+            
+            let virtualHunger = Math.max(0, pet.hunger - hungerDecay);
+            let virtualEnergy = Math.max(0, pet.energy - energyDecay);
+            let virtualHappiness = Math.max(0, pet.happiness - happinessDecay);
             let virtualHealth = pet.health;
             
-            // Если ЛЮБОЙ stat = 0, health падает -3 за минуту
-            if (virtualHunger === 0 || virtualThirst === 0 || virtualHappiness === 0 || virtualEnergy === 0) {
-                virtualHealth = Math.max(0, virtualHealth - (decayCycles * 3));
+            // Штрафы к здоровью при нулевых статах
+            const zeros = (virtualHunger === 0 ? 1 : 0) + (virtualEnergy === 0 ? 1 : 0) + (virtualHappiness === 0 ? 1 : 0);
+            if (zeros > 0) {
+                let healthPenalty = decayCycles; // базовый -1 за цикл
+                if (virtualHunger === 0) healthPenalty += decayCycles; // +1 если голод = 0
+                if (zeros >= 2) healthPenalty += decayCycles; // +1 если два и более нулевых
+                virtualHealth = Math.max(0, virtualHealth - healthPenalty);
             }
             
             const virtualAlive = virtualHealth > 0;
             
             return {
                 hunger: virtualHunger,
-                thirst: virtualThirst,
                 happiness: virtualHappiness,
                 energy: virtualEnergy,
                 health: virtualHealth,
@@ -4555,8 +4561,8 @@
             };
         }
 
-        // 💬 CHAT FUNCTIONS
-        let chatMessages = [];
+        // 💬 CHAT FUNCTIONS (reuse existing chatMessages)
+        // let chatMessages = [];
         
         async function loadChatMessages() {
             try {

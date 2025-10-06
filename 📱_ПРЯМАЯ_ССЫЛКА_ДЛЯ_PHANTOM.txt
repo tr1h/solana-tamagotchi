@@ -42,3 +42,5 @@ crypto-tamagotchi.pages.dev
 Шаг 4: Играй!
 [Connect Wallet] → ✅ Connected!
 
+
+
