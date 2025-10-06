@@ -1699,22 +1699,22 @@
         
         window.connectWallet = async function() {
             try {
-                // 📱 Мобильная поддержка: проверяем и Phantom и другие кошельки
-                const isPhantomMobile = window.solana && window.solana.isPhantom;
-                const isMobileWallet = window.solana && (window.solana.isPhantom || window.solana.isSolflare || window.solana.isCoin98);
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                 
+                // 📱 МОБИЛЬНАЯ ВЕРСИЯ: Проверяем кошелек
                 if (!window.solana) {
-                    showNotification('❌ Please install Phantom Wallet!');
-                    // На мобильных открываем deep link
-                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
                     if (isMobile) {
-                        window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href) + '?ref=phantom';
+                        // Показываем инструкцию для мобильных
+                        showMobileInstructions();
                     } else {
+                        // Desktop: просто предлагаем установить
+                        showNotification('❌ Please install Phantom Wallet!');
                         window.open('https://phantom.app/', '_blank');
                     }
                     return;
                 }
 
+                // Пробуем подключиться
                 const resp = await window.solana.connect();
                 wallet = window.solana;
                 
@@ -3700,6 +3700,54 @@
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 3000);
+        }
+
+        // 📱 МОБИЛЬНАЯ ИНСТРУКЦИЯ
+        function showMobileInstructions() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+                    <h2 style="color: white; margin: 0 0 20px 0; text-align: center; font-size: 24px;">📱 Open in Phantom App</h2>
+                    
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                        <p style="color: white; margin: 0 0 15px 0; font-size: 16px; line-height: 1.6;">
+                            To play on mobile, you need to open this game inside the Phantom app:
+                        </p>
+                        
+                        <ol style="color: white; margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.8;">
+                            <li>Install Phantom app from App Store/Google Play</li>
+                            <li>Open Phantom app</li>
+                            <li>Tap the Browser icon (🌐) at the bottom</li>
+                            <li>Enter this URL: <strong style="color: #FFD700;">crypto-tamagotchi.pages.dev</strong></li>
+                            <li>Tap "Connect Wallet" button</li>
+                        </ol>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: white; color: #667eea; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 10px;">
+                        ✅ Got it!
+                    </button>
+                    
+                    <a href="https://phantom.app/download" target="_blank" style="display: block; text-align: center; color: white; text-decoration: none; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 12px; font-weight: bold;">
+                        📥 Download Phantom App
+                    </a>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
 
         // ============================================================================
