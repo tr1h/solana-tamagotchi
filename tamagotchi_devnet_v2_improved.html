@@ -4505,7 +4505,7 @@
             if (!wallet || !realPetData) return;
             
             try {
-                await fetch(`${WORKERS_API}/leaderboard/update`, {
+                const response = await fetch(`${WORKERS_API}/leaderboard/update`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -4516,9 +4516,16 @@
                     })
                 });
                 
-                console.log('✅ Leaderboard updated');
+                if (response.ok) {
+                    console.log('✅ Leaderboard updated');
+                } else {
+                    const errorData = await response.json();
+                    console.log('⚠️ Leaderboard update failed:', errorData.message || 'Unknown error');
+                    // Не показываем ошибку пользователю, так как игра продолжает работать
+                }
             } catch (err) {
-                console.log('⚠️ Failed to update leaderboard:', err);
+                console.log('⚠️ Failed to update leaderboard:', err.message);
+                // Игра продолжает работать даже без обновления лидерборда
             }
         }
 

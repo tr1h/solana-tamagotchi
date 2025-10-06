@@ -81,8 +81,21 @@ export default {
 			}
 		}
 
-		// 🏆 Топ игроков (с KV)
-		if (url.pathname === '/leaderboard') {
+	// 🏆 Топ игроков (с KV) - с кэшированием
+	if (url.pathname === '/leaderboard') {
+		try {
+			// Сначала проверяем кэш
+			const cached = await env.LEADERBOARD.get('leaderboard_cache', 'json');
+			const cacheTime = await env.LEADERBOARD.get('leaderboard_cache_time', 'text');
+			
+			// Если кэш свежий (менее 5 минут), возвращаем его
+			if (cached && cacheTime && (Date.now() - parseInt(cacheTime)) < 300000) {
+				return Response.json(cached, {
+					headers: corsHeaders
+				});
+			}
+			
+			// Иначе обновляем кэш (но только если не превышен лимит)
 			try {
 				const list = await env.LEADERBOARD.list({ limit: 100 });
 				const players = await Promise.all(
@@ -102,17 +115,30 @@ export default {
 						rank: i + 1
 					}));
 
+				// Сохраняем в кэш
+				await env.LEADERBOARD.put('leaderboard_cache', JSON.stringify(sorted));
+				await env.LEADERBOARD.put('leaderboard_cache_time', Date.now().toString());
+
 				return Response.json(sorted, {
 					headers: corsHeaders
 				});
-			} catch (err) {
-				// Fallback to fake data
-				const leaders = [];
-				for (let i = 1; i <= 10; i++) {
-					leaders.push({
-						rank: i,
-						wallet: `${crypto.randomUUID().slice(0, 8)}...${crypto.randomUUID().slice(0, 4)}`,
-						level: 51 - i,
+			} catch (listErr) {
+				// Если list() превышает лимит, возвращаем кэш или fallback
+				if (cached) {
+					return Response.json(cached, {
+						headers: corsHeaders
+					});
+				}
+				throw listErr;
+			}
+		} catch (err) {
+			// Fallback to fake data
+			const leaders = [];
+			for (let i = 1; i <= 10; i++) {
+				leaders.push({
+					rank: i,
+					wallet: `${crypto.randomUUID().slice(0, 8)}...${crypto.randomUUID().slice(0, 4)}`,
+					level: 51 - i,
 						score: 10000 - (i * 500),
 						petName: `Dragon #${Math.floor(Math.random() * 1000)}`
 					});
@@ -156,6 +182,10 @@ export default {
 					petName: petName || `Pet #${Math.floor(Math.random() * 10000)}`,
 					lastUpdated: Date.now()
 				}));
+
+				// Инвалидируем кэш лидерборда
+				await env.LEADERBOARD.delete('leaderboard_cache');
+				await env.LEADERBOARD.delete('leaderboard_cache_time');
 
 				// Обновляем глобальную статистику
 				const stats = await env.STATS.get('global', 'json') || {
