@@ -1161,7 +1161,11 @@
         <!-- Экран игры -->
         <div id="gameScreen" style="display: none;">
             <div class="pet-display" id="petDisplay">
-                <div class="pet-sprite" id="petSprite">🐣</div>
+                <div class="pet-sprite" id="petSprite" onclick="clickPet()" style="cursor: pointer; transition: transform 0.1s;" 
+                    onmousedown="this.style.transform='scale(0.95)'" 
+                    onmouseup="this.style.transform='scale(1)'"
+                    ontouchstart="this.style.transform='scale(0.95)'" 
+                    ontouchend="this.style.transform='scale(1)'">🐣</div>
                 <div class="pet-name" id="petName">Pet</div>
                 <div class="pet-level" id="petLevel">Level 1</div>
                 <div class="pet-lives" id="petLives" style="font-size: 20px; margin-top: 5px;">❤️❤️❤️</div>
@@ -2834,6 +2838,72 @@
             // Пока что просто уведомление
         }
 
+        // 👆 КЛИКЕР ПО ПИТОМЦУ - ДАЕТ XP!
+        let lastClickTime = 0;
+        window.clickPet = function() {
+            if (!realPetData || !realPetData.isAlive) {
+                showNotification('❌ Create a pet first!');
+                return;
+            }
+            
+            const now = Date.now();
+            const cooldown = 1000; // 1 секунда между кликами
+            
+            if (now - lastClickTime < cooldown) {
+                return; // Слишком быстро, игнорируем
+            }
+            
+            lastClickTime = now;
+            
+            // +1 XP за клик
+            realPetData.experience += 1;
+            
+            // Визуальный эффект
+            const petSprite = document.getElementById('petSprite');
+            if (petSprite) {
+                // Показываем +1 XP
+                const xpPopup = document.createElement('div');
+                xpPopup.textContent = '+1 XP';
+                xpPopup.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -100%);
+                    color: #FFD700;
+                    font-weight: bold;
+                    font-size: 20px;
+                    pointer-events: none;
+                    animation: floatUp 1s ease-out forwards;
+                    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+                    z-index: 999;
+                `;
+                
+                // Создаем анимацию если её еще нет
+                if (!document.getElementById('floatUpAnimation')) {
+                    const style = document.createElement('style');
+                    style.id = 'floatUpAnimation';
+                    style.textContent = `
+                        @keyframes floatUp {
+                            0% { opacity: 1; transform: translate(-50%, -100%); }
+                            100% { opacity: 0; transform: translate(-50%, -200%); }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+                
+                petSprite.parentElement.style.position = 'relative';
+                petSprite.parentElement.appendChild(xpPopup);
+                
+                setTimeout(() => xpPopup.remove(), 1000);
+            }
+            
+            // Проверяем повышение уровня
+            checkLevelUp();
+            
+            // Обновляем UI
+            updateDisplay(realPetData);
+        }
+
         async function performAction(actionName, loadingMsg, successMsg, burnAmount) {
             if (!wallet || !petPubkey || isActionInProgress) return;
             
@@ -4001,41 +4071,12 @@
         <button onclick="closeAdminPanel()" style="width: 100%; padding: 10px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">❌ Закрыть</button>
     </div>
 
-    <!-- 💬 CHAT WIDGET -->
-    <div id="chatWidget" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
-        <button id="chatToggle" onclick="toggleChat()" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 3px solid rgba(255,255,255,0.3); cursor: pointer; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4); transition: all 0.3s;">
-            <span style="font-size: 28px;">💬</span>
-        </button>
-        
-        <div id="chatPopup" style="display: none; position: absolute; bottom: 80px; right: 0; width: 350px; height: 500px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); overflow: hidden; border: 2px solid rgba(102, 126, 234, 0.3);">
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; color: white; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-                <span>🐣 Gotchi Chat</span>
-                <button onclick="toggleChat()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
-            </div>
-            <div id="chatMessages" style="height: 380px; overflow-y: auto; padding: 15px; background: rgba(255,255,255,0.5);">
-                <div style="text-align: center; padding: 20px; color: #666;">
-                    <p>🎮 Welcome to Gotchi Game chat!</p>
-                    <p style="font-size: 0.9em; margin-top: 10px;">Connect wallet to start chatting!</p>
-                </div>
-            </div>
-            <div style="padding: 10px; background: rgba(255,255,255,0.8); border-top: 1px solid rgba(0,0,0,0.1);">
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="chatInput" placeholder="Type message..." style="flex: 1; padding: 10px; border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 20px; outline: none;" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                    <button onclick="sendChatMessage()" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Send</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- 🚰 DEVNET FAUCET BUTTON -->
     <button id="faucetBtn" onclick="requestDevnetAirdrop()" style="display: none; position: fixed; top: 80px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #00D4AA 0%, #00A8CC 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3); z-index: 999;">
         🚰 Get Devnet SOL
     </button>
 
-    <!-- 💰 TAMA TOKEN FAUCET BUTTON -->
-    <button id="tamaFaucetBtn" onclick="requestTamaTokens()" style="display: none; position: fixed; top: 140px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); z-index: 999;">
-        💰 Get Free TAMA
-    </button>
 
     <!-- 🐛 BUG REPORT BUTTON -->
     <button onclick="window.open('BUG_REPORT_FORM.html', '_blank')" style="display: block; position: fixed; top: 200px; right: 20px; padding: 12px 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); z-index: 999;">
@@ -4081,171 +4122,8 @@
     </div>
 
     <script>
-        // 💬 CHAT FUNCTIONS
-        let chatMessages = [];
-        let currentUser = null;
-
-        function toggleChat() {
-            const popup = document.getElementById('chatPopup');
-            const isVisible = popup.style.display !== 'none';
-            popup.style.display = isVisible ? 'none' : 'block';
-            
-            if (!isVisible && window.solana && window.solana.publicKey) {
-                if (!currentUser) {
-                    currentUser = window.solana.publicKey.toString().slice(0, 4) + '...' + window.solana.publicKey.toString().slice(-4);
-                }
-                loadChatMessages();
-            }
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            if (!window.solana || !window.solana.publicKey) {
-                showNotification('⚠️ Connect wallet to chat!');
-                return;
-            }
-            
-            const chatMessage = {
-                user: currentUser || 'Anonymous',
-                message: message,
-                timestamp: Date.now(),
-                wallet: window.solana.publicKey.toString()
-            };
-            
-            // Save to localStorage (simple solution)
-            chatMessages.push(chatMessage);
-            if (chatMessages.length > 100) chatMessages.shift(); // Keep last 100
-            localStorage.setItem('gotchiChat', JSON.stringify(chatMessages));
-            
-            displayChatMessage(chatMessage);
-            input.value = '';
-        }
-
-        function displayChatMessage(msg) {
-            const container = document.getElementById('chatMessages');
-            const isOwnMessage = window.solana && msg.wallet === window.solana.publicKey.toString();
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.style.cssText = `
-                margin-bottom: 10px;
-                padding: 10px;
-                background: ${isOwnMessage ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'rgba(255,255,255,0.8)'};
-                color: ${isOwnMessage ? 'white' : '#333'};
-                border-radius: 10px;
-                border: 2px solid ${isOwnMessage ? 'rgba(255,255,255,0.3)' : 'rgba(102, 126, 234, 0.2)'};
-            `;
-            
-            const time = new Date(msg.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            messageDiv.innerHTML = `
-                <div style="font-weight: bold; font-size: 0.85em; margin-bottom: 5px;">
-                    ${msg.user} <span style="opacity: 0.7; font-weight: normal;">${time}</span>
-                </div>
-                <div>${msg.message}</div>
-            `;
-            
-            container.appendChild(messageDiv);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function loadChatMessages() {
-            const stored = localStorage.getItem('gotchiChat');
-            if (stored) {
-                chatMessages = JSON.parse(stored);
-                const container = document.getElementById('chatMessages');
-                container.innerHTML = '';
-                chatMessages.forEach(msg => displayChatMessage(msg));
-            }
-        }
 
         // 🚰 DEVNET FAUCET
-        // 💰 TAMA Token Faucet
-        async function requestTamaTokens() {
-            if (!window.solana || !window.solana.publicKey) {
-                showNotification('⚠️ Connect wallet first!');
-                return;
-            }
-            
-            const walletAddress = window.solana.publicKey.toString();
-            
-            // Show modal with instructions
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10001; display: flex; justify-content: center; align-items: center; padding: 20px;';
-            modal.innerHTML = `
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 30px; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); color: white;">
-                    <h2 style="margin-bottom: 20px; text-align: center;">💰 Get Free TAMA Tokens</h2>
-                    
-                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                        <p style="margin-bottom: 10px;"><strong>Your Wallet:</strong></p>
-                        <p style="font-size: 0.85em; word-break: break-all; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px;">${walletAddress}</p>
-                    </div>
-                    
-                    <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                        <p style="margin-bottom: 10px;">📝 <strong>How to get TAMA:</strong></p>
-                        <ol style="margin-left: 20px; line-height: 1.8; font-size: 0.9em;">
-                            <li>Copy your wallet address above</li>
-                            <li>Click "Request Tokens" below</li>
-                            <li>You'll receive <strong>1000 TAMA</strong> tokens!</li>
-                            <li>Wait 10 seconds for confirmation</li>
-                        </ol>
-                    </div>
-                    
-                    <div style="background: rgba(76, 175, 80, 0.1); padding: 12px; border-radius: 10px; margin-bottom: 20px;">
-                        <p style="font-size: 0.9em; text-align: center;">
-                            ⚡ Faucet limit: <strong>1000 TAMA</strong> per request<br>
-                            ⏰ Cooldown: <strong>5 minutes</strong>
-                        </p>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="this.closest('div[style*=fixed]').remove()" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer;">
-                            Cancel
-                        </button>
-                        <button onclick="sendTamaAirdrop('${walletAddress}'); this.closest('div[style*=fixed]').remove();" style="flex: 2; padding: 12px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);">
-                            💰 Request 1000 TAMA
-                        </button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        // Send TAMA tokens via airdrop script
-        async function sendTamaAirdrop(walletAddress) {
-            try {
-                showNotification('💰 Requesting TAMA tokens...');
-                
-                // Call airdrop script or backend API
-                // For now, show instructions
-                const lastAirdrop = localStorage.getItem('lastTamaAirdrop_' + walletAddress);
-                const now = Date.now();
-                
-                if (lastAirdrop && (now - parseInt(lastAirdrop)) < 5 * 60 * 1000) {
-                    const remainingTime = Math.ceil((5 * 60 * 1000 - (now - parseInt(lastAirdrop))) / 60000);
-                    showNotification(`⏰ Cooldown active! Wait ${remainingTime} more minutes.`);
-                    return;
-                }
-                
-                // Save airdrop time
-                localStorage.setItem('lastTamaAirdrop_' + walletAddress, now.toString());
-                
-                // Show success message with instructions
-                showNotification('✅ TAMA request sent! Check wallet in 10 seconds...');
-                
-                // Simulate airdrop (in production, call backend API)
-                setTimeout(() => {
-                    showNotification('⚠️ TAMA Faucet coming soon! For now, actions are FREE (no TAMA needed)');
-                    updateTamaBalance();
-                }, 3000);
-                
-            } catch (err) {
-                console.error('TAMA Airdrop error:', err);
-                showNotification('❌ Error requesting TAMA. Try again later.');
-            }
-        }
 
         async function requestDevnetAirdrop() {
             if (!window.solana || !window.solana.publicKey) {
