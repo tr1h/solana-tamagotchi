@@ -2553,12 +2553,16 @@
             }
             
             // Decay каждые 10 минут, согласовано со смарт-контрактом
-            const decayCycles = Math.floor(timePassed / 600) * (window.__decayMultiplier || 1);
+            const mult = (window.__decayMultiplier || 1);
+            const decayCycles = Math.floor(timePassed / 600) * mult;
             
             // Разные скорости убывания статов
-            const hungerDecay = decayCycles * 2; // -2 за 10 минут
-            const energyDecay = decayCycles * 1; // -1 за 10 минут
-            const happinessDecay = decayCycles * 1; // -1 за 10 минут
+            const hungerRate = window.__hungerDecayPer10m ?? 2;
+            const energyRate = window.__energyDecayPer10m ?? 1;
+            const happinessRate = window.__happinessDecayPer10m ?? 1;
+            const hungerDecay = decayCycles * hungerRate;
+            const energyDecay = decayCycles * energyRate;
+            const happinessDecay = decayCycles * happinessRate;
             
             let virtualHunger = Math.max(0, pet.hunger - hungerDecay);
             let virtualEnergy = Math.max(0, pet.energy - energyDecay);
@@ -2568,9 +2572,12 @@
             // Штрафы к здоровью при нулевых статах
             const zeros = (virtualHunger === 0 ? 1 : 0) + (virtualEnergy === 0 ? 1 : 0) + (virtualHappiness === 0 ? 1 : 0);
             if (zeros > 0) {
-                let healthPenalty = decayCycles; // базовый -1 за цикл
-                if (virtualHunger === 0) healthPenalty += decayCycles; // +1 если голод = 0
-                if (zeros >= 2) healthPenalty += decayCycles; // +1 если два и более нулевых
+                const hpBase = window.__healthPenaltyBasePer10m ?? 1;
+                const hpHun0 = window.__healthPenaltyIfHunger0Per10m ?? 1;
+                const hpTwo = window.__healthPenaltyIfTwoZeroPer10m ?? 1;
+                let healthPenalty = decayCycles * hpBase;
+                if (virtualHunger === 0) healthPenalty += decayCycles * hpHun0;
+                if (zeros >= 2) healthPenalty += decayCycles * hpTwo;
                 virtualHealth = Math.max(0, virtualHealth - healthPenalty);
             }
             
@@ -3879,6 +3886,12 @@
                 const data = await res.json();
                 const mult = parseFloat(data.decay_multiplier || '1');
                 window.__decayMultiplier = isNaN(mult) ? 1 : mult;
+                window.__hungerDecayPer10m = parseFloat(data.hunger_decay_per10m || '2');
+                window.__energyDecayPer10m = parseFloat(data.energy_decay_per10m || '1');
+                window.__happinessDecayPer10m = parseFloat(data.happiness_decay_per10m || '1');
+                window.__healthPenaltyBasePer10m = parseFloat(data.health_penalty_base_per10m || '1');
+                window.__healthPenaltyIfHunger0Per10m = parseFloat(data.health_penalty_if_hunger0_per10m || '1');
+                window.__healthPenaltyIfTwoZeroPer10m = parseFloat(data.health_penalty_if_two_zero_per10m || '1');
                 const el = document.getElementById('decayMultiplier');
                 if (el) el.value = String(window.__decayMultiplier);
                 const cur = document.getElementById('decayCurrent');

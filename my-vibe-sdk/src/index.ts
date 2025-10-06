@@ -511,7 +511,18 @@ export default {
             const chat_enabled = await getFlag(env, 'chat_enabled', '1');
             const ai_enabled = await getFlag(env, 'ai_enabled', '1');
             const decay_multiplier = await getFlag(env, 'decay_multiplier', '1');
-            return Response.json({ chat_enabled, ai_enabled, decay_multiplier }, { headers: corsHeaders });
+            // Per-stat decay defaults
+            const hunger_decay_per10m = await getFlag(env, 'hunger_decay_per10m', '2');
+            const energy_decay_per10m = await getFlag(env, 'energy_decay_per10m', '1');
+            const happiness_decay_per10m = await getFlag(env, 'happiness_decay_per10m', '1');
+            const health_penalty_base_per10m = await getFlag(env, 'health_penalty_base_per10m', '1');
+            const health_penalty_if_hunger0_per10m = await getFlag(env, 'health_penalty_if_hunger0_per10m', '1');
+            const health_penalty_if_two_zero_per10m = await getFlag(env, 'health_penalty_if_two_zero_per10m', '1');
+            return Response.json({ 
+                chat_enabled, ai_enabled, decay_multiplier,
+                hunger_decay_per10m, energy_decay_per10m, happiness_decay_per10m,
+                health_penalty_base_per10m, health_penalty_if_hunger0_per10m, health_penalty_if_two_zero_per10m
+            }, { headers: corsHeaders });
         }
 
         if (url.pathname === '/admin/chat/mute' && request.method === 'POST') {
