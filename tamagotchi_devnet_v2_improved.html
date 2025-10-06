@@ -1699,9 +1699,19 @@
         
         window.connectWallet = async function() {
             try {
-                if (!window.solana || !window.solana.isPhantom) {
+                // 📱 Мобильная поддержка: проверяем и Phantom и другие кошельки
+                const isPhantomMobile = window.solana && window.solana.isPhantom;
+                const isMobileWallet = window.solana && (window.solana.isPhantom || window.solana.isSolflare || window.solana.isCoin98);
+                
+                if (!window.solana) {
                     showNotification('❌ Please install Phantom Wallet!');
-                    window.open('https://phantom.app/', '_blank');
+                    // На мобильных открываем deep link
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    if (isMobile) {
+                        window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href) + '?ref=phantom';
+                    } else {
+                        window.open('https://phantom.app/', '_blank');
+                    }
                     return;
                 }
 
