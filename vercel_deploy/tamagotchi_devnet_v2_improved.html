@@ -2681,34 +2681,8 @@
             updateStatBar('healthBar', virtualStats.health);
             
             if (!virtualStats.isAlive && realPetData.isAlive) {
-                document.getElementById('petSprite').textContent = '💀';
-                document.getElementById('petName').textContent = `💀 Питомец умер #${realPetData.petId}`;
-                
-                // 💀 ПОКАЗЫВАЕМ ПАНЕЛЬ ВОСКРЕШЕНИЯ!
-                const resurrectionPanel = document.getElementById('resurrectionPanel');
-                const actionsDiv = document.querySelector('.actions');
-                
-                if (resurrectionPanel) resurrectionPanel.style.display = 'block';
-                if (actionsDiv) actionsDiv.style.display = 'none';
-                
-                // Показываем кнопку бесплатного воскрешения если есть жизни
-                const freeBtn = document.getElementById('resurrectFreeBtn');
-                if (freeBtn) {
-                    freeBtn.style.display = petLives > 0 ? 'block' : 'none';
-                }
-                
-                // Отключаем кнопки действий
-                const feedBtn = document.getElementById('feedBtn');
-                const playBtn = document.getElementById('playBtn');
-                const healBtn = document.getElementById('healBtn');
-                const restBtn = document.getElementById('restBtn');
-                const autoClickerBtn = document.getElementById('autoClickerBtn');
-                
-                if (feedBtn) feedBtn.disabled = true;
-                if (playBtn) playBtn.disabled = true;
-                if (healBtn) healBtn.disabled = true;
-                if (restBtn) restBtn.disabled = true;
-                if (autoClickerBtn) autoClickerBtn.disabled = true;
+                document.getElementById('petSprite').textContent = '⚠️';
+                document.getElementById('petName').textContent = `⚠️ При смерти! #${realPetData.petId}`;
             }
             
             if (virtualStats.isAlive) {
