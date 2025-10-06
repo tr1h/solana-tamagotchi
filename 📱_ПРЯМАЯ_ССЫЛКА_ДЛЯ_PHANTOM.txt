@@ -1,0 +1,44 @@
+🔗 ПРЯМАЯ ССЫЛКА ДЛЯ PHANTOM BROWSER:
+
+https://crypto-tamagotchi.pages.dev/tamagotchi_devnet_v2_improved.html
+
+---
+
+📱 КАК ОТКРЫТЬ В PHANTOM:
+
+1. Открой Phantom APP (не браузер!)
+2. Нажми иконку Browser (🌐) внизу
+3. Вставь эту ссылку:
+   https://crypto-tamagotchi.pages.dev/tamagotchi_devnet_v2_improved.html
+4. Нажми "Connect Wallet"
+5. ✅ Должно подключиться!
+
+---
+
+⚠️ НЕ РАБОТАЕТ В:
+- Safari ❌
+- Chrome ❌  
+- Firefox ❌
+- Telegram Browser ❌
+
+✅ РАБОТАЕТ ТОЛЬКО В:
+- Phantom APP → Browser (🌐)
+
+---
+
+📸 СКРИНШОТЫ:
+
+Шаг 1: Открой Phantom App
+[Иконка фиолетового призрака]
+
+Шаг 2: Нажми Browser внизу
+[🏠] [💰] [🌐] [⚙️]
+            ↑ ЭТУ
+
+Шаг 3: Вставь ссылку
+[________________]
+crypto-tamagotchi.pages.dev
+
+Шаг 4: Играй!
+[Connect Wallet] → ✅ Connected!
+

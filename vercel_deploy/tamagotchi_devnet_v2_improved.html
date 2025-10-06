@@ -3732,9 +3732,19 @@
                             <li>Install Phantom app from App Store/Google Play</li>
                             <li>Open Phantom app</li>
                             <li>Tap the Browser icon (🌐) at the bottom</li>
-                            <li>Enter this URL: <strong style="color: #FFD700;">crypto-tamagotchi.pages.dev</strong></li>
+                            <li>Paste this URL in Phantom Browser</li>
                             <li>Tap "Connect Wallet" button</li>
                         </ol>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center;">
+                        <p style="color: rgba(255,255,255,0.8); margin: 0 0 10px 0; font-size: 13px;">Copy this URL:</p>
+                        <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-bottom: 10px; word-break: break-all;">
+                            <code style="color: #FFD700; font-size: 14px;">crypto-tamagotchi.pages.dev</code>
+                        </div>
+                        <button onclick="navigator.clipboard.writeText('https://crypto-tamagotchi.pages.dev/tamagotchi_devnet_v2_improved.html'); alert('✅ Copied! Now paste in Phantom Browser');" style="background: #FFD700; color: #333; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">
+                            📋 Copy URL
+                        </button>
                     </div>
                     
                     <button onclick="this.parentElement.parentElement.remove()" style="background: white; color: #667eea; border: none; padding: 15px 30px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-bottom: 10px;">
