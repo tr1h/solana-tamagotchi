@@ -40,7 +40,7 @@
             background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -48,6 +48,7 @@
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         /* 🐞 Debug Console (компактная консоль) */
@@ -3723,6 +3724,8 @@
                 align-items: center;
                 justify-content: center;
                 padding: 20px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             `;
             
             modal.innerHTML = `

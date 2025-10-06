@@ -431,39 +431,17 @@ pub mod tamagotchi {
             return Ok(()); // Минимум 10 минут между обновлениями
         }
 
-        // 🐢 Медленный Decay каждые 10 минут, но с разными скоростями для статов
+        // 🐢 ОЧЕНЬ МЕДЛЕННЫЙ Decay: -1 каждые 10 минут (x10 медленнее!)
         let decay_cycles = (time_passed / 600) as u8; // 600 секунд = 10 минут
 
-        // Разные скорости убывания
-        // Hunger убывает быстрее, Energy/Happiness медленнее
-        let hunger_decay = decay_cycles.saturating_mul(2); // -2 за цикл (10 минут)
-        let energy_decay = decay_cycles;                   // -1 за цикл
-        let happiness_decay = decay_cycles;                // -1 за цикл
+        // Уменьшение параметров (ОЧЕНЬ мягкий баланс для игры без постоянного внимания)
+        pet.hunger = pet.hunger.saturating_sub(decay_cycles);
+        pet.happiness = pet.happiness.saturating_sub(decay_cycles);
+        pet.energy = pet.energy.saturating_sub(decay_cycles);
 
-        pet.hunger = pet.hunger.saturating_sub(hunger_decay);
-        pet.energy = pet.energy.saturating_sub(energy_decay);
-        pet.happiness = pet.happiness.saturating_sub(happiness_decay);
-
-        // Динамическое влияние на здоровье
-        //  - если какой-либо из ключевых статов на нуле → штраф по здоровью
-        //  - если два и более статов на нуле → дополнительный штраф
-        let mut zeros = 0u8;
-        if pet.hunger == 0 { zeros = zeros.saturating_add(1); }
-        if pet.energy == 0 { zeros = zeros.saturating_add(1); }
-        if pet.happiness == 0 { zeros = zeros.saturating_add(1); }
-
-        if zeros > 0 {
-            // Базовый штраф за каждый цикл при нулевом стате
-            let mut health_penalty = decay_cycles; // -1 за цикл
-            // Более сильный эффект, если голод на нуле
-            if pet.hunger == 0 {
-                health_penalty = health_penalty.saturating_add(decay_cycles); // ещё -1
-            }
-            // Дополнительный стресс, если два и более статов на нуле
-            if zeros >= 2 {
-                health_penalty = health_penalty.saturating_add(decay_cycles); // ещё -1
-            }
-            pet.health = pet.health.saturating_sub(health_penalty);
+        // Если низкие параметры - уменьшаем здоровье (более мягко)
+        if pet.hunger == 0 || pet.happiness == 0 || pet.energy == 0 {
+            pet.health = pet.health.saturating_sub(decay_cycles);
         }
 
         // Проверка смерти
