@@ -283,15 +283,17 @@ pub mod tamagotchi {
         require!(pet.owner == ctx.accounts.owner.key(), ErrorCode::NotOwner);
         require!(pet.is_alive, ErrorCode::PetIsDead);
 
-        // Burn 5 TAMA
-        let burn_amount = 5_000_000_000; // 5 TAMA (9 decimals)
-        burn_tokens(
-            &ctx.accounts.token_program.to_account_info(),
-            &ctx.accounts.token_mint,
-            &ctx.accounts.user_token_account,
-            &ctx.accounts.owner,
-            burn_amount
-        )?;
+        // Burn 5 TAMA (БЕТА: отключено на Devnet)
+        let burn_amount = 0u64; // 0 TAMA в бете
+        if burn_amount > 0 {
+            burn_tokens(
+                &ctx.accounts.token_program.to_account_info(),
+                &ctx.accounts.token_mint,
+                &ctx.accounts.user_token_account,
+                &ctx.accounts.owner,
+                burn_amount
+            )?;
+        }
 
         // Обновление параметров
         pet.hunger = pet.hunger.saturating_add(30).min(100);
@@ -322,15 +324,17 @@ pub mod tamagotchi {
         require!(pet.is_alive, ErrorCode::PetIsDead);
         require!(pet.energy >= 20, ErrorCode::NotEnoughEnergy);
 
-        // Burn 3 TAMA
-        let burn_amount = 3_000_000_000;
-        burn_tokens(
-            &ctx.accounts.token_program.to_account_info(),
-            &ctx.accounts.token_mint,
-            &ctx.accounts.user_token_account,
-            &ctx.accounts.owner,
-            burn_amount
-        )?;
+        // Burn 3 TAMA (БЕТА: отключено на Devnet)
+        let burn_amount = 0u64;
+        if burn_amount > 0 {
+            burn_tokens(
+                &ctx.accounts.token_program.to_account_info(),
+                &ctx.accounts.token_mint,
+                &ctx.accounts.user_token_account,
+                &ctx.accounts.owner,
+                burn_amount
+            )?;
+        }
 
         // Обновление параметров
         pet.happiness = pet.happiness.saturating_add(25).min(100);
@@ -360,15 +364,17 @@ pub mod tamagotchi {
         require!(pet.is_alive, ErrorCode::PetIsDead);
         require!(pet.health < 90, ErrorCode::HealthAlreadyHigh);
 
-        // Burn 8 TAMA
-        let burn_amount = 8_000_000_000;
-        burn_tokens(
-            &ctx.accounts.token_program.to_account_info(),
-            &ctx.accounts.token_mint,
-            &ctx.accounts.user_token_account,
-            &ctx.accounts.owner,
-            burn_amount
-        )?;
+        // Burn 8 TAMA (БЕТА: отключено на Devnet)
+        let burn_amount = 0u64;
+        if burn_amount > 0 {
+            burn_tokens(
+                &ctx.accounts.token_program.to_account_info(),
+                &ctx.accounts.token_mint,
+                &ctx.accounts.user_token_account,
+                &ctx.accounts.owner,
+                burn_amount
+            )?;
+        }
 
         // Обновление параметров
         pet.health = 100;
@@ -394,15 +400,17 @@ pub mod tamagotchi {
         require!(pet.owner == ctx.accounts.owner.key(), ErrorCode::NotOwner);
         require!(pet.is_alive, ErrorCode::PetIsDead);
 
-        // Burn 2 TAMA
-        let burn_amount = 2_000_000_000;
-        burn_tokens(
-            &ctx.accounts.token_program.to_account_info(),
-            &ctx.accounts.token_mint,
-            &ctx.accounts.user_token_account,
-            &ctx.accounts.owner,
-            burn_amount
-        )?;
+        // Burn 2 TAMA (БЕТА: отключено на Devnet)
+        let burn_amount = 0u64;
+        if burn_amount > 0 {
+            burn_tokens(
+                &ctx.accounts.token_program.to_account_info(),
+                &ctx.accounts.token_mint,
+                &ctx.accounts.user_token_account,
+                &ctx.accounts.owner,
+                burn_amount
+            )?;
+        }
 
         // Обновление параметров
         pet.energy = pet.energy.saturating_add(40).min(100);
