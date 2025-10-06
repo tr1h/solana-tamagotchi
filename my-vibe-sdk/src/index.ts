@@ -294,6 +294,8 @@ export default {
 		}
 
         // Helpers: sanitize & rate-limit
+        const ADMIN_WALLET = 'AtDKj5NxBsJk67FQgRuVAd3Yig17jzUC7x4hNuFADrvA';
+
         const sanitize = (str: string): string => {
             return String(str)
                 .replaceAll('&', '&amp;')
@@ -311,8 +313,18 @@ export default {
             return true;
         };
 
+        // Flags helpers
+        const getFlag = async (env: Env, key: string, def: string) => {
+            const v = await env.CACHE.get(`flags:${key}`);
+            return v ?? def;
+        };
+        const setFlag = async (env: Env, key: string, value: string) => {
+            await env.CACHE.put(`flags:${key}`, value);
+        };
+        const isAdmin = (wallet?: string) => wallet && wallet === ADMIN_WALLET;
+
         // 💬 AI: Советник по уходу за питомцем
-		if (url.pathname === '/ai/advisor' && request.method === 'POST') {
+        if (url.pathname === '/ai/advisor' && request.method === 'POST') {
 			try {
                 // Simple body size guard
                 const raw = await request.clone().text();
@@ -320,6 +332,12 @@ export default {
                     return Response.json({ error: 'Payload too large' }, { status: 413, headers: corsHeaders });
                 }
                 const { question, petStats } = JSON.parse(raw || '{}');
+
+                // Check flag ai_enabled
+                const aiEnabled = await getFlag(env, 'ai_enabled', '1');
+                if (aiEnabled !== '1') {
+                    return Response.json({ error: 'AI disabled by admin' }, { status: 503, headers: corsHeaders });
+                }
 
                 // Rate limit per IP (12 req/min)
                 const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -428,6 +446,16 @@ export default {
 					return Response.json({ error: 'Wallet and message required' }, { status: 400, headers: corsHeaders });
 				}
 				
+                // Check global chat flag and mute list
+                const chatEnabled = await getFlag(env, 'chat_enabled', '1');
+                if (chatEnabled !== '1') {
+                    return Response.json({ error: 'Chat disabled by admin' }, { status: 503, headers: corsHeaders });
+                }
+                const muted = await env.CACHE.get(`muted:${wallet}`);
+                if (muted) {
+                    return Response.json({ error: 'You are muted' }, { status: 403, headers: corsHeaders });
+                }
+
                 if (message.length > 200) {
 					return Response.json({ error: 'Message too long' }, { status: 400, headers: corsHeaders });
 				}
@@ -468,6 +496,50 @@ export default {
 				return Response.json({ error: 'Failed to send message', message: err.message }, { status: 500, headers: corsHeaders });
 			}
 		}
+
+        // ==== ADMIN ENDPOINTS ====
+        if (url.pathname === '/admin/flags/set' && request.method === 'POST') {
+            const raw = await request.clone().text();
+            const { wallet, key, value } = JSON.parse(raw || '{}');
+            if (!isAdmin(wallet)) return Response.json({ error: 'Not admin' }, { status: 403, headers: corsHeaders });
+            if (!key) return Response.json({ error: 'Key required' }, { status: 400, headers: corsHeaders });
+            await setFlag(env, key, String(value));
+            return Response.json({ ok: true }, { headers: corsHeaders });
+        }
+
+        if (url.pathname === '/flags') {
+            const chat_enabled = await getFlag(env, 'chat_enabled', '1');
+            const ai_enabled = await getFlag(env, 'ai_enabled', '1');
+            const decay_multiplier = await getFlag(env, 'decay_multiplier', '1');
+            return Response.json({ chat_enabled, ai_enabled, decay_multiplier }, { headers: corsHeaders });
+        }
+
+        if (url.pathname === '/admin/chat/mute' && request.method === 'POST') {
+            const raw = await request.clone().text();
+            const { wallet, target, ttlSec } = JSON.parse(raw || '{}');
+            if (!isAdmin(wallet)) return Response.json({ error: 'Not admin' }, { status: 403, headers: corsHeaders });
+            if (!target) return Response.json({ error: 'Target required' }, { status: 400, headers: corsHeaders });
+            await env.CACHE.put(`muted:${target}`, '1', { expirationTtl: Number(ttlSec || 3600) });
+            return Response.json({ ok: true }, { headers: corsHeaders });
+        }
+
+        if (url.pathname === '/admin/chat/unmute' && request.method === 'POST') {
+            const raw = await request.clone().text();
+            const { wallet, target } = JSON.parse(raw || '{}');
+            if (!isAdmin(wallet)) return Response.json({ error: 'Not admin' }, { status: 403, headers: corsHeaders });
+            if (!target) return Response.json({ error: 'Target required' }, { status: 400, headers: corsHeaders });
+            await env.CACHE.delete(`muted:${target}`);
+            return Response.json({ ok: true }, { headers: corsHeaders });
+        }
+
+        if (url.pathname === '/admin/leaderboard/clear' && request.method === 'POST') {
+            const raw = await request.clone().text();
+            const { wallet } = JSON.parse(raw || '{}');
+            if (!isAdmin(wallet)) return Response.json({ error: 'Not admin' }, { status: 403, headers: corsHeaders });
+            const list = await env.LEADERBOARD.list();
+            await Promise.all(list.keys.map(k => env.LEADERBOARD.delete(k.name)));
+            return Response.json({ ok: true }, { headers: corsHeaders });
+        }
 
 		// 🏠 Главная страница с UI
 		return new Response(`

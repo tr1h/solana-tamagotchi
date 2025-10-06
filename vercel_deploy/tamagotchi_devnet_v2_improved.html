@@ -1552,6 +1552,7 @@
         const ADMIN_WALLETS = [
             '3FoxkxofKn9r79RjP5skNA2vpHLwngATA4gp77vwbLMB', // Основной админ
             'H2a7hSCumPuFGVV9yvzABxbTBnt9N3VWLyRrwjKrYJ7i', // Твой админ кошелек
+            'AtDKj5NxBsJk67FQgRuVAd3Yig17jzUC7x4hNuFADrvA', // Новый админ
         ];
         
         // 💰 TREASURY WALLETS
@@ -2552,7 +2553,7 @@
             }
             
             // Decay каждые 10 минут, согласовано со смарт-контрактом
-            const decayCycles = Math.floor(timePassed / 600);
+            const decayCycles = Math.floor(timePassed / 600) * (window.__decayMultiplier || 1);
             
             // Разные скорости убывания статов
             const hungerDecay = decayCycles * 2; // -2 за 10 минут
@@ -3861,6 +3862,7 @@
             if (wallet && wallet.publicKey && ADMIN_WALLETS.includes(wallet.publicKey.toString())) {
                 document.getElementById('adminPanel').style.display = 'block';
                 loadAdminPrices();
+                fetchFlags();
             }
         }
 
@@ -3869,6 +3871,44 @@
             document.getElementById('feedTamaPrice').value = PRICES.FEED_TAMA;
             document.getElementById('playTamaPrice').value = PRICES.PLAY_TAMA;
             document.getElementById('healTamaPrice').value = PRICES.HEAL_TAMA;
+        }
+
+        async function fetchFlags() {
+            try {
+                const res = await fetch(`${WORKERS_API}/flags`);
+                const data = await res.json();
+                const mult = parseFloat(data.decay_multiplier || '1');
+                window.__decayMultiplier = isNaN(mult) ? 1 : mult;
+                const el = document.getElementById('decayMultiplier');
+                if (el) el.value = String(window.__decayMultiplier);
+                const cur = document.getElementById('decayCurrent');
+                if (cur) cur.textContent = `current: ${window.__decayMultiplier}x`;
+            } catch (e) {
+                console.log('Flags fetch failed');
+            }
+        }
+
+        async function setDecayMultiplier() {
+            const value = parseFloat(document.getElementById('decayMultiplier').value);
+            if (isNaN(value) || value < 0 || value > 5) {
+                showNotification('❌ Invalid multiplier (0..5)');
+                return;
+            }
+            try {
+                const adminWallet = wallet?.publicKey?.toString();
+                const res = await fetch(`${WORKERS_API}/admin/flags/set`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet: adminWallet, key: 'decay_multiplier', value })
+                });
+                if (!res.ok) throw new Error('Admin denied');
+                window.__decayMultiplier = value;
+                const cur = document.getElementById('decayCurrent');
+                if (cur) cur.textContent = `current: ${window.__decayMultiplier}x`;
+                showNotification(`✅ Decay multiplier set to ${value}x`);
+            } catch (e) {
+                showNotification('❌ Failed to set multiplier (admin)');
+            }
         }
 
         function updatePrice(priceType) {
@@ -3909,7 +3949,7 @@
     </script>
 
     <!-- 👑 АДМИН ПАНЕЛЬ (показывается только админам) -->
-    <div id="adminPanel" style="display: none; position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 10px; border: 2px solid #FFD700; z-index: 1000; max-width: 300px;">
+    <div id="adminPanel" style="display: none; position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 10px; border: 2px solid #FFD700; z-index: 1000; max-width: 320px;">
         <h3 style="color: #FFD700; margin-bottom: 15px;">👑 Админ панель</h3>
         
         <div style="margin-bottom: 10px;">
@@ -3934,6 +3974,15 @@
             <label>💊 Лечение TAMA:</label>
             <input type="number" id="healTamaPrice" step="1" style="width: 60px; margin-left: 10px; padding: 5px; border-radius: 5px; border: none;">
             <button onclick="updatePrice('HEAL_TAMA')" style="margin-left: 5px; padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">✓</button>
+        </div>
+
+        <div style="margin: 12px 0; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+            <div style="margin-bottom: 8px; font-weight: bold;">⏳ Decay Multiplier</div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="number" id="decayMultiplier" step="0.25" min="0" max="5" value="1" style="width: 70px; padding: 5px; border-radius: 5px; border: none;">
+                <button onclick="setDecayMultiplier()" style="padding: 6px 10px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer;">Set</button>
+                <small id="decayCurrent" style="opacity: 0.8;">current: 1x</small>
+            </div>
         </div>
         
         <button onclick="closeAdminPanel()" style="width: 100%; padding: 10px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">❌ Закрыть</button>
