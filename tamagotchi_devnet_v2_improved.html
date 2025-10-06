@@ -4422,14 +4422,14 @@
                 });
                 
                 const data = await response.json();
+                const aiResp = (typeof data.advice === 'string')
+                    ? data.advice
+                    : (data.advice && data.advice.response) || data.response || data.text || '';
                 
-                if (data.advice && data.advice.response) {
-                    document.getElementById('aiAdviceText').textContent = data.advice.response;
-                    document.getElementById('aiResponse').style.display = 'block';
-                    showNotification('✅ AI responded!');
-                } else {
-                    showNotification('❌ AI response failed');
-                }
+                const out = aiResp || 'No response';
+                document.getElementById('aiAdviceText').textContent = out;
+                document.getElementById('aiResponse').style.display = 'block';
+                showNotification('✅ AI responded!');
                 
                 console.log('🤖 AI Advice:', data);
             } catch (err) {
