@@ -712,6 +712,7 @@
                 // Show share button after 3 catches
                 if (caughtCount >= 3) {
                     document.getElementById('share-results').style.display = 'inline-block';
+                    setupShareButton(); // Setup the share button functionality
                 }
                 
                 // Score popup
@@ -780,9 +781,10 @@
         }
         
         // Share results function with image generation
-        document.addEventListener('DOMContentLoaded', function() {
+        function setupShareButton() {
             const shareButton = document.getElementById('share-results');
-            if (shareButton) {
+            if (shareButton && !shareButton.hasAttribute('data-listener-added')) {
+                shareButton.setAttribute('data-listener-added', 'true');
                 shareButton.addEventListener('click', async function() {
                     const caught = document.getElementById('caught').textContent;
                     const score = document.getElementById('score').textContent;
@@ -850,7 +852,7 @@
                     }, 'image/png');
                 });
             }
-        });
+        }
     </script>
 </body>
 </html>
