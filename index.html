@@ -219,21 +219,43 @@
             font-size: 1.5rem;
         }
         
-        .game-pet {
-            font-size: 8rem;
+        .game-arena {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .game-pet-runner {
+            position: absolute;
+            font-size: 4rem;
             cursor: pointer;
-            display: inline-block;
-            transition: transform 0.1s ease;
             user-select: none;
-            animation: float 3s ease-in-out infinite;
+            transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
         }
         
-        .game-pet:hover {
-            transform: scale(1.1);
+        .game-pet-runner:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
         }
         
-        .game-pet:active {
-            transform: scale(0.95);
+        .game-pet-runner:active {
+            transform: scale(0.9);
+        }
+        
+        .game-pet-runner.caught {
+            animation: catchAnimation 0.5s ease-out;
+        }
+        
+        @keyframes catchAnimation {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.5) rotate(180deg); }
+            100% { transform: scale(0) rotate(360deg); }
         }
         
         .game-stats {
@@ -359,8 +381,12 @@
                 flex-direction: column;
             }
             
-            .game-pet {
-                font-size: 6rem;
+            .game-arena {
+                height: 300px;
+            }
+            
+            .game-pet-runner {
+                font-size: 3rem;
             }
             
             .game-stats {
@@ -438,24 +464,26 @@
             
             <!-- Mini Game -->
             <div class="mini-game">
-                <h3>🎮 Try the Gameplay!</h3>
-                <p style="margin-bottom: 20px; opacity: 0.9;">Click on the pet to earn coins and see the magic!</p>
-                <div id="game-pet" class="game-pet">🐾</div>
+                <h3>🎮 Catch the Pet!</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Catch the running pet and unlock new ones!</p>
+                <div id="game-arena" class="game-arena">
+                    <div id="game-pet" class="game-pet-runner">🐾</div>
+                </div>
                 <div class="game-stats">
                     <div class="game-stat">
-                        <div class="game-stat-value" id="coins">0</div>
-                        <div class="game-stat-label">💰 Coins</div>
+                        <div class="game-stat-value" id="caught">0</div>
+                        <div class="game-stat-label">🏆 Caught</div>
                     </div>
                     <div class="game-stat">
-                        <div class="game-stat-value" id="level">1</div>
-                        <div class="game-stat-label">⭐ Level</div>
+                        <div class="game-stat-value" id="score">0</div>
+                        <div class="game-stat-label">💯 Score</div>
                     </div>
                     <div class="game-stat">
-                        <div class="game-stat-value" id="clicks">0</div>
-                        <div class="game-stat-label">🖱️ Clicks</div>
+                        <div class="game-stat-value" id="speed">1.0x</div>
+                        <div class="game-stat-label">⚡ Speed</div>
                     </div>
                 </div>
-                <div class="game-message" id="game-message">Click the pet to start earning!</div>
+                <div class="game-message" id="game-message">Catch the pet!</div>
             </div>
             
             <!-- Roadmap -->
@@ -519,63 +547,94 @@
             console.log('Supabase not configured, using local storage');
         }
         
-        // Mini Game Logic
-        let gameCoins = 0;
-        let gameLevel = 1;
-        let gameClicks = 0;
+        // Mini Game Logic - Catch the Pet
+        let caughtCount = 0;
+        let gameScore = 0;
+        let gameSpeed = 1.0;
         const pets = ['🐾', '🐶', '🐱', '🦊', '🐻', '🐼', '🦁', '🦄', '🐺', '🐲'];
         let currentPetIndex = 0;
+        let petMoveInterval;
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Mini Game
+            // Mini Game - Catch the Pet
             const gamePet = document.getElementById('game-pet');
-            const coinsEl = document.getElementById('coins');
-            const levelEl = document.getElementById('level');
-            const clicksEl = document.getElementById('clicks');
+            const gameArena = document.getElementById('game-arena');
+            const caughtEl = document.getElementById('caught');
+            const scoreEl = document.getElementById('score');
+            const speedEl = document.getElementById('speed');
             const messageEl = document.getElementById('game-message');
             
-            gamePet.addEventListener('click', function(e) {
-                gameClicks++;
-                gameCoins += gameLevel;
-                clicksEl.textContent = gameClicks;
-                coinsEl.textContent = gameCoins;
+            function movePet() {
+                const arenaRect = gameArena.getBoundingClientRect();
+                const maxX = arenaRect.width - 80;
+                const maxY = arenaRect.height - 80;
                 
-                // Level up every 10 clicks
-                if (gameClicks % 10 === 0) {
-                    gameLevel++;
-                    levelEl.textContent = gameLevel;
+                const randomX = Math.random() * maxX;
+                const randomY = Math.random() * maxY;
+                
+                gamePet.style.left = randomX + 'px';
+                gamePet.style.top = randomY + 'px';
+            }
+            
+            function startPetMovement() {
+                movePet();
+                if (petMoveInterval) clearInterval(petMoveInterval);
+                petMoveInterval = setInterval(movePet, 2000 / gameSpeed);
+            }
+            
+            gamePet.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // Add caught animation
+                gamePet.classList.add('caught');
+                
+                // Update stats
+                caughtCount++;
+                gameScore += Math.floor(10 * gameSpeed);
+                caughtEl.textContent = caughtCount;
+                scoreEl.textContent = gameScore;
+                
+                // Speed up every 5 catches
+                if (caughtCount % 5 === 0) {
+                    gameSpeed += 0.2;
+                    speedEl.textContent = gameSpeed.toFixed(1) + 'x';
                     currentPetIndex = (currentPetIndex + 1) % pets.length;
                     gamePet.textContent = pets[currentPetIndex];
-                    messageEl.textContent = `🎉 Level Up! Unlocked new pet: ${pets[currentPetIndex]}`;
+                    messageEl.textContent = `🎉 Speed Boost! New pet unlocked: ${pets[currentPetIndex]}`;
+                    startPetMovement();
                 } else {
                     const messages = [
-                        '💰 Nice click!',
-                        '⭐ Keep going!',
-                        '🔥 Amazing!',
-                        '💎 You\'re awesome!',
-                        '🚀 Great job!',
-                        '✨ Fantastic!',
-                        '🎮 Pro gamer!',
-                        '💪 So strong!'
+                        '🏆 Great catch!',
+                        '⚡ Lightning fast!',
+                        '🔥 You\'re on fire!',
+                        '💎 Amazing reflexes!',
+                        '🚀 Incredible!',
+                        '✨ Perfect catch!',
+                        '🎯 Bullseye!',
+                        '💪 Pro hunter!'
                     ];
                     messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
                 }
                 
-                // Coin popup animation
-                const coin = document.createElement('div');
-                coin.className = 'coin-popup';
-                coin.textContent = `+${gameLevel} 💰`;
-                coin.style.left = e.clientX + 'px';
-                coin.style.top = e.clientY + 'px';
-                document.body.appendChild(coin);
-                setTimeout(() => coin.remove(), 1000);
+                // Score popup
+                const popup = document.createElement('div');
+                popup.className = 'coin-popup';
+                popup.textContent = `+${Math.floor(10 * gameSpeed)} 💯`;
+                popup.style.position = 'fixed';
+                popup.style.left = e.clientX + 'px';
+                popup.style.top = e.clientY + 'px';
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 1000);
                 
-                // Pet animation
-                gamePet.style.transform = 'scale(0.9)';
+                // Remove animation and move pet
                 setTimeout(() => {
-                    gamePet.style.transform = '';
-                }, 100);
+                    gamePet.classList.remove('caught');
+                    movePet();
+                }, 500);
             });
+            
+            // Start the game
+            startPetMovement();
             
             const featureCards = document.querySelectorAll('.feature-card');
             featureCards.forEach(card => {
