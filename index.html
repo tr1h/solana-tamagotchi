@@ -779,31 +779,75 @@
             }
         }
         
-        // Share results function
+        // Share results function with image generation
         document.addEventListener('DOMContentLoaded', function() {
             const shareButton = document.getElementById('share-results');
             if (shareButton) {
-                shareButton.addEventListener('click', function() {
+                shareButton.addEventListener('click', async function() {
                     const caught = document.getElementById('caught').textContent;
                     const score = document.getElementById('score').textContent;
                     const speed = document.getElementById('speed').textContent;
                     
-                    const shareText = `🎮 I just caught ${caught} pets in Solana Tamagotchi! 
+                    // Generate share image
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 800;
+                    canvas.height = 400;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Background gradient
+                    const gradient = ctx.createLinearGradient(0, 0, 800, 400);
+                    gradient.addColorStop(0, '#1D3557');
+                    gradient.addColorStop(1, '#457B9D');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, 800, 400);
+                    
+                    // Title
+                    ctx.fillStyle = '#4ade80';
+                    ctx.font = 'bold 48px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🎮 Solana Tamagotchi', 400, 80);
+                    
+                    // Score section
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 36px Arial';
+                    ctx.fillText(`🏆 Caught: ${caught} pets`, 400, 150);
+                    ctx.fillText(`💯 Score: ${score}`, 400, 200);
+                    ctx.fillText(`⚡ Speed: ${speed}`, 400, 250);
+                    
+                    // Footer
+                    ctx.fillStyle = '#4ade80';
+                    ctx.font = '24px Arial';
+                    ctx.fillText('🐾 Play the mini-game now!', 400, 320);
+                    ctx.fillText('tr1h.github.io/solana-tamagotchi', 400, 360);
+                    
+                    // Convert to blob and share
+                    canvas.toBlob(async function(blob) {
+                        const shareText = `🎮 I just caught ${caught} pets in Solana Tamagotchi! 
 🏆 Score: ${score} | ⚡ Speed: ${speed}
 🐾 Play the mini-game:`;
-                    
-                    if (navigator.share) {
-                        navigator.share({
-                            title: 'Solana Tamagotchi - My Score!',
-                            text: shareText,
-                            url: 'https://tr1h.github.io/solana-tamagotchi/'
-                        });
-                    } else {
-                        // Fallback: copy to clipboard
-                        navigator.clipboard.writeText(shareText).then(() => {
-                            alert('📤 Score copied to clipboard! Share it on social media!');
-                        });
-                    }
+                        
+                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'score.png', { type: 'image/png' })] })) {
+                            try {
+                                await navigator.share({
+                                    title: 'Solana Tamagotchi - My Score!',
+                                    text: shareText,
+                                    files: [new File([blob], 'score.png', { type: 'image/png' })]
+                                });
+                            } catch (error) {
+                                // Fallback to URL sharing
+                                navigator.share({
+                                    title: 'Solana Tamagotchi - My Score!',
+                                    text: shareText,
+                                    url: 'https://tr1h.github.io/solana-tamagotchi/'
+                                });
+                            }
+                        } else {
+                            // Fallback: copy to clipboard
+                            navigator.clipboard.writeText(shareText).then(() => {
+                                alert('📤 Score copied to clipboard! Share it on social media!');
+                            });
+                        }
+                    }, 'image/png');
                 });
             }
         });
