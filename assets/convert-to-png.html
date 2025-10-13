@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert SVG to PNG - Referral Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .preview {
+            margin: 20px 0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+            margin: 20px 0;
+        }
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Convert SVG to PNG - Referral Preview</h1>
+        
+        <div class="info">
+            <p><strong>📐 Image Size:</strong> 1200x630px (Perfect for social media previews)</p>
+            <p><strong>🎯 Purpose:</strong> Open Graph image for beautiful referral link sharing</p>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="downloadPNG()">📥 Download PNG</button>
+            <button onclick="downloadSVG()">📥 Download SVG</button>
+            <button onclick="copyToClipboard()">📋 Copy to Clipboard</button>
+        </div>
+        
+        <div class="preview">
+            <img id="preview" src="referral-preview.svg" alt="Referral Preview">
+        </div>
+        
+        <canvas id="canvas" width="1200" height="630"></canvas>
+    </div>
+    
+    <script>
+        // Download as PNG
+        async function downloadPNG() {
+            const img = document.getElementById('preview');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Create a new image from SVG
+            const svgData = await fetch('referral-preview.svg').then(r => r.text());
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+            
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                ctx.drawImage(tempImg, 0, 0);
+                
+                // Convert to PNG and download
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = 'referral-preview.png';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            };
+            tempImg.src = url;
+        }
+        
+        // Download SVG
+        function downloadSVG() {
+            const link = document.createElement('a');
+            link.download = 'referral-preview.svg';
+            link.href = 'referral-preview.svg';
+            link.click();
+        }
+        
+        // Copy to clipboard
+        async function copyToClipboard() {
+            try {
+                const img = document.getElementById('preview');
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                const svgData = await fetch('referral-preview.svg').then(r => r.text());
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(svgBlob);
+                
+                const tempImg = new Image();
+                tempImg.onload = async function() {
+                    ctx.drawImage(tempImg, 0, 0);
+                    
+                    canvas.toBlob(async function(blob) {
+                        try {
+                            await navigator.clipboard.write([
+                                new ClipboardItem({ 'image/png': blob })
+                            ]);
+                            alert('✅ Image copied to clipboard!');
+                        } catch (err) {
+                            alert('❌ Failed to copy to clipboard. Please download instead.');
+                        }
+                        URL.revokeObjectURL(url);
+                    }, 'image/png');
+                };
+                tempImg.src = url;
+            } catch (err) {
+                alert('❌ Failed to copy to clipboard. Please download instead.');
+            }
+        }
+    </script>
+</body>
+</html>
