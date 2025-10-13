@@ -468,6 +468,21 @@
                 🚀 Launch: <strong>Coming Soon!</strong>
             </div>
             
+            <div class="activity-stats" style="display: flex; justify-content: center; gap: 30px; margin: 20px 0; flex-wrap: wrap;">
+                <div class="stat-item" style="text-align: center;">
+                    <div class="stat-number" style="font-size: 1.5rem; font-weight: bold; color: #4ade80;">1,234</div>
+                    <div class="stat-label" style="font-size: 0.9rem; opacity: 0.8;">🎮 Players Registered</div>
+                </div>
+                <div class="stat-item" style="text-align: center;">
+                    <div class="stat-number" style="font-size: 1.5rem; font-weight: bold; color: #4ade80;">567</div>
+                    <div class="stat-label" style="font-size: 0.9rem; opacity: 0.8;">📧 Email Subscribers</div>
+                </div>
+                <div class="stat-item" style="text-align: center;">
+                    <div class="stat-number" style="font-size: 1.5rem; font-weight: bold; color: #4ade80;">89</div>
+                    <div class="stat-label" style="font-size: 0.9rem; opacity: 0.8;">🐾 Pets Created</div>
+                </div>
+            </div>
+            
             <div class="coming-soon-features">
                 <div class="feature-card">
                     <div class="feature-icon">🎮</div>
@@ -545,6 +560,9 @@
                         <div class="game-stat-label">⚡ Speed</div>
                     </div>
                 </div>
+                <button id="share-results" class="share-button" style="display: none; margin-top: 15px; padding: 10px 20px; background: linear-gradient(135deg, #4ade80, #22c55e); color: white; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                    📤 Share My Score!
+                </button>
                 <div class="game-message" id="game-message">Catch the pet!</div>
             </div>
             
@@ -579,6 +597,18 @@
                 <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
                     Click to subscribe and get launch notifications
                 </p>
+                
+                <div class="early-bird-offer" style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(34, 197, 94, 0.1)); border-radius: 15px; border: 2px solid rgba(74, 222, 128, 0.3);">
+                    <h4 style="margin: 0 0 10px 0; color: #4ade80; font-size: 1.1rem;">🎁 Early Bird Special!</h4>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">
+                        <strong>50% OFF</strong> first NFT pet!<br>
+                        <strong>+100 TAMA</strong> bonus tokens!<br>
+                        <strong>Exclusive</strong> legendary pet access!
+                    </p>
+                    <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">
+                        ⏰ Limited time offer - Subscribe now!
+                    </div>
+                </div>
             </div>
             
             <div class="social-links">
@@ -594,6 +624,14 @@
                 <a href="https://t.me/solana_tamagotchi_v3_bot" class="social-link" target="_blank">
                     🤖 Telegram Bot
                 </a>
+            </div>
+            
+            <div class="qr-section" style="margin-top: 30px; text-align: center;">
+                <h4 style="margin-bottom: 15px; color: #4ade80;">📱 Quick Access</h4>
+                <div class="qr-code" style="display: inline-block; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://tr1h.github.io/solana-tamagotchi/" alt="QR Code" style="width: 120px; height: 120px;">
+                </div>
+                <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">Scan to open on mobile</p>
             </div>
         </div>
     </div>
@@ -682,6 +720,11 @@
                     messageEl.textContent = messages[Math.floor(Math.random() * messages.length)];
                 }
                 
+                // Show share button after 3 catches
+                if (caughtCount >= 3) {
+                    document.getElementById('share-results').style.display = 'inline-block';
+                }
+                
                 // Score popup
                 const popup = document.createElement('div');
                 popup.className = 'coin-popup';
@@ -746,6 +789,35 @@
                 console.error('Error saving to local storage:', error);
             }
         }
+        
+        // Share results function
+        document.addEventListener('DOMContentLoaded', function() {
+            const shareButton = document.getElementById('share-results');
+            if (shareButton) {
+                shareButton.addEventListener('click', function() {
+                    const caught = document.getElementById('caught').textContent;
+                    const score = document.getElementById('score').textContent;
+                    const speed = document.getElementById('speed').textContent;
+                    
+                    const shareText = `🎮 I just caught ${caught} pets in Solana Tamagotchi! 
+🏆 Score: ${score} | ⚡ Speed: ${speed}
+🐾 Play the mini-game: https://tr1h.github.io/solana-tamagotchi/`;
+                    
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'Solana Tamagotchi - My Score!',
+                            text: shareText,
+                            url: 'https://tr1h.github.io/solana-tamagotchi/'
+                        });
+                    } else {
+                        // Fallback: copy to clipboard
+                        navigator.clipboard.writeText(shareText).then(() => {
+                            alert('📤 Score copied to clipboard! Share it on social media!');
+                        });
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
