@@ -929,7 +929,7 @@
                                 <div class="personal-stat">
                                     <span class="personal-stat-label">👥 Your Referrals</span>
                                     <span id="your-referrals-count" class="personal-stat-number">0</span>
-                                    <span class="personal-stat-detail">(<span id="your-active-refs">0</span> active, <span id="your-pending-refs">0</span> pending)</span>
+                                    <span class="personal-stat-detail">friends joined!</span>
                                 </div>
                                 <div class="personal-stat">
                                     <span class="personal-stat-label">💰 Earned TAMA</span>
@@ -1348,11 +1348,9 @@
                     
                     const earnedTama = leaderboardData && leaderboardData.length > 0 ? leaderboardData[0].tama : 0;
                     
-                    // Update stats
+                    // Update stats - count all referrals as "active" (no wallet needed for pre-launch)
                     const totalRefs = (activeCount || 0) + (pendingCount || 0);
                     document.getElementById('your-referrals-count').textContent = totalRefs;
-                    document.getElementById('your-active-refs').textContent = activeCount || 0;
-                    document.getElementById('your-pending-refs').textContent = pendingCount || 0;
                     document.getElementById('your-earned-tama').textContent = earnedTama;
                     
                     // Calculate next milestone
