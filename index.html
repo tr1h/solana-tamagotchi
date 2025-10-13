@@ -1340,13 +1340,13 @@
                         .eq('referrer_telegram_id', telegramId)
                         .eq('status', 'pending');
                     
-                    // Get earned TAMA
-                    const { data: refData } = await window.supabase
-                        .from('referrals')
-                        .select('signup_reward')
-                        .eq('referrer_telegram_id', telegramId);
+                    // Get earned TAMA from leaderboard (where bot actually stores it)
+                    const { data: leaderboardData } = await window.supabase
+                        .from('leaderboard')
+                        .select('tama')
+                        .eq('telegram_id', telegramId);
                     
-                    const earnedTama = refData ? refData.reduce((sum, r) => sum + (r.signup_reward || 0), 0) : 0;
+                    const earnedTama = leaderboardData && leaderboardData.length > 0 ? leaderboardData[0].tama : 0;
                     
                     // Update stats
                     const totalRefs = (activeCount || 0) + (pendingCount || 0);
