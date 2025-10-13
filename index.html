@@ -553,6 +553,7 @@
                     <input type="email" class="email-input" name="entry.2005620554" placeholder="Enter your email" required>
                     <button type="submit" class="email-submit">Subscribe</button>
                 </form>
+                <div id="form-status" style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;"></div>
                 <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
                     Get launch notifications and exclusive offers
                 </p>
@@ -712,7 +713,7 @@
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Subscribing...';
                 
-                // Also save to Supabase as backup
+                // Save to Supabase as backup (don't prevent form submission)
                 try {
                     if (supabase) {
                         await supabase
@@ -728,13 +729,15 @@
                     console.log('Supabase backup failed, but Google Forms will work');
                 }
                 
-                // Show success message after a delay
+                // Let the form submit to Google Forms naturally
+                // Show success message after form submission
                 setTimeout(() => {
+                    document.getElementById('form-status').innerHTML = '✅ Email submitted successfully!';
                     alert('🎉 Thank you! We will notify you about the game launch!');
                     emailInput.value = '';
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Subscribe';
-                }, 1000);
+                }, 2000);
             });
         });
         
