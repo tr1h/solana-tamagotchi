@@ -164,6 +164,26 @@
             transform: translateY(-2px);
         }
         
+        .subscribe-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+            margin: 20px 0;
+        }
+        
+        .subscribe-button:hover {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+        }
+        
         .social-links {
             display: flex;
             justify-content: center;
@@ -553,16 +573,11 @@
             
             <div class="email-signup">
                 <h3>📧 Get Launch Notifications</h3>
-                <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {document.getElementById('email-form').style.display='none'; document.getElementById('thank-you-message').style.display='block';}"></iframe>
-                <form class="email-form" id="email-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdCQU2kHsH5QNUcz4Y8/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
-                    <input type="email" class="email-input" name="entry.2005620554" placeholder="Enter your email" required>
-                    <button type="submit" class="email-submit">Subscribe</button>
-                </form>
-                <div id="thank-you-message" style="display:none; color: #4ade80; font-size: 1.1rem; margin-top: 20px;">
-                    ✅ Thank you! We will notify you about the game launch!
-                </div>
+                <a href="https://forms.gle/1B9uHZn6Zyqfoany9" target="_blank" class="subscribe-button">
+                    🚀 Subscribe for Updates
+                </a>
                 <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
-                    Get launch notifications and exclusive offers
+                    Click to subscribe and get launch notifications
                 </p>
             </div>
             
