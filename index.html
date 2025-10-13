@@ -826,7 +826,7 @@
                     canvas.toBlob(async function(blob) {
                         const shareText = `🎮 I just caught ${caught} pets in Solana Tamagotchi! 
 🏆 Score: ${score} | ⚡ Speed: ${speed}
-🐾 Play the mini-game:`;
+🐾 Play the mini-game: https://tr1h.github.io/solana-tamagotchi/`;
                         
                         if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'score.png', { type: 'image/png' })] })) {
                             try {
