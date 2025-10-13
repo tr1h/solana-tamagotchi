@@ -242,6 +242,152 @@
             animation: pulse 2s infinite;
         }
         
+        .referral-section {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin: 30px 0;
+        }
+        
+        .referral-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .referral-info h4,
+        .referral-bot h4 {
+            color: #4ade80;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .reward-levels {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .reward-level {
+            background: rgba(74, 222, 128, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            text-align: center;
+            flex: 1;
+        }
+        
+        .level-badge {
+            display: block;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .reward-amount {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 5px;
+        }
+        
+        .reward-desc {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .milestone-bonuses h5 {
+            color: #4ade80;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        .milestone-bonuses ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .milestone-bonuses li {
+            background: rgba(255,255,255,0.05);
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            border-left: 3px solid #4ade80;
+            font-size: 0.9rem;
+        }
+        
+        .bot-button {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+        }
+        
+        .bot-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3);
+        }
+        
+        .bot-icon {
+            font-size: 1.5rem;
+        }
+        
+        .bot-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .bot-text strong {
+            font-size: 1.1rem;
+        }
+        
+        .bot-text small {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .referral-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4ade80;
+        }
+        
+        .stat-label {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
         .mini-game {
             background: rgba(255,255,255,0.1);
             padding: 30px;
@@ -464,6 +610,21 @@
             .email-form {
                 flex-direction: column;
             }
+            
+            .referral-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .reward-levels {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .referral-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -536,6 +697,59 @@
                     <div class="feature-icon">💎</div>
                     <div class="feature-title">Rare Collectibles</div>
                     <div class="feature-desc">Find legendary and mythic pets</div>
+                </div>
+            </div>
+            
+            <!-- Referral Section -->
+            <div class="referral-section">
+                <h3>🔗 Earn with Referrals!</h3>
+                <div class="referral-content">
+                    <div class="referral-info">
+                        <h4>💰 Multi-Level Rewards</h4>
+                        <div class="reward-levels">
+                            <div class="reward-level">
+                                <span class="level-badge">Level 1</span>
+                                <span class="reward-amount">100 TAMA</span>
+                                <span class="reward-desc">Direct referrals</span>
+                            </div>
+                            <div class="reward-level">
+                                <span class="level-badge">Level 2</span>
+                                <span class="reward-amount">50 TAMA</span>
+                                <span class="reward-desc">Indirect referrals</span>
+                            </div>
+                        </div>
+                        <div class="milestone-bonuses">
+                            <h5>🎁 Milestone Bonuses:</h5>
+                            <ul>
+                                <li>5 referrals → +1,000 TAMA</li>
+                                <li>10 referrals → +3,000 TAMA</li>
+                                <li>25 referrals → +10,000 TAMA</li>
+                                <li>50 referrals → +30,000 TAMA</li>
+                                <li>100 referrals → +100,000 TAMA + Legendary Badge!</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="referral-bot">
+                        <h4>🤖 Get Your Referral Code</h4>
+                        <p>Connect with our Telegram bot to get your personal referral code and start earning!</p>
+                        <a href="https://t.me/solana_tamagotchi_v3_bot?start=help" class="bot-button" target="_blank">
+                            <span class="bot-icon">🤖</span>
+                            <span class="bot-text">
+                                <strong>Open Bot</strong>
+                                <small>Get referral code</small>
+                            </span>
+                        </a>
+                        <div class="referral-stats">
+                            <div class="stat">
+                                <span class="stat-number">500+</span>
+                                <span class="stat-label">Active Referrers</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">50K+</span>
+                                <span class="stat-label">TAMA Distributed</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
