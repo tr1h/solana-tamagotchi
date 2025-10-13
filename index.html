@@ -14,6 +14,9 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <!-- Styles -->
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/mobile.css">
@@ -272,6 +275,24 @@
                     <div class="feature-title">Secure & Safe</div>
                     <div class="feature-desc">Your pets and tokens are protected</div>
                 </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">Unique Designs</div>
+                    <div class="feature-desc">Each pet has unique visual traits</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-title">Evolution System</div>
+                    <div class="feature-desc">Watch your pets grow and evolve</div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <div class="feature-title">Rare Collectibles</div>
+                    <div class="feature-desc">Find legendary and mythic pets</div>
+                </div>
             </div>
             
             <div class="email-signup">
@@ -301,6 +322,17 @@
     </div>
 
     <script>
+        // Initialize Supabase
+        const SUPABASE_URL = window.SUPABASE_URL || 'https://your-project.supabase.co';
+        const SUPABASE_KEY = window.SUPABASE_KEY || 'your-anon-key-here';
+        let supabase = null;
+        
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (error) {
+            console.log('Supabase not configured, using local storage');
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             const featureCards = document.querySelectorAll('.feature-card');
             featureCards.forEach(card => {
@@ -317,20 +349,70 @@
             
             // Email form handling
             const emailForm = document.getElementById('email-form');
-            emailForm.addEventListener('submit', function(e) {
+            emailForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                const email = this.querySelector('.email-input').value;
+                const emailInput = this.querySelector('.email-input');
+                const email = emailInput.value;
+                const submitBtn = this.querySelector('.email-submit');
                 
-                // Simple validation
-                if (email && email.includes('@')) {
-                    // Here you would typically send to your backend
-                    alert('Thank you! We will notify you about the game launch!');
-                    this.querySelector('.email-input').value = '';
-                } else {
+                // Validation
+                if (!email || !email.includes('@')) {
                     alert('Please enter a valid email address');
+                    return;
+                }
+                
+                // Disable button during submission
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Subscribing...';
+                
+                try {
+                    if (supabase) {
+                        // Save to Supabase
+                        const { data, error } = await supabase
+                            .from('email_subscriptions')
+                            .insert([{ 
+                                email: email, 
+                                source: 'landing_page',
+                                created_at: new Date().toISOString()
+                            }]);
+                        
+                        if (error) {
+                            console.error('Error saving email:', error);
+                            // Fallback to local storage
+                            saveToLocalStorage(email);
+                        }
+                    } else {
+                        // Fallback to local storage
+                        saveToLocalStorage(email);
+                    }
+                    
+                    alert('🎉 Thank you! We will notify you about the game launch!');
+                    emailInput.value = '';
+                } catch (error) {
+                    console.error('Error:', error);
+                    saveToLocalStorage(email);
+                    alert('🎉 Thank you! We will notify you about the game launch!');
+                    emailInput.value = '';
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Subscribe';
                 }
             });
         });
+        
+        function saveToLocalStorage(email) {
+            try {
+                const emails = JSON.parse(localStorage.getItem('email_subscriptions') || '[]');
+                emails.push({
+                    email: email,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('email_subscriptions', JSON.stringify(emails));
+                console.log('Email saved to local storage');
+            } catch (error) {
+                console.error('Error saving to local storage:', error);
+            }
+        }
     </script>
 </body>
 </html>
