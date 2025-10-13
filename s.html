@@ -49,9 +49,11 @@
         <a href="#" id="telegram-link" class="cta-button" style="display: none;">🤖 Start Playing Now</a>
     </div>
     <script>
-        const path = window.location.pathname;
-        const refCode = path.split('/').pop();
-        if (refCode && refCode !== 's.html') {
+        // Get referral code from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        
+        if (refCode) {
             const telegramLink = document.getElementById('telegram-link');
             telegramLink.href = `https://t.me/solana_tamagotchi_v3_bot?start=ref${refCode}`;
             telegramLink.style.display = 'inline-block';
