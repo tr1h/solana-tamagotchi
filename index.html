@@ -549,15 +549,17 @@
             
             <div class="email-signup">
                 <h3>📧 Get Launch Notifications</h3>
-                <form class="email-form" id="email-form">
-                    <input type="email" class="email-input" placeholder="Enter your email" required>
+                <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {document.getElementById('email-form').style.display='none'; document.getElementById('thank-you-message').style.display='block';}"></iframe>
+                <form class="email-form" id="email-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdNn2bFP9GpJcfGsTW8/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+                    <input type="email" class="email-input" name="entry.2005620554" placeholder="Enter your email" required>
                     <button type="submit" class="email-submit">Subscribe</button>
                 </form>
-                <div id="form-status" style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;"></div>
+                <div id="thank-you-message" style="display:none; color: #4ade80; font-size: 1.1rem; margin-top: 20px;">
+                    ✅ Thank you! We will notify you about the game launch!
+                </div>
                 <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
                     Get launch notifications and exclusive offers
                 </p>
-                <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
             </div>
             
             <div class="coming-soon-date">
@@ -582,6 +584,9 @@
     </div>
 
     <script>
+        // Google Forms submission tracking
+        var submitted = false;
+        
         // Initialize Supabase (disabled - using Google Forms only)
         let supabase = null;
         // Supabase configuration disabled to avoid errors
@@ -695,41 +700,21 @@
                 });
             });
             
-            // Email form handling
+            // Email form handling (now just saves to localStorage as backup)
             const emailForm = document.getElementById('email-form');
             emailForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent default form submission
-                
                 const emailInput = this.querySelector('.email-input');
                 const email = emailInput.value;
-                const submitBtn = this.querySelector('.email-submit');
                 
-                // Validation
-                if (!email || !email.includes('@')) {
-                    alert('Please enter a valid email address');
-                    return;
-                }
-                
-                // Disable button during submission
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Subscribing...';
-                
-                // Save to local storage
+                // Save to local storage as backup (don't prevent Google Forms submission)
                 try {
                     saveToLocalStorage(email);
-                    console.log('Email saved to local storage');
-                    
-                    // Show success message
-                    document.getElementById('form-status').innerHTML = '✅ Email submitted successfully!';
-                    alert('🎉 Thank you! We will notify you about the game launch!');
-                    emailInput.value = '';
+                    console.log('Email saved to local storage as backup');
                 } catch (error) {
-                    console.log('Local storage failed');
-                    alert('❌ Error saving email. Please try again.');
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Subscribe';
+                    console.log('Local storage failed, but Google Forms will work');
                 }
+                
+                // Let the form submit to Google Forms naturally
             });
         });
         
