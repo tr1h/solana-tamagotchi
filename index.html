@@ -895,69 +895,26 @@
                         </div>
                     </div>
                     <div class="referral-bot">
-                        <h4 id="referal-title">🤖 Start Earning Now!</h4>
+                        <h4>🤖 Get Your Referral Link!</h4>
+                        <p>🎁 No wallet needed! Get your referral link instantly and start earning TAMA tokens!</p>
                         
-                        <!-- Initial State: Not connected -->
-                        <div id="referral-initial" class="referral-state">
-                            <p>🎁 No wallet needed! Get your referral link instantly and start earning TAMA tokens!</p>
-                            <div class="instant-steps">
-                                <div class="step">1️⃣ Open bot → Get link</div>
-                                <div class="step">2️⃣ Share with friends</div>
-                                <div class="step">3️⃣ Earn 100 TAMA instantly!</div>
-                            </div>
-                            <a href="https://t.me/solana_tamagotchi_v3_bot?start=start" class="bot-button" target="_blank">
-                                <span class="bot-icon">🤖</span>
-                                <span class="bot-text">
-                                    <strong>Get Referral Link</strong>
-                                    <small>Start in 10 seconds!</small>
-                                </span>
-                            </a>
+                        <div class="instant-steps">
+                            <div class="step">1️⃣ Open bot → Get link</div>
+                            <div class="step">2️⃣ Share with friends</div>
+                            <div class="step">3️⃣ Earn 100 TAMA instantly!</div>
                         </div>
                         
-                        <!-- Personal Stats: After connected -->
-                        <div id="referral-personal" class="referral-state" style="display: none;">
-                            <div class="personal-ref-link">
-                                <label>📤 Your Referral Link:</label>
-                                <div class="ref-link-container">
-                                    <input type="text" id="ref-link-input" readonly class="ref-link-input" value="">
-                                    <button id="copy-ref-btn" class="copy-ref-btn">📋 Copy</button>
-                                    <button id="share-ref-btn" class="share-ref-btn">🔗 Share</button>
-                                </div>
-                            </div>
-                            
-                            <div class="personal-ref-stats">
-                                <div class="personal-stat">
-                                    <span class="personal-stat-label">👥 Your Referrals</span>
-                                    <span id="your-referrals-count" class="personal-stat-number">0</span>
-                                    <span class="personal-stat-detail">friends joined!</span>
-                                </div>
-                                <div class="personal-stat">
-                                    <span class="personal-stat-label">💰 Earned TAMA</span>
-                                    <span id="your-earned-tama" class="personal-stat-number">0</span>
-                                    <span class="personal-stat-detail">tokens</span>
-                                </div>
-                            </div>
-                            
-                            <div class="next-milestone">
-                                <p>🎯 Next milestone: <strong><span id="next-milestone-count">5</span> referrals</strong> → <span id="next-milestone-reward">+1,000 TAMA</span></p>
-                                <div class="milestone-progress">
-                                    <div id="milestone-progress-bar" class="milestone-progress-fill" style="width: 0%"></div>
-                                </div>
-                                <span class="milestone-progress-text"><span id="current-refs-progress">0</span> / <span id="target-refs-progress">5</span></span>
-                            </div>
-                        </div>
+                        <a href="https://t.me/solana_tamagotchi_v3_bot?start=start" class="bot-button" target="_blank">
+                            <span class="bot-icon">🤖</span>
+                            <span class="bot-text">
+                                <strong>Get Referral Link</strong>
+                                <small>Start in 10 seconds!</small>
+                            </span>
+                        </a>
                         
-                        <!-- Global Stats -->
-                        <div class="referral-stats">
-                            <div class="stat">
-                                <span class="stat-number" id="global-referrers">0</span>
-                                <span class="stat-label">Active Referrers</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number" id="global-tama">0</span>
-                                <span class="stat-label">TAMA Distributed</span>
-                            </div>
-                        </div>
+                        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+                            💡 <strong>Track your referrals:</strong> Use <code>/stats</code> command in the bot
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1276,183 +1233,6 @@
                 });
             }
         }
-        
-        // =====================================
-        // REFERRAL SYSTEM
-        // =====================================
-        
-        // Function to generate referral code from wallet or telegram ID
-        function generateReferralCode(identifier) {
-            if (!identifier) return null;
-            
-            // Simple hash function (same as bot)
-            let hash = 0;
-            for (let i = 0; i < identifier.length; i++) {
-                hash = ((hash << 5) - hash) + identifier.charCodeAt(i);
-                hash = hash & hash;
-            }
-            
-            // Convert to base36 and format
-            const base36 = Math.abs(hash).toString(36).toUpperCase();
-            return 'TAMA' + base36.slice(0, 6).padEnd(6, '0');
-        }
-        
-        // Check URL parameters for Telegram data
-        function checkTelegramData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tgId = urlParams.get('tg_id');
-            const tgUsername = urlParams.get('tg_username');
-            
-            if (tgId) {
-                // Save to localStorage
-                localStorage.setItem('telegram_id', tgId);
-                if (tgUsername) localStorage.setItem('telegram_username', tgUsername);
-                
-                // Show personal referral stats
-                loadPersonalReferralStats(tgId);
-            }
-        }
-        
-        // Load personal referral statistics
-        async function loadPersonalReferralStats(telegramId) {
-            try {
-                // Generate referral code
-                const refCode = generateReferralCode(telegramId);
-                const refLink = `https://t.me/solana_tamagotchi_v3_bot?start=ref${refCode}`;
-                
-                // Update UI
-                document.getElementById('referral-initial').style.display = 'none';
-                document.getElementById('referral-personal').style.display = 'block';
-                document.getElementById('ref-link-input').value = refLink;
-                
-                // Load stats from Supabase (if available)
-                if (window.supabase) {
-                    // Get active referrals count
-                    const { count: activeCount } = await window.supabase
-                        .from('referrals')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('referrer_telegram_id', telegramId);
-                    
-                    // Get pending referrals count
-                    const { count: pendingCount } = await window.supabase
-                        .from('pending_referrals')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('referrer_telegram_id', telegramId)
-                        .eq('status', 'pending');
-                    
-                    // Get earned TAMA from leaderboard (where bot actually stores it)
-                    const { data: leaderboardData } = await window.supabase
-                        .from('leaderboard')
-                        .select('tama')
-                        .eq('telegram_id', telegramId);
-                    
-                    const earnedTama = leaderboardData && leaderboardData.length > 0 ? leaderboardData[0].tama : 0;
-                    
-                    // Update stats - count all referrals as "active" (no wallet needed for pre-launch)
-                    const totalRefs = (activeCount || 0) + (pendingCount || 0);
-                    document.getElementById('your-referrals-count').textContent = totalRefs;
-                    document.getElementById('your-earned-tama').textContent = earnedTama;
-                    
-                    // Calculate next milestone
-                    const milestones = [
-                        { count: 5, reward: '+1,000 TAMA' },
-                        { count: 10, reward: '+3,000 TAMA' },
-                        { count: 25, reward: '+10,000 TAMA' },
-                        { count: 50, reward: '+30,000 TAMA' },
-                        { count: 100, reward: '+100,000 TAMA + Legendary Badge!' }
-                    ];
-                    
-                    const nextMilestone = milestones.find(m => m.count > totalRefs) || milestones[milestones.length - 1];
-                    document.getElementById('next-milestone-count').textContent = nextMilestone.count;
-                    document.getElementById('next-milestone-reward').textContent = nextMilestone.reward;
-                    document.getElementById('current-refs-progress').textContent = totalRefs;
-                    document.getElementById('target-refs-progress').textContent = nextMilestone.count;
-                    
-                    const progress = Math.min((totalRefs / nextMilestone.count) * 100, 100);
-                    document.getElementById('milestone-progress-bar').style.width = progress + '%';
-                }
-                
-            } catch (error) {
-                console.error('Error loading referral stats:', error);
-            }
-        }
-        
-        // Copy referral link
-        document.getElementById('copy-ref-btn')?.addEventListener('click', function() {
-            const input = document.getElementById('ref-link-input');
-            input.select();
-            navigator.clipboard.writeText(input.value).then(() => {
-                const btn = document.getElementById('copy-ref-btn');
-                btn.textContent = '✅ Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = '📋 Copy';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        });
-        
-        // Share referral link
-        document.getElementById('share-ref-btn')?.addEventListener('click', function() {
-            const refLink = document.getElementById('ref-link-input').value;
-            const shareText = `🎮 Join me in Solana Tamagotchi!\\n\\nPlay-to-Earn NFT pet game on Solana blockchain!\\n\\n🐾 Grow and train unique pets\\n💰 Earn TAMA tokens\\n🏆 Compete on leaderboard\\n\\nGet bonus rewards: ${refLink}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Solana Tamagotchi - Join Me!',
-                    text: shareText
-                }).catch(() => {
-                    // Fallback to copy
-                    navigator.clipboard.writeText(shareText);
-                    alert('📤 Link copied! Share it with your friends!');
-                });
-            } else {
-                navigator.clipboard.writeText(shareText);
-                alert('📤 Link copied! Share it with your friends!');
-            }
-        });
-        
-        // Load global referral stats
-        async function loadGlobalReferralStats() {
-            try {
-                if (window.supabase) {
-                    // Get total active referrers
-                    const { data: referrers } = await window.supabase
-                        .from('leaderboard')
-                        .select('telegram_id');
-                    
-                    const uniqueReferrers = new Set();
-                    if (referrers) {
-                        for (const user of referrers) {
-                            if (user.telegram_id) {
-                                const { count } = await window.supabase
-                                    .from('referrals')
-                                    .select('*', { count: 'exact', head: true })
-                                    .eq('referrer_telegram_id', user.telegram_id);
-                                
-                                if (count > 0) uniqueReferrers.add(user.telegram_id);
-                            }
-                        }
-                    }
-                    
-                    // Get total TAMA distributed
-                    const { data: allRefs } = await window.supabase
-                        .from('referrals')
-                        .select('signup_reward');
-                    
-                    const totalTama = allRefs ? allRefs.reduce((sum, r) => sum + (r.signup_reward || 0), 0) : 0;
-                    
-                    document.getElementById('global-referrers').textContent = uniqueReferrers.size;
-                    document.getElementById('global-tama').textContent = totalTama.toLocaleString();
-                }
-            } catch (error) {
-                console.error('Error loading global stats:', error);
-            }
-        }
-        
-        // Initialize on page load
-        checkTelegramData();
-        loadGlobalReferralStats();
     </script>
 </body>
 </html>
