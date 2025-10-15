@@ -3,122 +3,134 @@
 **GitHub**: https://github.com/tr1h/solana-tamagotchi  
 **Live**: https://tr1h.github.io/solana-tamagotchi/
 
-Публичная страница для реферальных ссылок Solana Tamagotchi.
+Public page for Solana Tamagotchi referral links.
 
-## 🎯 Назначение
+## 🎯 Purpose
 
-Этот репозиторий содержит:
-- 📱 **s.html** - короткая реферальная страница с автоматическим редиректом
-- 🎨 **referral.html** - полный лендинг с красивым превью
-- 🖼️ **assets/** - изображения для соцсетей (Open Graph)
+This repository contains:
+- 📱 **s.html** - short referral page with automatic redirect
+- 🎨 **referral.html** - full landing page with beautiful preview
+- 🏠 **index.html** - main landing page
+- ⚙️ **admin.html** - admin panel
+- 🖼️ **assets/** - images and generators for social media (Open Graph)
+- 📝 **group_welcome_message.md** - Telegram group welcome message
+- 📌 **group_pinned_message.md** - Telegram group pinned message
 
-## 📁 Структура
+## 📁 Structure
 
 ```
 solana-tamagotchi-public/
-├── s.html                 # Короткая реферальная ссылка
-├── referral.html          # Полный лендинг
-├── index.html             # Главная страница
+├── s.html                 # Short referral link
+├── referral.html          # Full landing page
+├── index.html             # Main page
+├── admin.html             # Admin panel
 ├── assets/
-│   ├── referral-preview.png  # Картинка для соцсетей (1200x630)
-│   └── referral-preview.svg  # Исходник
-├── css/                   # Стили
+│   ├── referral-preview.png  # Social media image (1200x630)
+│   ├── referral-preview.svg  # Source file
+│   ├── create-preview.html   # Image generator
+│   ├── create-simple-png.html # Simple PNG creator
+│   └── convert-to-png.html   # PNG converter
+├── css/                   # Styles
 │   ├── landing.css
 │   ├── main.css
-│   └── mobile.css
-├── docs/                  # Документация
+│   ├── mobile.css
+│   ├── mint.css
+│   └── animations.css
+├── docs/                  # Documentation
 │   ├── BEAUTIFUL_SHARING_SETUP.md
 │   └── CREATE_PNG_IMAGE.md
-└── README.md             # Этот файл
+├── group_welcome_message.md    # Telegram group welcome
+├── group_pinned_message.md     # Telegram group pinned
+└── README.md             # This file
 ```
 
-## 🔗 Как работает
+## 🔗 How it works
 
-### 1. Пользователь получает ссылку в боте:
+### 1. User gets link from bot:
 ```
 /ref → https://tr1h.github.io/solana-tamagotchi/s.html?ref=TAMA3F2A1C
 ```
 
-### 2. s.html обрабатывает ссылку:
+### 2. s.html processes the link:
 ```javascript
-// Получает код из URL
+// Gets code from URL
 const refCode = urlParams.get('ref'); // TAMA3F2A1C
 
-// Создаёт ссылку на бота
+// Creates bot link
 const botLink = `https://t.me/solana_tamagotchi_v3_bot?start=ref${refCode}`;
 
-// Автоматически редиректит через 2 секунды
+// Automatically redirects after 2 seconds
 setTimeout(() => window.location.href = botLink, 2000);
 ```
 
-### 3. Пользователь попадает в бот:
+### 3. User lands in bot:
 ```
-Бот получает: /start refTAMA3F2A1C
-Находит реферера по коду
-Начисляет 100 TAMA мгновенно!
+Bot receives: /start refTAMA3F2A1C
+Finds referrer by code
+Awards 1,000 TAMA instantly!
 ```
 
 ## 🎨 Open Graph Preview
 
-Когда ссылка расшаривается в соцсетях, показывается:
-- 📸 **Картинка**: 1200x630px (referral-preview.png)
-- 📝 **Заголовок**: "🎮 Join Solana Tamagotchi - Get 100 TAMA Bonus!"
-- 💬 **Описание**: "Play-to-Earn NFT pet game on Solana! Grow unique pets, earn TAMA tokens..."
+When link is shared on social media, shows:
+- 📸 **Image**: 1200x630px (referral-preview.png)
+- 📝 **Title**: "🎮 Join Solana Tamagotchi - Get 1,000 TAMA Bonus!"
+- 💬 **Description**: "Play-to-Earn NFT pet game on Solana! Grow unique pets, earn TAMA tokens..."
 
-### Метатеги:
+### Meta tags:
 ```html
-<meta property="og:title" content="🎮 Join Solana Tamagotchi - Get 100 TAMA Bonus!">
+<meta property="og:title" content="🎮 Join Solana Tamagotchi - Get 1,000 TAMA Bonus!">
 <meta property="og:description" content="...">
 <meta property="og:image" content="...referral-preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 ```
 
-## 🚀 Деплой на GitHub Pages
+## 🚀 Deploy to GitHub Pages
 
-### 1. Пуш в GitHub:
+### 1. Push to GitHub:
 ```bash
 git add .
 git commit -m "Update referral landing"
 git push origin main
 ```
 
-### 2. Настройка Pages:
+### 2. Setup Pages:
 ```
 Settings → Pages → Source: Deploy from branch
 Branch: main → / (root) → Save
 ```
 
-### 3. Проверка:
+### 3. Test:
 ```
 https://tr1h.github.io/solana-tamagotchi/s.html?ref=TEST123
 ```
 
-## 🔧 Кастомизация
+## 🔧 Customization
 
-### Изменить картинку:
-1. Создай новую картинку 1200x630px
-2. Сохрани как `assets/referral-preview.png`
-3. Пуш в GitHub
+### Change image:
+1. Create new image 1200x630px
+2. Save as `assets/referral-preview.png`
+3. Push to GitHub
 
-### Изменить текст:
-Отредактируй метатеги в `s.html`:
+### Change text:
+Edit meta tags in `s.html`:
 ```html
-<meta property="og:title" content="Твой заголовок">
-<meta property="og:description" content="Твоё описание">
+<meta property="og:title" content="Your title">
+<meta property="og:description" content="Your description">
 ```
 
-### Изменить время редиректа:
-В `s.html` найди:
+### Change redirect time:
+In `s.html` find:
 ```javascript
-setTimeout(() => window.location.href = link.href, 2000); // 2 секунды
+setTimeout(() => window.location.href = link.href, 2000); // 2 seconds
 ```
 
-## 📊 Аналитика
+## 📊 Analytics
 
-Страница отправляет данные о кликах (закомментировано):
+Page sends click data (commented out):
 ```javascript
-// Раскомментируй когда развернёшь analytics API
+// Uncomment when you deploy analytics API
 fetch('https://your-analytics-api.herokuapp.com/track_click', {
     method: 'POST',
     body: JSON.stringify({
@@ -132,43 +144,43 @@ fetch('https://your-analytics-api.herokuapp.com/track_click', {
 
 ## 🎯 Best Practices
 
-### SEO оптимизация:
-- ✅ Open Graph теги
-- ✅ Twitter Card теги
+### SEO optimization:
+- ✅ Open Graph tags
+- ✅ Twitter Card tags
 - ✅ Meta description
 - ✅ Semantic HTML
 
 ### Performance:
-- ✅ Минифицированный CSS
-- ✅ Inline стили для критического CSS
-- ✅ Оптимизированные изображения
-- ✅ Быстрый редирект (2 сек)
+- ✅ Minified CSS
+- ✅ Inline styles for critical CSS
+- ✅ Optimized images
+- ✅ Fast redirect (2 sec)
 
 ### Mobile-first:
-- ✅ Responsive дизайн
-- ✅ Touch-friendly кнопки
+- ✅ Responsive design
+- ✅ Touch-friendly buttons
 - ✅ Viewport meta tag
 
-## 📱 Тестирование
+## 📱 Testing
 
-### Проверка Open Graph:
+### Check Open Graph:
 - https://developers.facebook.com/tools/debug/
 - https://cards-dev.twitter.com/validator
 
-### Проверка мобильной версии:
+### Check mobile version:
 - Chrome DevTools → Device Toolbar
 - https://search.google.com/test/mobile-friendly
 
-## 📚 Документация
+## 📚 Documentation
 
-- [Настройка Beautiful Sharing](docs/BEAUTIFUL_SHARING_SETUP.md)
-- [Создание PNG изображения](docs/CREATE_PNG_IMAGE.md)
+- [Beautiful Sharing Setup](docs/BEAUTIFUL_SHARING_SETUP.md)
+- [Create PNG Image](docs/CREATE_PNG_IMAGE.md)
 
-## 🔗 Связь с основным проектом
+## 🔗 Connection with main project
 
-Этот репозиторий работает вместе с:
-- **Основной проект**: https://github.com/tr1h/huma-chain-xyz
-- **Telegram бот**: @solana_tamagotchi_v3_bot
+This repository works together with:
+- **Main project**: https://github.com/tr1h/huma-chain-xyz
+- **Telegram bot**: @solana_tamagotchi_v3_bot
 
 ## 📝 License
 

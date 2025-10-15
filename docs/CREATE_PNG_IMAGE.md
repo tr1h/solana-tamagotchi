@@ -11,7 +11,7 @@ Telegram не показывает SVG в превью! Нужен PNG 1200x630p
    - Фон: Градиент (#667eea → #764ba2)
    - Текст: "Solana Tamagotchi"
    - Emoji: 🐾
-   - Бонус: "100 TAMA"
+   - Бонус: "1,000 TAMA"
 3. Скачай как PNG
 4. Переименуй в `referral-preview.png`
 5. Загрузи в `C:\goooog\solana-tamagotchi-public\assets\`

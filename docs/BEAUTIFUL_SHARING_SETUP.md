@@ -20,7 +20,7 @@
 - **Telegram/WhatsApp** показывают красивое превью с:
   - 🐾 Логотип Solana Tamagotchi
   - 🎮 Заголовок "Play-to-Earn NFT Pet Game"
-  - 🎁 Бонус "100 TAMA"
+  - 🎁 Бонус "1,000 TAMA"
   - 🎨 Красивый градиентный фон
 
 ### **3️⃣ При переходе по ссылке:**
@@ -71,7 +71,7 @@ https://t.me/solana_tamagotchi_v3_bot
 ### **2️⃣ Настрой Open Graph теги:**
 В файле `referral.html` настрой:
 ```html
-<meta property="og:title" content="🎮 Join Solana Tamagotchi - Get 100 TAMA Bonus!">
+<meta property="og:title" content="🎮 Join Solana Tamagotchi - Get 1,000 TAMA Bonus!">
 <meta property="og:description" content="🐾 Play-to-Earn NFT pet game on Solana!">
 <meta property="og:image" content="https://tr1h.github.io/solana-tamagotchi/assets/referral-preview.png">
 ```
