@@ -181,6 +181,7 @@ fetch('https://your-analytics-api.herokuapp.com/track_click', {
 This repository works together with:
 - **Main project**: https://github.com/tr1h/huma-chain-xyz
 - **Telegram bot**: @solana_tamagotchi_v3_bot
+- **Contact email**: gotchigame@proton.me
 
 ## 📝 License
 
