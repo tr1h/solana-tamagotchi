@@ -516,6 +516,41 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        /* Pet status overlay */
+        .pet-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .pet-status.critical {
+            background: rgba(239, 68, 68, 0.8);
+            animation: pulse 0.5s infinite;
+        }
+
+        .pet-status.warning {
+            background: rgba(251, 191, 36, 0.8);
+        }
+
+        .pet-status.good {
+            background: rgba(16, 185, 129, 0.8);
+        }
+
+        /* Pet mood indicator */
+        .pet-mood {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 24px;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -546,6 +581,8 @@
             <div class="cloud cloud3"></div>
             <div class="shop-btn" id="shop-btn">🛒</div>
             <div class="combo-counter" id="combo-counter">🔥 COMBO x<span id="combo-value">0</span></div>
+            <div class="pet-status" id="pet-status"></div>
+            <div class="pet-mood" id="pet-mood">😊</div>
             <div class="pet-emoji" id="pet-sprite">🐾</div>
         </div>
 
@@ -777,10 +814,86 @@
             // Pet evolution
             updatePetEvolution();
 
+            // NEW: Update pet status and mood
+            updatePetStatus();
+
             // Button states
             feedBtn.disabled = gameState.tama < 50;
             playBtn.disabled = gameState.tama < 30;
             healBtn.disabled = gameState.tama < 100;
+        }
+
+        // NEW: Update pet status and mood indicators
+        function updatePetStatus() {
+            const petStatus = document.getElementById('pet-status');
+            const petMood = document.getElementById('pet-mood');
+            
+            // Determine overall pet condition
+            let status = '';
+            let statusClass = '';
+            let mood = '😊';
+            
+            if (gameState.hp <= 0) {
+                status = '💀 FAINTED';
+                statusClass = 'critical';
+                mood = '💀';
+            } else if (gameState.hp < 10) {
+                status = '🚨 DYING';
+                statusClass = 'critical';
+                mood = '😵';
+            } else if (gameState.hp < 20) {
+                status = '⚠️ CRITICAL';
+                statusClass = 'critical';
+                mood = '😰';
+            } else if (gameState.food <= 0) {
+                status = '🍽️ STARVING';
+                statusClass = 'critical';
+                mood = '😵';
+            } else if (gameState.food < 10) {
+                status = '⚠️ VERY HUNGRY';
+                statusClass = 'warning';
+                mood = '😫';
+            } else if (gameState.food < 20) {
+                status = '🍽️ HUNGRY';
+                statusClass = 'warning';
+                mood = '😋';
+            } else if (gameState.happy <= 0) {
+                status = '😢 DEPRESSED';
+                statusClass = 'warning';
+                mood = '😢';
+            } else if (gameState.happy < 20) {
+                status = '😢 VERY SAD';
+                statusClass = 'warning';
+                mood = '😢';
+            } else if (gameState.happy < 30) {
+                status = '😢 SAD';
+                statusClass = 'warning';
+                mood = '😔';
+            } else if (gameState.hp > 80 && gameState.food > 80 && gameState.happy > 80) {
+                status = '✨ PERFECT';
+                statusClass = 'good';
+                mood = '😍';
+            } else if (gameState.hp > 60 && gameState.food > 60 && gameState.happy > 60) {
+                status = '😊 HAPPY';
+                statusClass = 'good';
+                mood = '😊';
+            } else {
+                status = '😐 OK';
+                statusClass = 'good';
+                mood = '😐';
+            }
+            
+            // Update status display
+            if (statusClass === 'critical' || statusClass === 'warning') {
+                petStatus.textContent = status;
+                petStatus.className = `pet-status ${statusClass}`;
+                petStatus.style.display = 'block';
+            } else {
+                petStatus.style.display = 'none';
+            }
+            
+            // Update mood
+            petMood.textContent = mood;
         }
 
         function updateStat(stat, current, max) {
@@ -823,6 +936,36 @@
         function clickPet(e) {
             const now = Date.now();
             
+            // NEW: Check if pet is too weak to interact
+            if (gameState.hp <= 0) {
+                showMessage('💀 Your pet is unconscious! Heal it first!');
+                return;
+            }
+            
+            if (gameState.food <= 0) {
+                showMessage('🍽️ Your pet is starving! Feed it first!');
+                return;
+            }
+            
+            if (gameState.happy <= 0) {
+                showMessage('😢 Your pet is too depressed! Play with it first!');
+                return;
+            }
+
+            // NEW: Pet condition affects click efficiency
+            let clickEfficiency = 1.0;
+            if (gameState.hp < 30) clickEfficiency *= 0.5; // 50% efficiency
+            if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
+            if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
+            
+            // NEW: Low stats reduce happy on click (pet gets tired)
+            if (gameState.hp < 50) {
+                gameState.happy = Math.max(0, gameState.happy - 1);
+            }
+            if (gameState.food < 50) {
+                gameState.happy = Math.max(0, gameState.happy - 0.5);
+            }
+            
             // Combo system
             if (now - gameState.lastClickTime < 500) {
                 gameState.combo++;
@@ -844,16 +987,19 @@
                 comboCounter.classList.remove('active');
             }
 
-            // Calculate earned TAMA with booster
+            // Calculate earned TAMA with booster and efficiency
             let clickPower = gameState.clickPower;
             if (gameState.boosterActive && now < gameState.boosterEndTime) {
                 clickPower *= 2;
             }
             
+            // Apply efficiency penalty
+            clickPower *= clickEfficiency;
+            
             // Combo bonus
             const comboBonus = Math.floor(gameState.combo / 5);
-            const earnedTama = clickPower + comboBonus;
-            const earnedXP = 5 + comboBonus;
+            const earnedTama = Math.max(0.1, clickPower + comboBonus); // Minimum 0.1 TAMA
+            const earnedXP = Math.max(1, 5 + comboBonus); // Minimum 1 XP
             
             gameState.tama += earnedTama;
             gameState.xp += earnedXP;
@@ -864,14 +1010,18 @@
             petSprite.classList.add('bounce');
             setTimeout(() => petSprite.classList.remove('bounce'), 500);
 
-            // Show +TAMA effect with combo
-            const displayText = gameState.combo >= 3 ? 
-                `+${earnedTama} 🔥x${gameState.combo}` : 
-                `+${earnedTama} TAMA`;
+            // Show +TAMA effect with combo and efficiency
+            let displayText = `+${earnedTama.toFixed(1)} TAMA`;
+            if (gameState.combo >= 3) {
+                displayText = `+${earnedTama.toFixed(1)} 🔥x${gameState.combo}`;
+            }
+            if (clickEfficiency < 1.0) {
+                displayText += ` (${Math.round(clickEfficiency * 100)}%)`;
+            }
             showClickEffect(e.clientX, e.clientY, displayText);
 
-            // Random happy boost
-            if (Math.random() < 0.3) {
+            // NEW: Random happy boost only if pet is healthy
+            if (Math.random() < 0.3 && gameState.hp > 50 && gameState.food > 50) {
                 gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 2);
             }
 
@@ -985,29 +1135,55 @@
             messageDiv.classList.add('message');
         }
 
-        // Passive stat decay
+        // Passive stat decay - IMPROVED LOGIC
         setInterval(() => {
             const now = Date.now();
             const timePassed = (now - gameState.lastUpdate) / 1000; // seconds
             gameState.lastUpdate = now;
 
-            // Decay stats slowly
+            // Decay stats slowly with realistic rates
             if (timePassed > 0) {
-                gameState.food = Math.max(0, gameState.food - timePassed * 0.1);
-                gameState.happy = Math.max(0, gameState.happy - timePassed * 0.05);
+                // Food decays faster when pet is active (clicking)
+                const activityMultiplier = gameState.totalClicks > 0 ? 1.5 : 1.0;
+                gameState.food = Math.max(0, gameState.food - timePassed * 0.08 * activityMultiplier);
                 
-                // Low food damages HP
-                if (gameState.food < 20) {
-                    gameState.hp = Math.max(0, gameState.hp - timePassed * 0.2);
+                // Happy decays slower, but faster when hungry/sick
+                let happyDecayRate = 0.03;
+                if (gameState.food < 30) happyDecayRate *= 2; // Hungry = sad
+                if (gameState.hp < 30) happyDecayRate *= 1.5; // Sick = sad
+                gameState.happy = Math.max(0, gameState.happy - timePassed * happyDecayRate);
+                
+                // HP damage from starvation
+                if (gameState.food <= 0) {
+                    gameState.hp = Math.max(0, gameState.hp - timePassed * 0.3); // Starving = fast HP loss
+                } else if (gameState.food < 20) {
+                    gameState.hp = Math.max(0, gameState.hp - timePassed * 0.15); // Hungry = slow HP loss
+                }
+                
+                // HP damage from depression (extreme sadness)
+                if (gameState.happy <= 0) {
+                    gameState.hp = Math.max(0, gameState.hp - timePassed * 0.1); // Depression = HP loss
                 }
 
                 updateUI();
 
-                // Critical warnings
-                if (gameState.hp < 20) {
-                    showMessage('⚠️ CRITICAL! Your pet needs healing!');
+                // NEW: Progressive warning system
+                if (gameState.hp <= 0) {
+                    showMessage('💀 Your pet has fainted! Emergency healing needed!');
+                } else if (gameState.hp < 10) {
+                    showMessage('🚨 CRITICAL! Your pet is dying! Heal immediately!');
+                } else if (gameState.hp < 20) {
+                    showMessage('⚠️ DANGER! Your pet needs healing!');
+                } else if (gameState.food <= 0) {
+                    showMessage('🍽️ Your pet is starving! Feed it now!');
+                } else if (gameState.food < 10) {
+                    showMessage('⚠️ Your pet is very hungry! Feed it!');
                 } else if (gameState.food < 20) {
-                    showMessage('⚠️ Your pet is hungry! Feed it!');
+                    showMessage('🍽️ Your pet is hungry! Feed it!');
+                } else if (gameState.happy <= 0) {
+                    showMessage('😢 Your pet is severely depressed! Play with it!');
+                } else if (gameState.happy < 20) {
+                    showMessage('😢 Your pet is very sad. Play with it!');
                 } else if (gameState.happy < 30) {
                     showMessage('😢 Your pet is sad. Play with it!');
                 }
