@@ -19,9 +19,11 @@
             color: #fff;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 10px;
         }
 
         .game-container {
@@ -289,6 +291,204 @@
             transform: translateY(0);
         }
 
+        /* Achievement popup */
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 3px solid #065f46;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: right 0.5s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .achievement-popup.show {
+            right: 20px;
+        }
+
+        .achievement-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Combo counter */
+        .combo-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid #fbbf24;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .combo-counter.active {
+            display: block;
+            animation: pulse 0.5s infinite;
+        }
+
+        /* Shop button */
+        .shop-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            border: 3px solid #78350f;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .shop-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .shop-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Shop modal */
+        .shop-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .shop-modal.active {
+            display: flex;
+        }
+
+        .shop-content {
+            background: #2d3748;
+            border-radius: 15px;
+            border: 4px solid #4a5568;
+            padding: 20px;
+            max-width: 350px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: #ef4444;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .shop-item {
+            background: #1a202c;
+            border: 2px solid #4a5568;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shop-item-info {
+            flex: 1;
+        }
+
+        .shop-item-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .shop-item-desc {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .shop-item-price {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            border: 2px solid #065f46;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Daily quest */
+        .quest-area {
+            padding: 15px;
+            background: #1a202c;
+            border-top: 2px solid #4a5568;
+        }
+
+        .quest-item {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .quest-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .quest-reward {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
         /* Emoji as pixel art alternative */
         .pet-emoji {
             font-size: 100px;
@@ -344,6 +544,8 @@
             <div class="cloud cloud1"></div>
             <div class="cloud cloud2"></div>
             <div class="cloud cloud3"></div>
+            <div class="shop-btn" id="shop-btn">🛒</div>
+            <div class="combo-counter" id="combo-counter">🔥 COMBO x<span id="combo-value">0</span></div>
             <div class="pet-emoji" id="pet-sprite">🐾</div>
         </div>
 
@@ -416,8 +618,87 @@
             <div class="message" id="message">Click on your pet to earn TAMA! 🐾</div>
         </div>
 
+        <!-- Daily Quests -->
+        <div class="quest-area">
+            <h3 style="margin-bottom: 10px;">🎯 Daily Quests</h3>
+            <div class="quest-item" id="quest-clicks">
+                <div style="font-weight: bold;">Click Master</div>
+                <div style="font-size: 11px; opacity: 0.8;">Click your pet 50 times</div>
+                <div class="quest-progress">
+                    <span id="quest-clicks-progress">0/50</span>
+                    <span class="quest-reward">+500 TAMA</span>
+                </div>
+            </div>
+            <div class="quest-item" id="quest-level">
+                <div style="font-weight: bold;">Level Up!</div>
+                <div style="font-size: 11px; opacity: 0.8;">Reach level 5</div>
+                <div class="quest-progress">
+                    <span id="quest-level-progress">1/5</span>
+                    <span class="quest-reward">+1,000 TAMA</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Save Button -->
         <button class="save-btn" id="save-btn">💾 Save Progress to Bot</button>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div class="achievement-popup" id="achievement-popup">
+        <div class="achievement-title">🏆 Achievement Unlocked!</div>
+        <div class="achievement-desc" id="achievement-text">First Click!</div>
+    </div>
+
+    <!-- Shop Modal -->
+    <div class="shop-modal" id="shop-modal">
+        <div class="shop-content">
+            <div class="shop-header">
+                <h2>🛒 Item Shop</h2>
+                <button class="close-btn" id="close-shop">✕</button>
+            </div>
+            <div id="shop-items">
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">⚡ Energy Drink</div>
+                        <div class="shop-item-desc">Instant +50 Food & Happy</div>
+                        <div class="shop-item-price">200 TAMA</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('energy', 200)">Buy</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">💊 Super Potion</div>
+                        <div class="shop-item-desc">Full HP restore</div>
+                        <div class="shop-item-price">300 TAMA</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('potion', 300)">Buy</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">🔥 Click Booster</div>
+                        <div class="shop-item-desc">2x click power (1 hour)</div>
+                        <div class="shop-item-price">500 TAMA</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('booster', 500)">Buy</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">💎 Auto-Feeder</div>
+                        <div class="shop-item-desc">Auto-feeds when hungry (permanent)</div>
+                        <div class="shop-item-price">2,000 TAMA</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('auto_feed', 2000)">Buy</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">🎨 Pet Skin</div>
+                        <div class="shop-item-desc">Random rare pet skin</div>
+                        <div class="shop-item-price">5,000 TAMA</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('skin', 5000)">Buy</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -436,7 +717,21 @@
             clickPower: 1,
             lastUpdate: Date.now(),
             petType: '🐾',
-            totalClicks: 0
+            totalClicks: 0,
+            // NEW: Combo system
+            combo: 0,
+            lastClickTime: 0,
+            maxCombo: 0,
+            // NEW: Quests
+            questClicks: 0,
+            questClicksCompleted: false,
+            questLevelCompleted: false,
+            // NEW: Achievements
+            achievements: [],
+            // NEW: Shop items
+            hasAutoFeeder: false,
+            boosterActive: false,
+            boosterEndTime: 0
         };
 
         // Pet evolution stages
@@ -526,25 +821,65 @@
         });
 
         function clickPet(e) {
-            // Earn TAMA
-            const earnedTama = gameState.clickPower;
-            const earnedXP = 5;
+            const now = Date.now();
+            
+            // Combo system
+            if (now - gameState.lastClickTime < 500) {
+                gameState.combo++;
+                if (gameState.combo > gameState.maxCombo) {
+                    gameState.maxCombo = gameState.combo;
+                }
+            } else {
+                gameState.combo = 1;
+            }
+            gameState.lastClickTime = now;
+
+            // Update combo display
+            const comboCounter = document.getElementById('combo-counter');
+            const comboValue = document.getElementById('combo-value');
+            if (gameState.combo >= 3) {
+                comboCounter.classList.add('active');
+                comboValue.textContent = gameState.combo;
+            } else {
+                comboCounter.classList.remove('active');
+            }
+
+            // Calculate earned TAMA with booster
+            let clickPower = gameState.clickPower;
+            if (gameState.boosterActive && now < gameState.boosterEndTime) {
+                clickPower *= 2;
+            }
+            
+            // Combo bonus
+            const comboBonus = Math.floor(gameState.combo / 5);
+            const earnedTama = clickPower + comboBonus;
+            const earnedXP = 5 + comboBonus;
             
             gameState.tama += earnedTama;
             gameState.xp += earnedXP;
             gameState.totalClicks++;
+            gameState.questClicks++;
 
             // Visual feedback
             petSprite.classList.add('bounce');
             setTimeout(() => petSprite.classList.remove('bounce'), 500);
 
-            // Show +TAMA effect
-            showClickEffect(e.clientX, e.clientY, `+${earnedTama} TAMA`);
+            // Show +TAMA effect with combo
+            const displayText = gameState.combo >= 3 ? 
+                `+${earnedTama} 🔥x${gameState.combo}` : 
+                `+${earnedTama} TAMA`;
+            showClickEffect(e.clientX, e.clientY, displayText);
 
             // Random happy boost
             if (Math.random() < 0.3) {
                 gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 2);
             }
+
+            // Check achievements
+            checkAchievements();
+
+            // Check quests
+            checkQuests();
 
             // Check level up
             checkLevelUp();
@@ -690,9 +1025,144 @@
             });
         }, 30000);
 
+        // Achievements system
+        function checkAchievements() {
+            const achievements = [
+                { id: 'first_click', name: 'First Steps', desc: 'Click your pet for the first time', check: () => gameState.totalClicks === 1 },
+                { id: 'clicker_10', name: 'Clicker', desc: 'Click 10 times', check: () => gameState.totalClicks === 10 },
+                { id: 'clicker_100', name: 'Dedicated', desc: 'Click 100 times', check: () => gameState.totalClicks === 100 },
+                { id: 'clicker_1000', name: 'Legend', desc: 'Click 1,000 times', check: () => gameState.totalClicks === 1000 },
+                { id: 'combo_10', name: 'Combo Master', desc: 'Reach 10x combo', check: () => gameState.combo === 10 },
+                { id: 'rich_1000', name: 'Getting Rich', desc: 'Earn 1,000 TAMA', check: () => gameState.tama >= 1000 },
+                { id: 'rich_10000', name: 'Wealthy', desc: 'Earn 10,000 TAMA', check: () => gameState.tama >= 10000 },
+            ];
+
+            achievements.forEach(ach => {
+                if (!gameState.achievements.includes(ach.id) && ach.check()) {
+                    gameState.achievements.push(ach.id);
+                    showAchievement(ach.name, ach.desc);
+                    gameState.tama += 100; // Bonus TAMA for achievement
+                }
+            });
+        }
+
+        function showAchievement(title, desc) {
+            const popup = document.getElementById('achievement-popup');
+            const text = document.getElementById('achievement-text');
+            text.textContent = desc;
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+
+        // Quests system
+        function checkQuests() {
+            // Quest 1: Click 50 times
+            if (!gameState.questClicksCompleted && gameState.questClicks >= 50) {
+                gameState.questClicksCompleted = true;
+                gameState.tama += 500;
+                showMessage('🎯 Quest Complete! Click Master +500 TAMA');
+                document.getElementById('quest-clicks').style.opacity = '0.5';
+                document.getElementById('quest-clicks').style.border = '2px solid #10b981';
+            }
+
+            // Quest 2: Reach level 5
+            if (!gameState.questLevelCompleted && gameState.level >= 5) {
+                gameState.questLevelCompleted = true;
+                gameState.tama += 1000;
+                showMessage('🎯 Quest Complete! Level Up! +1,000 TAMA');
+                document.getElementById('quest-level').style.opacity = '0.5';
+                document.getElementById('quest-level').style.border = '2px solid #10b981';
+            }
+
+            // Update quest progress
+            document.getElementById('quest-clicks-progress').textContent = 
+                `${Math.min(gameState.questClicks, 50)}/50`;
+            document.getElementById('quest-level-progress').textContent = 
+                `${gameState.level}/5`;
+        }
+
+        // Shop system
+        document.getElementById('shop-btn').addEventListener('click', () => {
+            document.getElementById('shop-modal').classList.add('active');
+        });
+
+        document.getElementById('close-shop').addEventListener('click', () => {
+            document.getElementById('shop-modal').classList.remove('active');
+        });
+
+        // Close shop on background click
+        document.getElementById('shop-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'shop-modal') {
+                document.getElementById('shop-modal').classList.remove('active');
+            }
+        });
+
+        function buyItem(itemType, price) {
+            if (gameState.tama < price) {
+                showMessage('❌ Not enough TAMA!');
+                return;
+            }
+
+            gameState.tama -= price;
+
+            switch(itemType) {
+                case 'energy':
+                    gameState.food = Math.min(gameState.maxFood, gameState.food + 50);
+                    gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 50);
+                    showMessage('⚡ Energy Drink consumed! +50 Food & Happy');
+                    break;
+                
+                case 'potion':
+                    gameState.hp = gameState.maxHp;
+                    showMessage('💊 Super Potion used! HP fully restored!');
+                    break;
+                
+                case 'booster':
+                    gameState.boosterActive = true;
+                    gameState.boosterEndTime = Date.now() + (60 * 60 * 1000); // 1 hour
+                    showMessage('🔥 Click Booster activated! 2x clicks for 1 hour!');
+                    break;
+                
+                case 'auto_feed':
+                    gameState.hasAutoFeeder = true;
+                    showMessage('💎 Auto-Feeder purchased! Your pet will auto-feed when hungry!');
+                    break;
+                
+                case 'skin':
+                    const skins = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲', '🦖'];
+                    const randomSkin = skins[Math.floor(Math.random() * skins.length)];
+                    petSprite.textContent = randomSkin;
+                    gameState.petType = randomSkin;
+                    showMessage(`🎨 New pet skin! You got ${randomSkin}!`);
+                    break;
+            }
+
+            updateUI();
+            document.getElementById('shop-modal').classList.remove('active');
+        }
+
+        // Auto-feeder logic
+        setInterval(() => {
+            if (gameState.hasAutoFeeder && gameState.food < 30) {
+                gameState.food = Math.min(gameState.maxFood, gameState.food + 20);
+                showMessage('💎 Auto-Feeder activated! +20 Food');
+                updateUI();
+            }
+        }, 10000); // Check every 10 seconds
+
         // Initialize
         updateUI();
         showMessage('👋 Welcome! Click your pet to start earning TAMA!');
+        
+        // Check for first time player
+        setTimeout(() => {
+            if (gameState.totalClicks === 0) {
+                showMessage('💡 TIP: Click rapidly for COMBO bonuses! 🔥');
+            }
+        }, 5000);
     </script>
 </body>
 </html>
