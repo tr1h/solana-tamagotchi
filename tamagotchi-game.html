@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Solana Tamagotchi</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 400px;
+            background: #2d3748;
+            border-radius: 20px;
+            border: 4px solid #4a5568;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 4px solid #4a5568;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .header-stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header-stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .pet-area {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(180deg, #4299e1 0%, #48bb78 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        /* Clouds decoration */
+        .cloud {
+            position: absolute;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50px;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .cloud1 { width: 60px; height: 30px; top: 20px; left: -60px; animation-delay: 0s; }
+        .cloud2 { width: 80px; height: 40px; top: 60px; left: -80px; animation-delay: 5s; }
+        .cloud3 { width: 70px; height: 35px; top: 100px; left: -70px; animation-delay: 10s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(500px); }
+        }
+
+        .pet-sprite {
+            width: 120px;
+            height: 120px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            transition: transform 0.1s ease;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .pet-sprite:active {
+            transform: scale(0.95);
+        }
+
+        .pet-sprite.bounce {
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .click-effect {
+            position: absolute;
+            color: #ffd700;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px);
+            }
+        }
+
+        .stats-area {
+            padding: 20px;
+            background: #1a202c;
+        }
+
+        .stat-bar {
+            margin-bottom: 15px;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .stat-progress {
+            width: 100%;
+            height: 20px;
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-fill.hp { background: linear-gradient(90deg, #f56565 0%, #fc8181 100%); }
+        .stat-fill.food { background: linear-gradient(90deg, #ed8936 0%, #f6ad55 100%); }
+        .stat-fill.happy { background: linear-gradient(90deg, #48bb78 0%, #68d391 100%); }
+        .stat-fill.xp { background: linear-gradient(90deg, #4299e1 0%, #63b3ed 100%); }
+
+        /* Pixel pattern overlay */
+        .stat-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 2px, transparent 2px, transparent 4px);
+        }
+
+        .stat-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+
+        .actions-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 20px;
+            background: #2d3748;
+        }
+
+        .action-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid #4a5568;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-btn.feed {
+            background: linear-gradient(135deg, #ed8936 0%, #f6ad55 100%);
+        }
+
+        .action-btn.play {
+            background: linear-gradient(135deg, #48bb78 0%, #68d391 100%);
+        }
+
+        .action-btn.heal {
+            background: linear-gradient(135deg, #f56565 0%, #fc8181 100%);
+        }
+
+        .message-area {
+            padding: 15px;
+            background: #1a202c;
+            text-align: center;
+            font-size: 14px;
+            min-height: 50px;
+            border-top: 2px solid #4a5568;
+        }
+
+        .message {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .save-btn {
+            width: calc(100% - 40px);
+            margin: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            border: 3px solid #4a5568;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Emoji as pixel art alternative */
+        .pet-emoji {
+            font-size: 100px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s ease;
+            filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .pet-emoji:active {
+            transform: scale(0.95);
+        }
+
+        /* Status indicators */
+        .status-warning {
+            color: #fbbf24;
+        }
+
+        .status-critical {
+            color: #f87171;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header with Level and TAMA -->
+        <div class="game-header">
+            <h2 style="font-size: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">🐾 SOLANA TAMAGOTCHI</h2>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="header-stat-value" id="level-display">Lvl 1</div>
+                    <div class="header-stat-label">Level</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="tama-display">0</div>
+                    <div class="header-stat-label">💰 TAMA</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value" id="rank-display">#---</div>
+                    <div class="header-stat-label">Rank</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pet Area -->
+        <div class="pet-area" id="pet-area">
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2"></div>
+            <div class="cloud cloud3"></div>
+            <div class="pet-emoji" id="pet-sprite">🐾</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-area">
+            <div class="stat-bar">
+                <div class="stat-label">
+                    <span>❤️ Health</span>
+                    <span id="hp-text">100/100</span>
+                </div>
+                <div class="stat-progress">
+                    <div class="stat-fill hp" id="hp-bar" style="width: 100%;">
+                        <div class="stat-value">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-bar">
+                <div class="stat-label">
+                    <span>🍔 Food</span>
+                    <span id="food-text">100/100</span>
+                </div>
+                <div class="stat-progress">
+                    <div class="stat-fill food" id="food-bar" style="width: 100%;">
+                        <div class="stat-value">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-bar">
+                <div class="stat-label">
+                    <span>😊 Happy</span>
+                    <span id="happy-text">100/100</span>
+                </div>
+                <div class="stat-progress">
+                    <div class="stat-fill happy" id="happy-bar" style="width: 100%;">
+                        <div class="stat-value">100%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-bar">
+                <div class="stat-label">
+                    <span>⚡ Experience</span>
+                    <span id="xp-text">0/100</span>
+                </div>
+                <div class="stat-progress">
+                    <div class="stat-fill xp" id="xp-bar" style="width: 0%;">
+                        <div class="stat-value">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-area">
+            <button class="action-btn feed" id="feed-btn">
+                🍔<br>Feed<br><small>-50 TAMA</small>
+            </button>
+            <button class="action-btn play" id="play-btn">
+                🎮<br>Play<br><small>-30 TAMA</small>
+            </button>
+            <button class="action-btn heal" id="heal-btn">
+                💊<br>Heal<br><small>-100 TAMA</small>
+            </button>
+        </div>
+
+        <!-- Message Area -->
+        <div class="message-area">
+            <div class="message" id="message">Click on your pet to earn TAMA! 🐾</div>
+        </div>
+
+        <!-- Save Button -->
+        <button class="save-btn" id="save-btn">💾 Save Progress to Bot</button>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            level: 1,
+            xp: 0,
+            xpToLevel: 100,
+            tama: 0,
+            hp: 100,
+            maxHp: 100,
+            food: 100,
+            maxFood: 100,
+            happy: 100,
+            maxHappy: 100,
+            clickPower: 1,
+            lastUpdate: Date.now(),
+            petType: '🐾',
+            totalClicks: 0
+        };
+
+        // Pet evolution stages
+        const petEvolution = [
+            { level: 1, emoji: '🥚', name: 'Egg' },
+            { level: 3, emoji: '🐣', name: 'Baby' },
+            { level: 5, emoji: '🐥', name: 'Child' },
+            { level: 10, emoji: '🐓', name: 'Adult' },
+            { level: 15, emoji: '🦅', name: 'Elite' },
+            { level: 20, emoji: '🔥', name: 'Legendary' }
+        ];
+
+        // DOM Elements
+        const petSprite = document.getElementById('pet-sprite');
+        const petArea = document.getElementById('pet-area');
+        const levelDisplay = document.getElementById('level-display');
+        const tamaDisplay = document.getElementById('tama-display');
+        const rankDisplay = document.getElementById('rank-display');
+        const messageDiv = document.getElementById('message');
+        const feedBtn = document.getElementById('feed-btn');
+        const playBtn = document.getElementById('play-btn');
+        const healBtn = document.getElementById('heal-btn');
+        const saveBtn = document.getElementById('save-btn');
+
+        // Initialize Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+
+        // Update UI
+        function updateUI() {
+            // Header
+            levelDisplay.textContent = `Lvl ${gameState.level}`;
+            tamaDisplay.textContent = gameState.tama.toLocaleString();
+
+            // Stats
+            updateStat('hp', gameState.hp, gameState.maxHp);
+            updateStat('food', gameState.food, gameState.maxFood);
+            updateStat('happy', gameState.happy, gameState.maxHappy);
+            updateStat('xp', gameState.xp, gameState.xpToLevel);
+
+            // Pet evolution
+            updatePetEvolution();
+
+            // Button states
+            feedBtn.disabled = gameState.tama < 50;
+            playBtn.disabled = gameState.tama < 30;
+            healBtn.disabled = gameState.tama < 100;
+        }
+
+        function updateStat(stat, current, max) {
+            const percentage = Math.max(0, Math.min(100, (current / max) * 100));
+            const bar = document.getElementById(`${stat}-bar`);
+            const text = document.getElementById(`${stat}-text`);
+            
+            bar.style.width = percentage + '%';
+            bar.querySelector('.stat-value').textContent = Math.round(percentage) + '%';
+            text.textContent = `${Math.round(current)}/${max}`;
+
+            // Warning colors
+            if (percentage < 20) {
+                text.classList.add('status-critical');
+                text.classList.remove('status-warning');
+            } else if (percentage < 40) {
+                text.classList.add('status-warning');
+                text.classList.remove('status-critical');
+            } else {
+                text.classList.remove('status-warning', 'status-critical');
+            }
+        }
+
+        function updatePetEvolution() {
+            const currentStage = petEvolution.filter(stage => gameState.level >= stage.level).pop();
+            if (currentStage && gameState.petType !== currentStage.emoji) {
+                gameState.petType = currentStage.emoji;
+                petSprite.textContent = currentStage.emoji;
+                showMessage(`🎉 Your pet evolved into ${currentStage.name}!`);
+            }
+        }
+
+        // Pet Click
+        petArea.addEventListener('click', (e) => {
+            if (e.target.closest('.pet-emoji')) {
+                clickPet(e);
+            }
+        });
+
+        function clickPet(e) {
+            // Earn TAMA
+            const earnedTama = gameState.clickPower;
+            const earnedXP = 5;
+            
+            gameState.tama += earnedTama;
+            gameState.xp += earnedXP;
+            gameState.totalClicks++;
+
+            // Visual feedback
+            petSprite.classList.add('bounce');
+            setTimeout(() => petSprite.classList.remove('bounce'), 500);
+
+            // Show +TAMA effect
+            showClickEffect(e.clientX, e.clientY, `+${earnedTama} TAMA`);
+
+            // Random happy boost
+            if (Math.random() < 0.3) {
+                gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 2);
+            }
+
+            // Check level up
+            checkLevelUp();
+
+            updateUI();
+        }
+
+        function showClickEffect(x, y, text) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.textContent = text;
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            document.body.appendChild(effect);
+
+            setTimeout(() => effect.remove(), 1000);
+        }
+
+        function checkLevelUp() {
+            if (gameState.xp >= gameState.xpToLevel) {
+                gameState.level++;
+                gameState.xp = 0;
+                gameState.xpToLevel = Math.floor(gameState.xpToLevel * 1.5);
+                gameState.clickPower = gameState.level;
+                
+                // Level up bonuses
+                gameState.maxHp += 10;
+                gameState.hp = gameState.maxHp;
+                gameState.maxFood += 5;
+                gameState.food = gameState.maxFood;
+                gameState.maxHappy += 5;
+                gameState.happy = gameState.maxHappy;
+
+                showMessage(`🎊 LEVEL UP! You are now Level ${gameState.level}! Earned ${gameState.level * 100} TAMA!`);
+                gameState.tama += gameState.level * 100;
+
+                // Send level up to bot
+                sendDataToBot('level_up', { level: gameState.level });
+            }
+        }
+
+        // Actions
+        feedBtn.addEventListener('click', () => {
+            if (gameState.tama >= 50) {
+                gameState.tama -= 50;
+                gameState.food = Math.min(gameState.maxFood, gameState.food + 30);
+                gameState.xp += 10;
+                showMessage('🍔 Yummy! Food +30');
+                checkLevelUp();
+                updateUI();
+            }
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (gameState.tama >= 30) {
+                gameState.tama -= 30;
+                gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 40);
+                gameState.food = Math.max(0, gameState.food - 10);
+                gameState.xp += 15;
+                showMessage('🎮 So fun! Happy +40, Food -10');
+                checkLevelUp();
+                updateUI();
+            }
+        });
+
+        healBtn.addEventListener('click', () => {
+            if (gameState.tama >= 100) {
+                gameState.tama -= 100;
+                gameState.hp = Math.min(gameState.maxHp, gameState.hp + 50);
+                gameState.xp += 20;
+                showMessage('💊 Feeling better! HP +50');
+                checkLevelUp();
+                updateUI();
+            }
+        });
+
+        // Save to bot
+        saveBtn.addEventListener('click', () => {
+            sendDataToBot('save_game_state', {
+                level: gameState.level,
+                xp: gameState.xp,
+                tama: gameState.tama,
+                hp: gameState.hp,
+                food: gameState.food,
+                happy: gameState.happy,
+                totalClicks: gameState.totalClicks
+            });
+            showMessage('💾 Progress saved to bot!');
+        });
+
+        function sendDataToBot(action, data) {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify({ action, data }));
+            } else {
+                console.log('Telegram WebApp not found. Data:', { action, data });
+            }
+        }
+
+        function showMessage(msg) {
+            messageDiv.textContent = msg;
+            messageDiv.classList.remove('message');
+            void messageDiv.offsetWidth; // Trigger reflow
+            messageDiv.classList.add('message');
+        }
+
+        // Passive stat decay
+        setInterval(() => {
+            const now = Date.now();
+            const timePassed = (now - gameState.lastUpdate) / 1000; // seconds
+            gameState.lastUpdate = now;
+
+            // Decay stats slowly
+            if (timePassed > 0) {
+                gameState.food = Math.max(0, gameState.food - timePassed * 0.1);
+                gameState.happy = Math.max(0, gameState.happy - timePassed * 0.05);
+                
+                // Low food damages HP
+                if (gameState.food < 20) {
+                    gameState.hp = Math.max(0, gameState.hp - timePassed * 0.2);
+                }
+
+                updateUI();
+
+                // Critical warnings
+                if (gameState.hp < 20) {
+                    showMessage('⚠️ CRITICAL! Your pet needs healing!');
+                } else if (gameState.food < 20) {
+                    showMessage('⚠️ Your pet is hungry! Feed it!');
+                } else if (gameState.happy < 30) {
+                    showMessage('😢 Your pet is sad. Play with it!');
+                }
+            }
+        }, 5000); // Check every 5 seconds
+
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            sendDataToBot('auto_save', {
+                level: gameState.level,
+                tama: gameState.tama,
+                hp: gameState.hp,
+                food: gameState.food,
+                happy: gameState.happy
+            });
+        }, 30000);
+
+        // Initialize
+        updateUI();
+        showMessage('👋 Welcome! Click your pet to start earning TAMA!');
+    </script>
+</body>
+</html>
+
