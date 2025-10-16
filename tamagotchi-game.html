@@ -326,18 +326,25 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            color: white;
             padding: 10px 15px;
             border-radius: 10px;
             border: 2px solid #fbbf24;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
-            display: none;
+            opacity: 0;
+            transform: scale(0.5) translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0);
         }
 
         .combo-counter.active {
-            display: block;
-            animation: pulse 0.5s infinite;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            animation: pulse 0.5s infinite, glow 1s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.6);
         }
 
         /* Shop button */
@@ -722,6 +729,140 @@
             d: path("M 55 52 Q 60 58 65 52");
         }
 
+        /* Leaderboard Button */
+        .leaderboard-btn {
+            width: calc(100% - 40px);
+            margin: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border: 3px solid #78350f;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .leaderboard-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .leaderboard-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Leaderboard Modal */
+        .leaderboard-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .leaderboard-modal.show {
+            display: flex;
+        }
+
+        .leaderboard-content {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border: 3px solid #4a5568;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a5568;
+        }
+
+        .leaderboard-header h2 {
+            margin: 0;
+            color: #fbbf24;
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .leaderboard-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #4a5568;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .leaderboard-item:hover {
+            border-color: #fbbf24;
+            transform: translateX(5px);
+        }
+
+        .leaderboard-item.me {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: #fbbf24;
+        }
+
+        .leaderboard-rank {
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 40px;
+        }
+
+        .leaderboard-rank.gold { color: #fbbf24; }
+        .leaderboard-rank.silver { color: #d1d5db; }
+        .leaderboard-rank.bronze { color: #f59e0b; }
+
+        .leaderboard-player {
+            flex: 1;
+            margin: 0 15px;
+        }
+
+        .leaderboard-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .leaderboard-level {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .leaderboard-tama {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+        }
+
         /* Particle Effects */
         .particle {
             position: absolute;
@@ -990,7 +1131,23 @@
             </div>
         </div>
 
+        <!-- Leaderboard Button -->
+        <button class="leaderboard-btn" id="leaderboard-btn">🏆 Leaderboard</button>
+
         <!-- Auto-save indicator removed - using silent save -->
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div class="leaderboard-modal" id="leaderboard-modal">
+        <div class="leaderboard-content">
+            <div class="leaderboard-header">
+                <h2>🏆 Top Players</h2>
+                <button class="close-btn" id="close-leaderboard">✕</button>
+            </div>
+            <div id="leaderboard-list" class="leaderboard-list">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
     </div>
 
     <!-- Achievement Popup -->
@@ -2035,6 +2192,98 @@
                 console.error('Failed to load from localStorage:', error);
             }
             return false;
+        }
+
+        // ==================== LEADERBOARD SYSTEM ====================
+        
+        // Leaderboard DOM elements
+        const leaderboardBtn = document.getElementById('leaderboard-btn');
+        const leaderboardModal = document.getElementById('leaderboard-modal');
+        const closeLeaderboard = document.getElementById('close-leaderboard');
+        const leaderboardList = document.getElementById('leaderboard-list');
+
+        // Open leaderboard
+        leaderboardBtn.addEventListener('click', () => {
+            leaderboardModal.classList.add('show');
+            loadLeaderboard();
+        });
+
+        // Close leaderboard
+        closeLeaderboard.addEventListener('click', () => {
+            leaderboardModal.classList.remove('show');
+        });
+
+        // Close on background click
+        leaderboardModal.addEventListener('click', (e) => {
+            if (e.target.id === 'leaderboard-modal') {
+                leaderboardModal.classList.remove('show');
+            }
+        });
+
+        // Load leaderboard from bot/database
+        async function loadLeaderboard() {
+            try {
+                leaderboardList.innerHTML = '<div class="loading">Loading...</div>';
+                
+                // Get current user's Telegram ID
+                let currentUserId = null;
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+                    currentUserId = window.Telegram.WebApp.initDataUnsafe.user?.id;
+                }
+                
+                // For now, create mock leaderboard data
+                // TODO: Replace with actual API call to bot
+                const mockLeaderboard = [
+                    { rank: 1, name: 'You', level: gameState.level, tama: gameState.tama, telegram_id: currentUserId },
+                    { rank: 2, name: 'Player #2', level: 8, tama: 5420, telegram_id: '12345' },
+                    { rank: 3, name: 'Player #3', level: 7, tama: 4890, telegram_id: '67890' },
+                    { rank: 4, name: 'Player #4', level: 6, tama: 3210, telegram_id: '11111' },
+                    { rank: 5, name: 'Player #5', level: 5, tama: 2150, telegram_id: '22222' },
+                ];
+                
+                // Sort by TAMA (highest first)
+                mockLeaderboard.sort((a, b) => b.tama - a.tama);
+                
+                // Update ranks
+                mockLeaderboard.forEach((player, index) => {
+                    player.rank = index + 1;
+                });
+                
+                // Render leaderboard
+                renderLeaderboard(mockLeaderboard, currentUserId);
+                
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                leaderboardList.innerHTML = '<div class="loading">Error loading leaderboard</div>';
+            }
+        }
+
+        function renderLeaderboard(data, currentUserId) {
+            if (!data || data.length === 0) {
+                leaderboardList.innerHTML = '<div class="loading">No players yet</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            data.forEach((player) => {
+                const isCurrentUser = player.telegram_id === currentUserId;
+                const rankClass = player.rank === 1 ? 'gold' : player.rank === 2 ? 'silver' : player.rank === 3 ? 'bronze' : '';
+                const rankEmoji = player.rank === 1 ? '🥇' : player.rank === 2 ? '🥈' : player.rank === 3 ? '🥉' : `${player.rank}.`;
+                
+                html += `
+                    <div class="leaderboard-item ${isCurrentUser ? 'me' : ''}">
+                        <div class="leaderboard-rank ${rankClass}">${rankEmoji}</div>
+                        <div class="leaderboard-player">
+                            <div class="leaderboard-name">${player.name}${isCurrentUser ? ' (You)' : ''}</div>
+                            <div class="leaderboard-level">Level ${player.level}</div>
+                        </div>
+                        <div class="leaderboard-tama">${player.tama.toLocaleString()} 💰</div>
+                    </div>
+                `;
+            });
+            
+            leaderboardList.innerHTML = html;
         }
     </script>
 </body>
