@@ -710,10 +710,7 @@
             </div>
         </div>
 
-        <!-- Auto-save indicator -->
-        <div class="auto-save-indicator" id="auto-save-indicator">
-            <span class="save-status">🔄 Auto-saving...</span>
-        </div>
+        <!-- Auto-save indicator removed - using silent save -->
     </div>
 
     <!-- Achievement Popup -->
@@ -1354,8 +1351,16 @@
         }, 10000); // Check every 10 seconds
 
         // Initialize
+        // Try to load saved game first
+        const gameLoaded = loadFromLocalStorage();
+        
         updateUI();
-        showMessage('👋 Welcome! Click your pet to start earning TAMA!');
+        
+        if (gameLoaded) {
+            showMessage('👋 Welcome back! Your progress was restored!');
+        } else {
+            showMessage('👋 Welcome! Click your pet to start earning TAMA!');
+        }
         
         // Check for first time player
         setTimeout(() => {
@@ -1363,6 +1368,18 @@
                 showMessage('💡 TIP: Click rapidly for COMBO bonuses! 🔥');
             }
         }, 5000);
+
+        // Save game when page is about to close
+        window.addEventListener('beforeunload', () => {
+            saveToLocalStorage();
+        });
+
+        // Save game when page becomes hidden (mobile)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                saveToLocalStorage();
+            }
+        });
 
         // Send data to Telegram Bot
         function sendDataToBot(action, data) {
@@ -1391,39 +1408,34 @@
             }
         }
 
-        // Auto-save indicator
+        // Auto-save indicator (simplified - only show errors)
         function showAutoSaveIndicator(status = 'saving') {
-            const indicator = document.getElementById('auto-save-indicator');
-            const statusElement = indicator.querySelector('.save-status');
-            
-            indicator.className = `auto-save-indicator show ${status}`;
-            
-            switch(status) {
-                case 'saving':
-                    statusElement.textContent = '🔄 Auto-saving...';
-                    break;
-                case 'saved':
-                    statusElement.textContent = '✅ Saved!';
-                    setTimeout(() => {
-                        indicator.classList.remove('show');
-                    }, 2000);
-                    break;
-                case 'error':
-                    statusElement.textContent = '❌ Save failed';
-                    setTimeout(() => {
-                        indicator.classList.remove('show');
-                    }, 3000);
-                    break;
+            // Only show errors, not every save
+            if (status === 'error') {
+                const indicator = document.getElementById('auto-save-indicator');
+                const statusElement = indicator.querySelector('.save-status');
+                
+                indicator.className = `auto-save-indicator show error`;
+                statusElement.textContent = '❌ Save failed';
+                
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 3000);
             }
+            // For 'saving' and 'saved' - do nothing (silent save)
         }
 
-        // Enhanced auto-save system - save on every significant action
+        // Enhanced auto-save system with local backup
         let lastSaveTime = 0;
-        const SAVE_COOLDOWN = 5000; // 5 seconds minimum between saves
+        const SAVE_COOLDOWN = 3000; // 3 seconds minimum between saves
 
         function triggerAutoSave() {
             const now = Date.now();
             if (now - lastSaveTime > SAVE_COOLDOWN) {
+                // Save to localStorage first (backup)
+                saveToLocalStorage();
+                
+                // Then send to bot
                 sendDataToBot('auto_save', {
                     level: gameState.level,
                     tama: gameState.tama,
@@ -1438,6 +1450,82 @@
                 });
                 lastSaveTime = now;
             }
+        }
+
+        // Local storage functions
+        function saveToLocalStorage() {
+            try {
+                const saveData = {
+                    level: gameState.level,
+                    xp: gameState.xp,
+                    xpToLevel: gameState.xpToLevel,
+                    tama: gameState.tama,
+                    hp: gameState.hp,
+                    maxHp: gameState.maxHp,
+                    food: gameState.food,
+                    maxFood: gameState.maxFood,
+                    happy: gameState.happy,
+                    maxHappy: gameState.maxHappy,
+                    clickPower: gameState.clickPower,
+                    petType: gameState.petType,
+                    totalClicks: gameState.totalClicks,
+                    combo: gameState.combo,
+                    maxCombo: gameState.maxCombo,
+                    questClicks: gameState.questClicks,
+                    questClicksCompleted: gameState.questClicksCompleted,
+                    questLevelCompleted: gameState.questLevelCompleted,
+                    achievements: gameState.achievements,
+                    hasAutoFeeder: gameState.hasAutoFeeder,
+                    boosterActive: gameState.boosterActive,
+                    boosterEndTime: gameState.boosterEndTime,
+                    lastSave: Date.now()
+                };
+                localStorage.setItem('tamagotchi_save', JSON.stringify(saveData));
+                console.log('Game saved to localStorage');
+            } catch (error) {
+                console.error('Failed to save to localStorage:', error);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const saveData = localStorage.getItem('tamagotchi_save');
+                if (saveData) {
+                    const data = JSON.parse(saveData);
+                    
+                    // Only load if save is recent (within 7 days)
+                    if (data.lastSave && (Date.now() - data.lastSave) < 7 * 24 * 60 * 60 * 1000) {
+                        gameState.level = data.level || 1;
+                        gameState.xp = data.xp || 0;
+                        gameState.xpToLevel = data.xpToLevel || 100;
+                        gameState.tama = data.tama || 0;
+                        gameState.hp = data.hp || 100;
+                        gameState.maxHp = data.maxHp || 100;
+                        gameState.food = data.food || 100;
+                        gameState.maxFood = data.maxFood || 100;
+                        gameState.happy = data.happy || 100;
+                        gameState.maxHappy = data.maxHappy || 100;
+                        gameState.clickPower = data.clickPower || 1;
+                        gameState.petType = data.petType || '🐾';
+                        gameState.totalClicks = data.totalClicks || 0;
+                        gameState.combo = data.combo || 0;
+                        gameState.maxCombo = data.maxCombo || 0;
+                        gameState.questClicks = data.questClicks || 0;
+                        gameState.questClicksCompleted = data.questClicksCompleted || false;
+                        gameState.questLevelCompleted = data.questLevelCompleted || false;
+                        gameState.achievements = data.achievements || [];
+                        gameState.hasAutoFeeder = data.hasAutoFeeder || false;
+                        gameState.boosterActive = data.boosterActive || false;
+                        gameState.boosterEndTime = data.boosterEndTime || 0;
+                        
+                        console.log('Game loaded from localStorage');
+                        return true;
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load from localStorage:', error);
+            }
+            return false;
         }
     </script>
 </body>
