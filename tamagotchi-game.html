@@ -652,6 +652,38 @@
             98% { transform: rotate(-5deg); }
         }
 
+        /* New animations */
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+
+        @keyframes heartFloat {
+            0% { transform: translateY(0px) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(0.5); opacity: 0; }
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0px); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 182, 193, 0.5)); }
+            50% { filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.8)); }
+        }
+
         /* Pet States */
         .vector-pet.sad .vector-pet path[stroke="#FF69B4"] {
             d: path("M 55 52 Q 60 48 65 52");
@@ -663,6 +695,50 @@
 
         .vector-pet.sleepy .vector-pet circle[fill="#333"] {
             transform: scaleY(0.3);
+        }
+
+        /* New Emotion States */
+        .vector-pet.angry {
+            animation: shake 0.5s infinite;
+        }
+
+        .vector-pet.angry #mouth-path {
+            d: path("M 55 52 Q 60 50 65 52");
+        }
+
+        .vector-pet.surprised {
+            animation: bounce 1s infinite;
+        }
+
+        .vector-pet.surprised #mouth-path {
+            d: path("M 58 50 Q 60 56 62 50");
+        }
+
+        .vector-pet.love {
+            animation: glow 2s infinite;
+        }
+
+        .vector-pet.love #mouth-path {
+            d: path("M 55 52 Q 60 58 65 52");
+        }
+
+        /* Particle Effects */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .particle.heart {
+            animation: heartFloat 2s ease-out forwards;
+        }
+
+        .particle.sparkle {
+            animation: sparkle 1.5s ease-out forwards;
+        }
+
+        .particle.star {
+            animation: starTwinkle 2s ease-out forwards;
         }
 
         /* Click Animation */
@@ -709,46 +785,73 @@
             <div class="pet-mood" id="pet-mood">😊</div>
             <div class="pet-emoji" id="pet-sprite">
                 <svg class="vector-pet" id="vector-pet" width="120" height="120" viewBox="0 0 120 120">
-                    <!-- Pet Body -->
-                    <circle cx="60" cy="65" r="35" fill="#FFB6C1" stroke="#FF91A4" stroke-width="3"/>
+                    <defs>
+                        <!-- Gradients -->
+                        <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FF91A4;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#4682B4;stop-opacity:1" />
+                        </linearGradient>
+                        <radialGradient id="shineGradient" cx="30%" cy="30%">
+                            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.8" />
+                            <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
+                        </radialGradient>
+                    </defs>
                     
-                    <!-- Pet Head -->
-                    <circle cx="60" cy="45" r="25" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2"/>
+                    <!-- Pet Body (more oval, less round) -->
+                    <ellipse cx="60" cy="70" rx="30" ry="35" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="3"/>
                     
-                    <!-- Left Ear -->
-                    <ellipse cx="45" cy="25" rx="8" ry="12" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2" transform="rotate(-20 45 25)"/>
-                    <ellipse cx="47" cy="27" rx="4" ry="6" fill="#FF91A4"/>
+                    <!-- Pet Head (more oval) -->
+                    <ellipse cx="60" cy="45" rx="22" ry="25" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
                     
-                    <!-- Right Ear -->
-                    <ellipse cx="75" cy="25" rx="8" ry="12" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2" transform="rotate(20 75 25)"/>
-                    <ellipse cx="73" cy="27" rx="4" ry="6" fill="#FF91A4"/>
+                    <!-- Left Ear (more pointed, cat-like) -->
+                    <polygon points="42,22 48,8 54,22" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
+                    <polygon points="44,20 48,12 52,20" fill="#FF91A4" opacity="0.7"/>
                     
-                    <!-- Left Eye -->
-                    <circle cx="52" cy="40" r="4" fill="#333"/>
-                    <circle cx="53" cy="39" r="1.5" fill="white"/>
+                    <!-- Right Ear (more pointed, cat-like) -->
+                    <polygon points="66,22 72,8 78,22" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
+                    <polygon points="68,20 72,12 76,20" fill="#FF91A4" opacity="0.7"/>
                     
-                    <!-- Right Eye -->
-                    <circle cx="68" cy="40" r="4" fill="#333"/>
-                    <circle cx="67" cy="39" r="1.5" fill="white"/>
+                    <!-- Left Eye (bigger, more anime-like) -->
+                    <ellipse cx="52" cy="40" rx="5" ry="6" fill="url(#eyeGradient)" stroke="#333" stroke-width="1"/>
+                    <ellipse cx="53" cy="38" rx="2" ry="3" fill="white"/>
+                    <circle cx="54" cy="37" r="1" fill="#333"/>
                     
-                    <!-- Nose -->
-                    <ellipse cx="60" cy="48" rx="2" ry="1.5" fill="#FF69B4"/>
+                    <!-- Right Eye (bigger, more anime-like) -->
+                    <ellipse cx="68" cy="40" rx="5" ry="6" fill="url(#eyeGradient)" stroke="#333" stroke-width="1"/>
+                    <ellipse cx="67" cy="38" rx="2" ry="3" fill="white"/>
+                    <circle cx="66" cy="37" r="1" fill="#333"/>
+                    
+                    <!-- Nose (smaller, more cat-like) -->
+                    <polygon points="60,48 58,52 62,52" fill="#FF69B4"/>
                     
                     <!-- Mouth -->
-                    <path d="M 55 52 Q 60 56 65 52" stroke="#FF69B4" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path d="M 55 52 Q 60 56 65 52" stroke="#FF69B4" stroke-width="2" fill="none" stroke-linecap="round" id="mouth-path"/>
                     
-                    <!-- Left Paw -->
-                    <circle cx="35" cy="85" r="8" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2"/>
+                    <!-- Left Paw (smaller, more delicate) -->
+                    <ellipse cx="35" cy="85" rx="6" ry="8" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
                     
-                    <!-- Right Paw -->
-                    <circle cx="85" cy="85" r="8" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2"/>
+                    <!-- Right Paw (smaller, more delicate) -->
+                    <ellipse cx="85" cy="85" rx="6" ry="8" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
                     
-                    <!-- Tail -->
-                    <path d="M 25 70 Q 15 60 10 45" stroke="#FFB6C1" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    <!-- Tail (more curved, cat-like) -->
+                    <path d="M 25 70 Q 15 55 20 35" stroke="url(#bodyGradient)" stroke-width="5" fill="none" stroke-linecap="round"/>
                     
-                    <!-- Blush -->
-                    <circle cx="42" cy="55" r="3" fill="#FFB6C1" opacity="0.6"/>
-                    <circle cx="78" cy="55" r="3" fill="#FFB6C1" opacity="0.6"/>
+                    <!-- Blush (smaller) -->
+                    <ellipse cx="42" cy="55" rx="2" ry="3" fill="#FFB6C1" opacity="0.6"/>
+                    <ellipse cx="78" cy="55" rx="2" ry="3" fill="#FFB6C1" opacity="0.6"/>
+                    
+                    <!-- Shine effect -->
+                    <ellipse cx="50" cy="35" rx="8" ry="10" fill="url(#shineGradient)" opacity="0.3"/>
+                    
+                    <!-- Whiskers -->
+                    <line x1="30" y1="45" x2="40" y2="47" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
+                    <line x1="30" y1="50" x2="40" y2="52" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
+                    <line x1="90" y1="45" x2="80" y2="47" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
+                    <line x1="90" y1="50" x2="80" y2="52" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
                 </svg>
             </div>
         </div>
@@ -1043,6 +1146,18 @@
                 status = '😊 HAPPY';
                 statusClass = 'good';
                 mood = '😊';
+            } else if (gameState.totalClicks > 100) {
+                status = '😲 SURPRISED';
+                statusClass = 'good';
+                mood = '😲';
+            } else if (gameState.combo > 10) {
+                status = '😡 ANGRY';
+                statusClass = 'warning';
+                mood = '😡';
+            } else if (gameState.level > 5) {
+                status = '🥰 LOVING';
+                statusClass = 'good';
+                mood = '🥰';
             } else {
                 status = '😐 OK';
                 statusClass = 'good';
@@ -1070,10 +1185,10 @@
             if (!vectorPet) return;
             
             // Remove previous emotion classes
-            vectorPet.classList.remove('happy', 'sad', 'sleepy', 'excited');
+            vectorPet.classList.remove('happy', 'sad', 'sleepy', 'excited', 'angry', 'surprised', 'love');
             
             // Update mouth shape based on mood
-            const mouthPath = vectorPet.querySelector('path[stroke="#FF69B4"]');
+            const mouthPath = vectorPet.querySelector('#mouth-path');
             if (mouthPath) {
                 switch(mood) {
                     case '😊':
@@ -1097,6 +1212,24 @@
                     case '💀':
                         // Sleepy (closed eyes)
                         vectorPet.classList.add('sleepy');
+                        break;
+                    case '😠':
+                    case '😡':
+                        // Angry
+                        mouthPath.setAttribute('d', 'M 55 52 Q 60 50 65 52');
+                        vectorPet.classList.add('angry');
+                        break;
+                    case '😲':
+                    case '😮':
+                        // Surprised
+                        mouthPath.setAttribute('d', 'M 58 50 Q 60 56 62 50');
+                        vectorPet.classList.add('surprised');
+                        break;
+                    case '😘':
+                    case '🥰':
+                        // Love
+                        mouthPath.setAttribute('d', 'M 55 52 Q 60 58 65 52');
+                        vectorPet.classList.add('love');
                         break;
                     default:
                         // Neutral
@@ -1230,6 +1363,51 @@
             }
         }
 
+        function createParticles(type, count) {
+            const petArea = document.getElementById('pet-area');
+            const petRect = petArea.getBoundingClientRect();
+            const centerX = petRect.left + petRect.width / 2;
+            const centerY = petRect.top + petRect.height / 2;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = `particle ${type}`;
+                
+                // Random position around pet
+                const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                const distance = 30 + Math.random() * 20;
+                const x = centerX + Math.cos(angle) * distance;
+                const y = centerY + Math.sin(angle) * distance;
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                // Set particle content
+                switch(type) {
+                    case 'heart':
+                        particle.innerHTML = '💖';
+                        break;
+                    case 'sparkle':
+                        particle.innerHTML = '✨';
+                        break;
+                    case 'star':
+                        particle.innerHTML = '⭐';
+                        break;
+                }
+                
+                particle.style.fontSize = (12 + Math.random() * 8) + 'px';
+                
+                document.body.appendChild(particle);
+                
+                // Remove particle after animation
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 2000);
+            }
+        }
+
         // Pet Click
         petArea.addEventListener('click', (e) => {
             if (e.target.closest('.pet-emoji')) {
@@ -1315,6 +1493,15 @@
             if (vectorPet) {
                 vectorPet.classList.add('clicked');
                 setTimeout(() => vectorPet.classList.remove('clicked'), 600);
+                
+                // Add particle effects based on combo
+                if (gameState.combo >= 5) {
+                    createParticles('sparkle', 3);
+                } else if (gameState.combo >= 3) {
+                    createParticles('star', 2);
+                } else {
+                    createParticles('heart', 1);
+                }
             } else {
                 // Fallback for emoji pet
                 petSprite.classList.add('bounce');
