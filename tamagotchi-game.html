@@ -551,6 +551,40 @@
             font-size: 24px;
             opacity: 0.8;
         }
+
+        /* Auto-save indicator */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+
+        .auto-save-indicator.saving .save-status {
+            animation: pulse 1s infinite;
+        }
+
+        .auto-save-indicator.saved .save-status {
+            color: #22c55e;
+        }
+
+        .auto-save-indicator.error .save-status {
+            color: #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -676,8 +710,10 @@
             </div>
         </div>
 
-        <!-- Save Button -->
-        <button class="save-btn" id="save-btn">💾 Save Progress to Bot</button>
+        <!-- Auto-save indicator -->
+        <div class="auto-save-indicator" id="auto-save-indicator">
+            <span class="save-status">🔄 Auto-saving...</span>
+        </div>
     </div>
 
     <!-- Achievement Popup -->
@@ -791,7 +827,7 @@
         const feedBtn = document.getElementById('feed-btn');
         const playBtn = document.getElementById('play-btn');
         const healBtn = document.getElementById('heal-btn');
-        const saveBtn = document.getElementById('save-btn');
+        // Save button removed - using auto-save instead
 
         // Initialize Telegram WebApp
         if (window.Telegram && window.Telegram.WebApp) {
@@ -1035,6 +1071,9 @@
             checkLevelUp();
 
             updateUI();
+            
+            // Trigger auto-save after significant action
+            triggerAutoSave();
         }
 
         function showClickEffect(x, y, text) {
@@ -1080,6 +1119,7 @@
                 showMessage('🍔 Yummy! Food +30');
                 checkLevelUp();
                 updateUI();
+                triggerAutoSave(); // Auto-save after feeding
             }
         });
 
@@ -1092,6 +1132,7 @@
                 showMessage('🎮 So fun! Happy +40, Food -10');
                 checkLevelUp();
                 updateUI();
+                triggerAutoSave(); // Auto-save after playing
             }
         });
 
@@ -1103,30 +1144,13 @@
                 showMessage('💊 Feeling better! HP +50');
                 checkLevelUp();
                 updateUI();
+                triggerAutoSave(); // Auto-save after healing
             }
         });
 
-        // Save to bot
-        saveBtn.addEventListener('click', () => {
-            sendDataToBot('save_game_state', {
-                level: gameState.level,
-                xp: gameState.xp,
-                tama: gameState.tama,
-                hp: gameState.hp,
-                food: gameState.food,
-                happy: gameState.happy,
-                totalClicks: gameState.totalClicks
-            });
-            showMessage('💾 Progress saved to bot!');
-        });
+        // Manual save removed - using enhanced auto-save system
 
-        function sendDataToBot(action, data) {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(JSON.stringify({ action, data }));
-            } else {
-                console.log('Telegram WebApp not found. Data:', { action, data });
-            }
-        }
+        // Old sendDataToBot function removed - using enhanced version below
 
         function showMessage(msg) {
             messageDiv.textContent = msg;
@@ -1190,16 +1214,10 @@
             }
         }, 5000); // Check every 5 seconds
 
-        // Auto-save every 30 seconds
+        // Enhanced auto-save every 10 seconds (more frequent like top games)
         setInterval(() => {
-            sendDataToBot('auto_save', {
-                level: gameState.level,
-                tama: gameState.tama,
-                hp: gameState.hp,
-                food: gameState.food,
-                happy: gameState.happy
-            });
-        }, 30000);
+            triggerAutoSave();
+        }, 10000);
 
         // Achievements system
         function checkAchievements() {
@@ -1218,6 +1236,7 @@
                     gameState.achievements.push(ach.id);
                     showAchievement(ach.name, ach.desc);
                     gameState.tama += 100; // Bonus TAMA for achievement
+                    triggerAutoSave(); // Auto-save after achievement
                 }
             });
         }
@@ -1242,6 +1261,7 @@
                 showMessage('🎯 Quest Complete! Click Master +500 TAMA');
                 document.getElementById('quest-clicks').style.opacity = '0.5';
                 document.getElementById('quest-clicks').style.border = '2px solid #10b981';
+                triggerAutoSave(); // Auto-save after quest completion
             }
 
             // Quest 2: Reach level 5
@@ -1251,6 +1271,7 @@
                 showMessage('🎯 Quest Complete! Level Up! +1,000 TAMA');
                 document.getElementById('quest-level').style.opacity = '0.5';
                 document.getElementById('quest-level').style.border = '2px solid #10b981';
+                triggerAutoSave(); // Auto-save after quest completion
             }
 
             // Update quest progress
@@ -1318,6 +1339,9 @@
 
             updateUI();
             document.getElementById('shop-modal').classList.remove('active');
+            
+            // Trigger auto-save after purchase
+            triggerAutoSave();
         }
 
         // Auto-feeder logic
@@ -1339,6 +1363,82 @@
                 showMessage('💡 TIP: Click rapidly for COMBO bonuses! 🔥');
             }
         }, 5000);
+
+        // Send data to Telegram Bot
+        function sendDataToBot(action, data) {
+            if (window.Telegram && window.Telegram.WebApp) {
+                try {
+                    const messageData = {
+                        action: action,
+                        data: data,
+                        timestamp: Date.now()
+                    };
+                    
+                    // Show auto-save indicator
+                    showAutoSaveIndicator();
+                    
+                    // Send to Telegram WebApp
+                    window.Telegram.WebApp.sendData(JSON.stringify(messageData));
+                    
+                    console.log('Data sent to bot:', messageData);
+                } catch (error) {
+                    console.error('Error sending data to bot:', error);
+                    showAutoSaveIndicator('error');
+                }
+            } else {
+                console.log('Telegram WebApp not available, simulating save:', action, data);
+                showAutoSaveIndicator('saved');
+            }
+        }
+
+        // Auto-save indicator
+        function showAutoSaveIndicator(status = 'saving') {
+            const indicator = document.getElementById('auto-save-indicator');
+            const statusElement = indicator.querySelector('.save-status');
+            
+            indicator.className = `auto-save-indicator show ${status}`;
+            
+            switch(status) {
+                case 'saving':
+                    statusElement.textContent = '🔄 Auto-saving...';
+                    break;
+                case 'saved':
+                    statusElement.textContent = '✅ Saved!';
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 2000);
+                    break;
+                case 'error':
+                    statusElement.textContent = '❌ Save failed';
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 3000);
+                    break;
+            }
+        }
+
+        // Enhanced auto-save system - save on every significant action
+        let lastSaveTime = 0;
+        const SAVE_COOLDOWN = 5000; // 5 seconds minimum between saves
+
+        function triggerAutoSave() {
+            const now = Date.now();
+            if (now - lastSaveTime > SAVE_COOLDOWN) {
+                sendDataToBot('auto_save', {
+                    level: gameState.level,
+                    tama: gameState.tama,
+                    hp: gameState.hp,
+                    food: gameState.food,
+                    happy: gameState.happy,
+                    totalClicks: gameState.totalClicks,
+                    maxCombo: gameState.maxCombo,
+                    achievements: gameState.achievements,
+                    petType: gameState.petType,
+                    hasAutoFeeder: gameState.hasAutoFeeder
+                });
+                lastSaveTime = now;
+            }
+        }
     </script>
 </body>
 </html>
