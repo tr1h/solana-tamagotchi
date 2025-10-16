@@ -585,6 +585,96 @@
         .auto-save-indicator.error .save-status {
             color: #ef4444;
         }
+
+        /* Vector Pet Animations */
+        .vector-pet {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .vector-pet:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .vector-pet:active {
+            transform: scale(0.95);
+        }
+
+        /* Breathing Animation */
+        .vector-pet circle:first-child {
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        .vector-pet circle:nth-child(2) {
+            animation: breathe 3s ease-in-out infinite 0.1s;
+        }
+
+        /* Eye Blinking */
+        .vector-pet circle[fill="#333"] {
+            animation: blink 4s infinite;
+        }
+
+        /* Tail Wagging */
+        .vector-pet path[stroke="#FFB6C1"] {
+            animation: wag 2s ease-in-out infinite;
+        }
+
+        /* Ears Twitching */
+        .vector-pet ellipse[transform*="rotate(-20)"] {
+            animation: earTwitch 5s infinite;
+        }
+
+        .vector-pet ellipse[transform*="rotate(20)"] {
+            animation: earTwitch 5s infinite 0.5s;
+        }
+
+        /* Keyframes */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+
+        @keyframes wag {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        @keyframes earTwitch {
+            0%, 95%, 100% { transform: rotate(0deg); }
+            97% { transform: rotate(5deg); }
+            98% { transform: rotate(-5deg); }
+        }
+
+        /* Pet States */
+        .vector-pet.sad .vector-pet path[stroke="#FF69B4"] {
+            d: path("M 55 52 Q 60 48 65 52");
+        }
+
+        .vector-pet.happy .vector-pet path[stroke="#FF69B4"] {
+            d: path("M 55 52 Q 60 58 65 52");
+        }
+
+        .vector-pet.sleepy .vector-pet circle[fill="#333"] {
+            transform: scaleY(0.3);
+        }
+
+        /* Click Animation */
+        .vector-pet.clicked {
+            animation: clickBounce 0.6s ease;
+        }
+
+        @keyframes clickBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -617,7 +707,50 @@
             <div class="combo-counter" id="combo-counter">🔥 COMBO x<span id="combo-value">0</span></div>
             <div class="pet-status" id="pet-status"></div>
             <div class="pet-mood" id="pet-mood">😊</div>
-            <div class="pet-emoji" id="pet-sprite">🐾</div>
+            <div class="pet-emoji" id="pet-sprite">
+                <svg class="vector-pet" id="vector-pet" width="120" height="120" viewBox="0 0 120 120">
+                    <!-- Pet Body -->
+                    <circle cx="60" cy="65" r="35" fill="#FFB6C1" stroke="#FF91A4" stroke-width="3"/>
+                    
+                    <!-- Pet Head -->
+                    <circle cx="60" cy="45" r="25" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2"/>
+                    
+                    <!-- Left Ear -->
+                    <ellipse cx="45" cy="25" rx="8" ry="12" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2" transform="rotate(-20 45 25)"/>
+                    <ellipse cx="47" cy="27" rx="4" ry="6" fill="#FF91A4"/>
+                    
+                    <!-- Right Ear -->
+                    <ellipse cx="75" cy="25" rx="8" ry="12" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2" transform="rotate(20 75 25)"/>
+                    <ellipse cx="73" cy="27" rx="4" ry="6" fill="#FF91A4"/>
+                    
+                    <!-- Left Eye -->
+                    <circle cx="52" cy="40" r="4" fill="#333"/>
+                    <circle cx="53" cy="39" r="1.5" fill="white"/>
+                    
+                    <!-- Right Eye -->
+                    <circle cx="68" cy="40" r="4" fill="#333"/>
+                    <circle cx="67" cy="39" r="1.5" fill="white"/>
+                    
+                    <!-- Nose -->
+                    <ellipse cx="60" cy="48" rx="2" ry="1.5" fill="#FF69B4"/>
+                    
+                    <!-- Mouth -->
+                    <path d="M 55 52 Q 60 56 65 52" stroke="#FF69B4" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Left Paw -->
+                    <circle cx="35" cy="85" r="8" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2"/>
+                    
+                    <!-- Right Paw -->
+                    <circle cx="85" cy="85" r="8" fill="#FFB6C1" stroke="#FF91A4" stroke-width="2"/>
+                    
+                    <!-- Tail -->
+                    <path d="M 25 70 Q 15 60 10 45" stroke="#FFB6C1" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    
+                    <!-- Blush -->
+                    <circle cx="42" cy="55" r="3" fill="#FFB6C1" opacity="0.6"/>
+                    <circle cx="78" cy="55" r="3" fill="#FFB6C1" opacity="0.6"/>
+                </svg>
+            </div>
         </div>
 
         <!-- Stats -->
@@ -927,6 +1060,50 @@
             
             // Update mood
             petMood.textContent = mood;
+            
+            // Update vector pet emotions
+            updateVectorPetEmotion(mood);
+        }
+
+        function updateVectorPetEmotion(mood) {
+            const vectorPet = document.getElementById('vector-pet');
+            if (!vectorPet) return;
+            
+            // Remove previous emotion classes
+            vectorPet.classList.remove('happy', 'sad', 'sleepy', 'excited');
+            
+            // Update mouth shape based on mood
+            const mouthPath = vectorPet.querySelector('path[stroke="#FF69B4"]');
+            if (mouthPath) {
+                switch(mood) {
+                    case '😊':
+                    case '😍':
+                        // Happy smile
+                        mouthPath.setAttribute('d', 'M 55 52 Q 60 56 65 52');
+                        vectorPet.classList.add('happy');
+                        break;
+                    case '😢':
+                    case '😔':
+                    case '😰':
+                        // Sad frown
+                        mouthPath.setAttribute('d', 'M 55 52 Q 60 48 65 52');
+                        vectorPet.classList.add('sad');
+                        break;
+                    case '😋':
+                        // Excited (open mouth)
+                        mouthPath.setAttribute('d', 'M 55 52 Q 60 56 65 52 M 58 54 L 62 54');
+                        vectorPet.classList.add('excited');
+                        break;
+                    case '💀':
+                        // Sleepy (closed eyes)
+                        vectorPet.classList.add('sleepy');
+                        break;
+                    default:
+                        // Neutral
+                        mouthPath.setAttribute('d', 'M 55 52 Q 60 56 65 52');
+                        break;
+                }
+            }
         }
 
         function updateStat(stat, current, max) {
@@ -954,8 +1131,102 @@
             const currentStage = petEvolution.filter(stage => gameState.level >= stage.level).pop();
             if (currentStage && gameState.petType !== currentStage.emoji) {
                 gameState.petType = currentStage.emoji;
-                petSprite.textContent = currentStage.emoji;
+                updateVectorPetAppearance(currentStage);
                 showMessage(`🎉 Your pet evolved into ${currentStage.name}!`);
+            }
+        }
+
+        function updateVectorPetAppearance(stage) {
+            const vectorPet = document.getElementById('vector-pet');
+            
+            // Update colors based on stage
+            switch(stage.name) {
+                case 'Egg':
+                    // Keep default pink
+                    break;
+                case 'Baby':
+                    // Light blue
+                    updatePetColors(vectorPet, '#87CEEB', '#4682B4');
+                    break;
+                case 'Child':
+                    // Yellow
+                    updatePetColors(vectorPet, '#FFD700', '#FFA500');
+                    break;
+                case 'Adult':
+                    // Green
+                    updatePetColors(vectorPet, '#98FB98', '#32CD32');
+                    break;
+                case 'Elite':
+                    // Purple
+                    updatePetColors(vectorPet, '#DDA0DD', '#9370DB');
+                    break;
+                case 'Legendary':
+                    // Gold with sparkles
+                    updatePetColors(vectorPet, '#FFD700', '#FF8C00');
+                    addSparkleEffect(vectorPet);
+                    break;
+            }
+        }
+
+        function updatePetColors(pet, primaryColor, secondaryColor) {
+            // Update body and head colors
+            const circles = pet.querySelectorAll('circle');
+            circles.forEach(circle => {
+                if (circle.getAttribute('fill') === '#FFB6C1') {
+                    circle.setAttribute('fill', primaryColor);
+                }
+                if (circle.getAttribute('stroke') === '#FF91A4') {
+                    circle.setAttribute('stroke', secondaryColor);
+                }
+            });
+            
+            // Update ear colors
+            const ellipses = pet.querySelectorAll('ellipse');
+            ellipses.forEach(ellipse => {
+                if (ellipse.getAttribute('fill') === '#FFB6C1') {
+                    ellipse.setAttribute('fill', primaryColor);
+                }
+                if (ellipse.getAttribute('stroke') === '#FF91A4') {
+                    ellipse.setAttribute('stroke', secondaryColor);
+                }
+                if (ellipse.getAttribute('fill') === '#FF91A4') {
+                    ellipse.setAttribute('fill', secondaryColor);
+                }
+            });
+            
+            // Update tail and paws
+            const paths = pet.querySelectorAll('path');
+            paths.forEach(path => {
+                if (path.getAttribute('stroke') === '#FFB6C1') {
+                    path.setAttribute('stroke', primaryColor);
+                }
+            });
+        }
+
+        function addSparkleEffect(pet) {
+            // Add sparkle elements
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                sparkle.setAttribute('cx', Math.random() * 120);
+                sparkle.setAttribute('cy', Math.random() * 120);
+                sparkle.setAttribute('r', '2');
+                sparkle.setAttribute('fill', '#FFD700');
+                sparkle.setAttribute('opacity', '0.8');
+                sparkle.style.animation = `sparkle ${2 + Math.random() * 2}s infinite`;
+                pet.appendChild(sparkle);
+            }
+            
+            // Add sparkle animation
+            if (!document.getElementById('sparkle-animation')) {
+                const style = document.createElement('style');
+                style.id = 'sparkle-animation';
+                style.textContent = `
+                    @keyframes sparkle {
+                        0%, 100% { opacity: 0; transform: scale(0); }
+                        50% { opacity: 1; transform: scale(1); }
+                    }
+                `;
+                document.head.appendChild(style);
             }
         }
 
@@ -1039,9 +1310,16 @@
             gameState.totalClicks++;
             gameState.questClicks++;
 
-            // Visual feedback
-            petSprite.classList.add('bounce');
-            setTimeout(() => petSprite.classList.remove('bounce'), 500);
+            // Visual feedback - Vector pet animation
+            const vectorPet = document.getElementById('vector-pet');
+            if (vectorPet) {
+                vectorPet.classList.add('clicked');
+                setTimeout(() => vectorPet.classList.remove('clicked'), 600);
+            } else {
+                // Fallback for emoji pet
+                petSprite.classList.add('bounce');
+                setTimeout(() => petSprite.classList.remove('bounce'), 500);
+            }
 
             // Show +TAMA effect with combo and efficiency
             let displayText = `+${earnedTama.toFixed(1)} TAMA`;
