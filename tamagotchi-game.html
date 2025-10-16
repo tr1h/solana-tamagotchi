@@ -784,74 +784,118 @@
             <div class="pet-status" id="pet-status"></div>
             <div class="pet-mood" id="pet-mood">😊</div>
             <div class="pet-emoji" id="pet-sprite">
-                <svg class="vector-pet" id="vector-pet" width="120" height="120" viewBox="0 0 120 120">
+                <svg class="vector-pet" id="vector-pet" width="140" height="140" viewBox="0 0 140 140">
                     <defs>
-                        <!-- Gradients -->
-                        <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#FF91A4;stop-opacity:1" />
-                        </linearGradient>
-                        <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#4682B4;stop-opacity:1" />
-                        </linearGradient>
-                        <radialGradient id="shineGradient" cx="30%" cy="30%">
-                            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.8" />
+                        <!-- Enhanced Gradients -->
+                        <radialGradient id="bodyGradient" cx="40%" cy="40%">
+                            <stop offset="0%" style="stop-color:#FFD4E5;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FFB6D9;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FF91C4;stop-opacity:1" />
+                        </radialGradient>
+                        
+                        <radialGradient id="headGradient" cx="35%" cy="35%">
+                            <stop offset="0%" style="stop-color:#FFE0F0;stop-opacity:1" />
+                            <stop offset="70%" style="stop-color:#FFC9E3;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FFA8D4;stop-opacity:1" />
+                        </radialGradient>
+                        
+                        <radialGradient id="eyeGradient" cx="30%" cy="30%">
+                            <stop offset="0%" style="stop-color:#9D7BFF;stop-opacity:1" />
+                            <stop offset="60%" style="stop-color:#7B5FE0;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#5B3FC0;stop-opacity:1" />
+                        </radialGradient>
+                        
+                        <radialGradient id="shineGradient" cx="40%" cy="40%">
+                            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
                             <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
                         </radialGradient>
+                        
+                        <filter id="softGlow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                        
+                        <filter id="shadow">
+                            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                        </filter>
                     </defs>
                     
-                    <!-- Pet Body (more oval, less round) -->
-                    <ellipse cx="60" cy="70" rx="30" ry="35" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="3"/>
+                    <!-- Shadow under pet -->
+                    <ellipse cx="70" cy="115" rx="35" ry="8" fill="#000000" opacity="0.15"/>
                     
-                    <!-- Pet Head (more oval) -->
-                    <ellipse cx="60" cy="45" rx="22" ry="25" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
+                    <!-- Pet Body -->
+                    <ellipse cx="70" cy="85" rx="32" ry="28" fill="url(#bodyGradient)" stroke="#FF91C4" stroke-width="2" filter="url(#shadow)"/>
                     
-                    <!-- Left Ear (more pointed, cat-like) -->
-                    <polygon points="42,22 48,8 54,22" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
-                    <polygon points="44,20 48,12 52,20" fill="#FF91A4" opacity="0.7"/>
+                    <!-- Pet Head -->
+                    <circle cx="70" cy="50" r="28" fill="url(#headGradient)" stroke="#FFA8D4" stroke-width="2" filter="url(#shadow)"/>
                     
-                    <!-- Right Ear (more pointed, cat-like) -->
-                    <polygon points="66,22 72,8 78,22" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
-                    <polygon points="68,20 72,12 76,20" fill="#FF91A4" opacity="0.7"/>
+                    <!-- Left Ear -->
+                    <path d="M 48 35 Q 42 25 40 15 Q 42 20 48 28 Z" fill="url(#headGradient)" stroke="#FFA8D4" stroke-width="2"/>
+                    <path d="M 46 32 Q 43 26 42 20 Q 44 24 46 28 Z" fill="#FFADD6" opacity="0.7"/>
                     
-                    <!-- Left Eye (bigger, more anime-like) -->
-                    <ellipse cx="52" cy="40" rx="5" ry="6" fill="url(#eyeGradient)" stroke="#333" stroke-width="1"/>
-                    <ellipse cx="53" cy="38" rx="2" ry="3" fill="white"/>
-                    <circle cx="54" cy="37" r="1" fill="#333"/>
+                    <!-- Right Ear -->
+                    <path d="M 92 35 Q 98 25 100 15 Q 98 20 92 28 Z" fill="url(#headGradient)" stroke="#FFA8D4" stroke-width="2"/>
+                    <path d="M 94 32 Q 97 26 98 20 Q 96 24 94 28 Z" fill="#FFADD6" opacity="0.7"/>
                     
-                    <!-- Right Eye (bigger, more anime-like) -->
-                    <ellipse cx="68" cy="40" rx="5" ry="6" fill="url(#eyeGradient)" stroke="#333" stroke-width="1"/>
-                    <ellipse cx="67" cy="38" rx="2" ry="3" fill="white"/>
-                    <circle cx="66" cy="37" r="1" fill="#333"/>
+                    <!-- Left Eye Background -->
+                    <ellipse cx="60" cy="48" rx="8" ry="10" fill="white"/>
                     
-                    <!-- Nose (smaller, more cat-like) -->
-                    <polygon points="60,48 58,52 62,52" fill="#FF69B4"/>
+                    <!-- Left Eye -->
+                    <ellipse cx="60" cy="49" rx="6" ry="8" fill="url(#eyeGradient)"/>
+                    <ellipse cx="61" cy="46" rx="3" ry="4" fill="white" opacity="0.9"/>
+                    <circle cx="62" cy="47" r="2" fill="white"/>
+                    <circle cx="60" cy="52" r="1.5" fill="#5B3FC0"/>
+                    
+                    <!-- Right Eye Background -->
+                    <ellipse cx="80" cy="48" rx="8" ry="10" fill="white"/>
+                    
+                    <!-- Right Eye -->
+                    <ellipse cx="80" cy="49" rx="6" ry="8" fill="url(#eyeGradient)"/>
+                    <ellipse cx="79" cy="46" rx="3" ry="4" fill="white" opacity="0.9"/>
+                    <circle cx="78" cy="47" r="2" fill="white"/>
+                    <circle cx="80" cy="52" r="1.5" fill="#5B3FC0"/>
+                    
+                    <!-- Nose -->
+                    <path d="M 70 58 L 68 62 L 72 62 Z" fill="#FF69B4"/>
+                    <ellipse cx="70" cy="61" rx="2" ry="1" fill="#FF69B4" opacity="0.5"/>
                     
                     <!-- Mouth -->
-                    <path d="M 55 52 Q 60 56 65 52" stroke="#FF69B4" stroke-width="2" fill="none" stroke-linecap="round" id="mouth-path"/>
+                    <path d="M 63 65 Q 70 70 77 65" stroke="#FF69B4" stroke-width="2.5" fill="none" stroke-linecap="round" id="mouth-path"/>
+                    <path d="M 70 62 L 70 65" stroke="#FF69B4" stroke-width="2" stroke-linecap="round"/>
                     
-                    <!-- Left Paw (smaller, more delicate) -->
-                    <ellipse cx="35" cy="85" rx="6" ry="8" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
+                    <!-- Blush -->
+                    <ellipse cx="50" cy="58" rx="5" ry="4" fill="#FF91C4" opacity="0.4"/>
+                    <ellipse cx="90" cy="58" rx="5" ry="4" fill="#FF91C4" opacity="0.4"/>
                     
-                    <!-- Right Paw (smaller, more delicate) -->
-                    <ellipse cx="85" cy="85" rx="6" ry="8" fill="url(#bodyGradient)" stroke="#FF91A4" stroke-width="2"/>
+                    <!-- Head shine -->
+                    <ellipse cx="58" cy="38" rx="12" ry="15" fill="url(#shineGradient)" opacity="0.5"/>
                     
-                    <!-- Tail (more curved, cat-like) -->
-                    <path d="M 25 70 Q 15 55 20 35" stroke="url(#bodyGradient)" stroke-width="5" fill="none" stroke-linecap="round"/>
+                    <!-- Body details -->
+                    <ellipse cx="70" cy="90" rx="15" ry="12" fill="#FFE0F0" opacity="0.3"/>
                     
-                    <!-- Blush (smaller) -->
-                    <ellipse cx="42" cy="55" rx="2" ry="3" fill="#FFB6C1" opacity="0.6"/>
-                    <ellipse cx="78" cy="55" rx="2" ry="3" fill="#FFB6C1" opacity="0.6"/>
+                    <!-- Front Paws -->
+                    <ellipse cx="55" cy="105" rx="8" ry="10" fill="url(#bodyGradient)" stroke="#FF91C4" stroke-width="2"/>
+                    <ellipse cx="85" cy="105" rx="8" ry="10" fill="url(#bodyGradient)" stroke="#FF91C4" stroke-width="2"/>
                     
-                    <!-- Shine effect -->
-                    <ellipse cx="50" cy="35" rx="8" ry="10" fill="url(#shineGradient)" opacity="0.3"/>
+                    <!-- Paw pads -->
+                    <ellipse cx="55" cy="108" rx="3" ry="2" fill="#FFA8D4" opacity="0.6"/>
+                    <ellipse cx="85" cy="108" rx="3" ry="2" fill="#FFA8D4" opacity="0.6"/>
                     
-                    <!-- Whiskers -->
-                    <line x1="30" y1="45" x2="40" y2="47" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
-                    <line x1="30" y1="50" x2="40" y2="52" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
-                    <line x1="90" y1="45" x2="80" y2="47" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
-                    <line x1="90" y1="50" x2="80" y2="52" stroke="#FF91A4" stroke-width="1.5" opacity="0.7"/>
+                    <!-- Tail -->
+                    <path d="M 40 90 Q 25 80 20 60 Q 18 50 20 40" stroke="url(#bodyGradient)" stroke-width="8" fill="none" stroke-linecap="round" filter="url(#shadow)"/>
+                    <path d="M 40 90 Q 28 82 24 65 Q 23 55 24 45" stroke="#FFE0F0" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.5"/>
+                    
+                    <!-- Whiskers with glow -->
+                    <line x1="35" y1="50" x2="48" y2="52" stroke="#FFB6D9" stroke-width="2" opacity="0.8" stroke-linecap="round"/>
+                    <line x1="33" y1="55" x2="48" y2="56" stroke="#FFB6D9" stroke-width="2" opacity="0.8" stroke-linecap="round"/>
+                    <line x1="35" y1="60" x2="48" y2="60" stroke="#FFB6D9" stroke-width="2" opacity="0.8" stroke-linecap="round"/>
+                    
+                    <line x1="105" y1="50" x2="92" y2="52" stroke="#FFB6D9" stroke-width="2" opacity="0.8" stroke-linecap="round"/>
+                    <line x1="107" y1="55" x2="92" y2="56" stroke="#FFB6D9" stroke-width="2" opacity="0.8" stroke-linecap="round"/>
+                    <line x1="105" y1="60" x2="92" y2="60" stroke="#FFB6D9" stroke-width="2" opacity="0.8" stroke-linecap="round"/>
                 </svg>
             </div>
         </div>
