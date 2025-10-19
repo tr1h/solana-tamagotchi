@@ -2841,23 +2841,34 @@
         const closeMinigames = document.getElementById('close-minigames');
         const gameSelection = document.getElementById('game-selection');
         
+        console.log('Mini games elements:', { minigamesBtn, minigamesModal, closeMinigames, gameSelection });
+        
         // Open mini games
-        minigamesBtn.addEventListener('click', () => {
-            minigamesModal.classList.add('show');
-            showGameSelection();
-        });
+        if (minigamesBtn && minigamesModal) {
+            minigamesBtn.addEventListener('click', () => {
+                console.log('Opening mini games modal');
+                minigamesModal.classList.add('show');
+                showGameSelection();
+            });
+        } else {
+            console.error('Mini games elements not found!');
+        }
         
         // Close mini games
-        closeMinigames.addEventListener('click', () => {
-            minigamesModal.classList.remove('show');
-        });
+        if (closeMinigames && minigamesModal) {
+            closeMinigames.addEventListener('click', () => {
+                minigamesModal.classList.remove('show');
+            });
+        }
         
         // Close on background click
-        minigamesModal.addEventListener('click', (e) => {
-            if (e.target.id === 'minigames-modal') {
-                minigamesModal.classList.remove('show');
-            }
-        });
+        if (minigamesModal) {
+            minigamesModal.addEventListener('click', (e) => {
+                if (e.target.id === 'minigames-modal') {
+                    minigamesModal.classList.remove('show');
+                }
+            });
+        }
         
         // Show game selection
         function showGameSelection() {
@@ -3132,24 +3143,35 @@
         const leaderboardModal = document.getElementById('leaderboard-modal');
         const closeLeaderboard = document.getElementById('close-leaderboard');
         const leaderboardList = document.getElementById('leaderboard-list');
-
+        
+        console.log('Leaderboard elements:', { leaderboardBtn, leaderboardModal, closeLeaderboard, leaderboardList });
+        
         // Open leaderboard
-        leaderboardBtn.addEventListener('click', () => {
-            leaderboardModal.classList.add('show');
-            loadLeaderboard();
-        });
+        if (leaderboardBtn && leaderboardModal) {
+            leaderboardBtn.addEventListener('click', () => {
+                console.log('Opening leaderboard modal');
+                leaderboardModal.classList.add('show');
+                loadLeaderboard();
+            });
+        } else {
+            console.error('Leaderboard elements not found!');
+        }
 
         // Close leaderboard
-        closeLeaderboard.addEventListener('click', () => {
-            leaderboardModal.classList.remove('show');
-        });
+        if (closeLeaderboard && leaderboardModal) {
+            closeLeaderboard.addEventListener('click', () => {
+                leaderboardModal.classList.remove('show');
+            });
+        }
 
         // Close on background click
-        leaderboardModal.addEventListener('click', (e) => {
-            if (e.target.id === 'leaderboard-modal') {
-                leaderboardModal.classList.remove('show');
-            }
-        });
+        if (leaderboardModal) {
+            leaderboardModal.addEventListener('click', (e) => {
+                if (e.target.id === 'leaderboard-modal') {
+                    leaderboardModal.classList.remove('show');
+                }
+            });
+        }
 
         // Supabase Configuration
         const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
@@ -3249,6 +3271,27 @@
             
             leaderboardList.innerHTML = html;
         }
+        
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing game...');
+            
+            // Re-check elements after DOM is fully loaded
+            const minigamesBtn = document.getElementById('minigames-btn');
+            const minigamesModal = document.getElementById('minigames-modal');
+            const leaderboardBtn = document.getElementById('leaderboard-btn');
+            const leaderboardModal = document.getElementById('leaderboard-modal');
+            
+            console.log('Re-checking elements after DOM load:', {
+                minigamesBtn: !!minigamesBtn,
+                minigamesModal: !!minigamesModal,
+                leaderboardBtn: !!leaderboardBtn,
+                leaderboardModal: !!leaderboardModal
+            });
+            
+            // Initialize game
+            initGame();
+        });
     </script>
 </body>
 </html>
