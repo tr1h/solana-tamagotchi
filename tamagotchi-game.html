@@ -1674,6 +1674,10 @@
             evolutionStage: 0 // 0-4 stages
         };
 
+        // Auto-save variables
+        let lastSaveTime = 0;
+        const SAVE_COOLDOWN = 3000; // 3 seconds minimum between saves
+
         // Pet evolution stages (based on level)
         const EVOLUTION_STAGES = [
             { minLevel: 1, name: 'Egg', prefix: '🥚', sizeMultiplier: 0.7 },
@@ -1903,7 +1907,7 @@
         }
 
         function updatePetEvolution() {
-            const currentStage = petEvolution.filter(stage => gameState.level >= stage.level).pop();
+            const currentStage = getEvolutionStage(gameState.level);
             if (currentStage && gameState.petType !== currentStage.emoji) {
                 gameState.petType = currentStage.emoji;
                 updateVectorPetAppearance(currentStage);
@@ -2729,8 +2733,6 @@
         }
 
         // Enhanced auto-save system with local backup
-        let lastSaveTime = 0;
-        const SAVE_COOLDOWN = 3000; // 3 seconds minimum between saves
 
         function triggerAutoSave() {
             const now = Date.now();
