@@ -857,6 +857,99 @@
             transform: translateY(0);
         }
 
+        /* Mini Games Modal */
+        .minigames-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .minigames-modal.show {
+            display: flex;
+        }
+
+        .minigames-content {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border: 3px solid #10b981;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 600px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .minigames-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #10b981;
+        }
+
+        .minigames-header h2 {
+            margin: 0;
+            color: #10b981;
+        }
+
+        .game-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-card {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .game-card:hover {
+            background: rgba(16, 185, 129, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .game-card-icon {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .game-card-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .game-card-cost {
+            font-size: 12px;
+            color: #fbbf24;
+        }
+
+        .game-arena {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #4a5568;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            display: none;
+        }
+
+        .game-arena.active {
+            display: block;
+        }
+
         /* Leaderboard Modal */
         .leaderboard-modal {
             display: none;
@@ -1310,6 +1403,109 @@
         <button class="leaderboard-btn" id="leaderboard-btn">🏆 Leaderboard</button>
 
         <!-- Auto-save indicator removed - using silent save -->
+    </div>
+
+    <!-- Mini Games Modal -->
+    <div class="minigames-modal" id="minigames-modal">
+        <div class="minigames-content">
+            <div class="minigames-header">
+                <h2>🎮 Mini Games</h2>
+                <button class="close-btn" id="close-minigames">✕</button>
+            </div>
+            
+            <!-- Game Selection -->
+            <div class="game-selection" id="game-selection">
+                <div class="game-card" data-game="memory">
+                    <div class="game-card-icon">🎯</div>
+                    <div class="game-card-name">Memory Match</div>
+                    <div class="game-card-cost">Cost: 50 TAMA | Win: up to 500 TAMA</div>
+                </div>
+                <div class="game-card" data-game="dice">
+                    <div class="game-card-icon">🎲</div>
+                    <div class="game-card-name">Lucky Dice</div>
+                    <div class="game-card-cost">Cost: 30 TAMA | Win: up to 300 TAMA</div>
+                </div>
+                <div class="game-card" data-game="slots">
+                    <div class="game-card-icon">🎰</div>
+                    <div class="game-card-name">Slot Machine</div>
+                    <div class="game-card-cost">Cost: 100 TAMA | Win: up to 1000 TAMA</div>
+                </div>
+                <div class="game-card" data-game="race">
+                    <div class="game-card-icon">🏃</div>
+                    <div class="game-card-name">Pet Race</div>
+                    <div class="game-card-cost">Cost: 75 TAMA | Win: up to 750 TAMA</div>
+                </div>
+                <div class="game-card" data-game="darts">
+                    <div class="game-card-icon">🎯</div>
+                    <div class="game-card-name">Darts</div>
+                    <div class="game-card-cost">Cost: 60 TAMA | Win: up to 600 TAMA</div>
+                </div>
+            </div>
+            
+            <!-- Game Arenas (will be shown when game is selected) -->
+            <div class="game-arena" id="memory-arena">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎯 Memory Match</h3>
+                <div id="memory-board" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="startMemoryGame()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Game (50 TAMA)</button>
+                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                </div>
+            </div>
+            
+            <div class="game-arena" id="dice-arena">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎲 Lucky Dice</h3>
+                <div style="text-align: center; font-size: 64px; margin: 20px 0;" id="dice-display">🎲</div>
+                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="dice-result"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="rollDice()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Roll Dice (30 TAMA)</button>
+                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                </div>
+            </div>
+            
+            <div class="game-arena" id="slots-arena">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎰 Slot Machine</h3>
+                <div style="display: flex; justify-content: center; gap: 10px; font-size: 64px; margin: 20px 0;" id="slots-display">
+                    <div>🍒</div><div>🍒</div><div>🍒</div>
+                </div>
+                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="slots-result"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="spinSlots()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Spin (100 TAMA)</button>
+                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                </div>
+            </div>
+            
+            <div class="game-arena" id="race-arena">
+                <h3 style="text-align: center; margin-bottom: 15px;">🏃 Pet Race</h3>
+                <div id="race-track" style="background: #1a202c; border-radius: 10px; padding: 20px; min-height: 200px;">
+                    <div style="margin-bottom: 15px; font-size: 24px;" id="racer-1">🐾</div>
+                    <div style="margin-bottom: 15px; font-size: 24px;" id="racer-2">🐶</div>
+                    <div style="margin-bottom: 15px; font-size: 24px;" id="racer-3">🐱</div>
+                </div>
+                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="race-result"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="startRace()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Race (75 TAMA)</button>
+                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                </div>
+            </div>
+            
+            <div class="game-arena" id="darts-arena">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎯 Darts</h3>
+                <div style="display: flex; justify-content: center; margin: 20px 0;">
+                    <svg width="200" height="200" viewBox="0 0 200 200" style="background: #1a202c; border-radius: 50%;">
+                        <circle cx="100" cy="100" r="90" fill="#dc2626" />
+                        <circle cx="100" cy="100" r="70" fill="#fbbf24" />
+                        <circle cx="100" cy="100" r="50" fill="#10b981" />
+                        <circle cx="100" cy="100" r="30" fill="#3b82f6" />
+                        <circle cx="100" cy="100" r="10" fill="#fbbf24" id="darts-bullseye" />
+                    </svg>
+                </div>
+                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="darts-result"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button onclick="throwDart()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Throw Dart (60 TAMA)</button>
+                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Leaderboard Modal -->
@@ -2418,12 +2614,299 @@
         // ==================== LEADERBOARD SYSTEM ====================
         
         // Leaderboard DOM elements
-        // Mini Games button
+        // ==================== MINI GAMES SYSTEM ====================
+        
         const minigamesBtn = document.getElementById('minigames-btn');
+        const minigamesModal = document.getElementById('minigames-modal');
+        const closeMinigames = document.getElementById('close-minigames');
+        const gameSelection = document.getElementById('game-selection');
+        
+        // Open mini games
         minigamesBtn.addEventListener('click', () => {
-            showMessage('🎮 Mini-games coming soon! Stay tuned! 🚀');
-            // TODO: Add actual mini-games (Memory, Dice Roll, etc.)
+            minigamesModal.classList.add('show');
+            showGameSelection();
         });
+        
+        // Close mini games
+        closeMinigames.addEventListener('click', () => {
+            minigamesModal.classList.remove('show');
+        });
+        
+        // Close on background click
+        minigamesModal.addEventListener('click', (e) => {
+            if (e.target.id === 'minigames-modal') {
+                minigamesModal.classList.remove('show');
+            }
+        });
+        
+        // Show game selection
+        function showGameSelection() {
+            document.querySelectorAll('.game-arena').forEach(arena => arena.classList.remove('active'));
+            gameSelection.style.display = 'grid';
+        }
+        
+        // Select game
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const gameName = card.dataset.game;
+                gameSelection.style.display = 'none';
+                document.getElementById(`${gameName}-arena`).classList.add('active');
+            });
+        });
+        
+        // Back to games
+        function backToGames() {
+            showGameSelection();
+        }
+        
+        // 🎯 MEMORY MATCH GAME
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        
+        function startMemoryGame() {
+            if (gameState.tama < 50) {
+                showMessage('❌ Not enough TAMA! Need 50 TAMA');
+                return;
+            }
+            
+            gameState.tama -= 50;
+            updateUI();
+            
+            const emojis = ['🐱', '🐶', '🐰', '🦊', '🐼', '🐸', '🦁', '🐯'];
+            const cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            
+            const board = document.getElementById('memory-board');
+            board.innerHTML = '';
+            memoryCards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            
+            cards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.style.cssText = 'background: #4a5568; border-radius: 8px; padding: 20px; font-size: 32px; text-align: center; cursor: pointer; transition: all 0.3s;';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.innerHTML = '❓';
+                card.addEventListener('click', () => flipCard(card, emoji, index));
+                board.appendChild(card);
+                memoryCards.push(card);
+            });
+        }
+        
+        function flipCard(card, emoji, index) {
+            if (flippedCards.length === 2 || card.dataset.matched) return;
+            
+            card.innerHTML = emoji;
+            card.style.background = '#10b981';
+            flippedCards.push({ card, emoji, index });
+            
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 500);
+            }
+        }
+        
+        function checkMatch() {
+            const [first, second] = flippedCards;
+            
+            if (first.emoji === second.emoji) {
+                first.card.dataset.matched = 'true';
+                second.card.dataset.matched = 'true';
+                matchedPairs++;
+                
+                if (matchedPairs === 8) {
+                    const reward = 500;
+                    gameState.tama += reward;
+                    updateUI();
+                    showMessage(`🎉 YOU WIN! +${reward} TAMA!`);
+                    triggerAutoSave();
+                }
+            } else {
+                first.card.innerHTML = '❓';
+                first.card.style.background = '#4a5568';
+                second.card.innerHTML = '❓';
+                second.card.style.background = '#4a5568';
+            }
+            
+            flippedCards = [];
+        }
+        
+        // 🎲 DICE GAME
+        function rollDice() {
+            if (gameState.tama < 30) {
+                showMessage('❌ Not enough TAMA! Need 30 TAMA');
+                return;
+            }
+            
+            gameState.tama -= 30;
+            updateUI();
+            
+            const diceDisplay = document.getElementById('dice-display');
+            const diceResult = document.getElementById('dice-result');
+            
+            let rolls = 0;
+            const interval = setInterval(() => {
+                const dice = Math.floor(Math.random() * 6) + 1;
+                diceDisplay.textContent = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][dice - 1];
+                rolls++;
+                
+                if (rolls === 10) {
+                    clearInterval(interval);
+                    const finalDice = Math.floor(Math.random() * 6) + 1;
+                    diceDisplay.textContent = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][finalDice - 1];
+                    
+                    const reward = finalDice * 50;
+                    gameState.tama += reward;
+                    updateUI();
+                    diceResult.textContent = `You rolled ${finalDice}! Won ${reward} TAMA! 🎉`;
+                    triggerAutoSave();
+                }
+            }, 100);
+        }
+        
+        // 🎰 SLOT MACHINE
+        function spinSlots() {
+            if (gameState.tama < 100) {
+                showMessage('❌ Not enough TAMA! Need 100 TAMA');
+                return;
+            }
+            
+            gameState.tama -= 100;
+            updateUI();
+            
+            const slotsDisplay = document.getElementById('slots-display');
+            const slotsResult = document.getElementById('slots-result');
+            const symbols = ['🍒', '🍋', '🍊', '🍇', '💎', '⭐', '7️⃣'];
+            
+            let spins = 0;
+            const interval = setInterval(() => {
+                slotsDisplay.innerHTML = symbols.map(() => 
+                    `<div>${symbols[Math.floor(Math.random() * symbols.length)]}</div>`
+                ).join('');
+                spins++;
+                
+                if (spins === 15) {
+                    clearInterval(interval);
+                    const result = [
+                        symbols[Math.floor(Math.random() * symbols.length)],
+                        symbols[Math.floor(Math.random() * symbols.length)],
+                        symbols[Math.floor(Math.random() * symbols.length)]
+                    ];
+                    slotsDisplay.innerHTML = result.map(s => `<div>${s}</div>`).join('');
+                    
+                    let reward = 0;
+                    if (result[0] === result[1] && result[1] === result[2]) {
+                        reward = result[0] === '7️⃣' ? 1000 : result[0] === '💎' ? 500 : 200;
+                        slotsResult.textContent = `🎉 JACKPOT! +${reward} TAMA!`;
+                    } else if (result[0] === result[1] || result[1] === result[2]) {
+                        reward = 50;
+                        slotsResult.textContent = `Nice! +${reward} TAMA!`;
+                    } else {
+                        slotsResult.textContent = `Try again! 😔`;
+                    }
+                    
+                    gameState.tama += reward;
+                    updateUI();
+                    triggerAutoSave();
+                }
+            }, 100);
+        }
+        
+        // 🏃 PET RACE
+        function startRace() {
+            if (gameState.tama < 75) {
+                showMessage('❌ Not enough TAMA! Need 75 TAMA');
+                return;
+            }
+            
+            gameState.tama -= 75;
+            updateUI();
+            
+            const racer1 = document.getElementById('racer-1');
+            const racer2 = document.getElementById('racer-2');
+            const racer3 = document.getElementById('racer-3');
+            const raceResult = document.getElementById('race-result');
+            
+            raceResult.textContent = 'Racing...';
+            
+            const speeds = [
+                Math.random() * 3 + 2,
+                Math.random() * 3 + 2,
+                Math.random() * 3 + 2
+            ];
+            
+            let positions = [0, 0, 0];
+            const racers = [racer1, racer2, racer3];
+            
+            const interval = setInterval(() => {
+                positions = positions.map((pos, i) => pos + speeds[i]);
+                
+                racers.forEach((racer, i) => {
+                    racer.style.marginLeft = positions[i] + 'px';
+                });
+                
+                if (Math.max(...positions) >= 300) {
+                    clearInterval(interval);
+                    const winner = positions.indexOf(Math.max(...positions));
+                    
+                    if (winner === 0) {
+                        const reward = 750;
+                        gameState.tama += reward;
+                        raceResult.textContent = `🎉 YOUR PET WON! +${reward} TAMA!`;
+                    } else {
+                        raceResult.textContent = `😔 You lost! Better luck next time!`;
+                    }
+                    
+                    updateUI();
+                    triggerAutoSave();
+                    
+                    setTimeout(() => {
+                        positions = [0, 0, 0];
+                        racers.forEach(racer => racer.style.marginLeft = '0px');
+                    }, 2000);
+                }
+            }, 50);
+        }
+        
+        // 🎯 DARTS GAME
+        function throwDart() {
+            if (gameState.tama < 60) {
+                showMessage('❌ Not enough TAMA! Need 60 TAMA');
+                return;
+            }
+            
+            gameState.tama -= 60;
+            updateUI();
+            
+            const dartsResult = document.getElementById('darts-result');
+            
+            // Random hit zone
+            const distance = Math.random() * 100;
+            let reward = 0;
+            let zone = '';
+            
+            if (distance < 10) {
+                reward = 600;
+                zone = 'BULLSEYE';
+            } else if (distance < 30) {
+                reward = 300;
+                zone = 'BLUE ZONE';
+            } else if (distance < 50) {
+                reward = 150;
+                zone = 'GREEN ZONE';
+            } else if (distance < 70) {
+                reward = 75;
+                zone = 'YELLOW ZONE';
+            } else {
+                reward = 30;
+                zone = 'RED ZONE';
+            }
+            
+            gameState.tama += reward;
+            updateUI();
+            dartsResult.textContent = `🎯 Hit ${zone}! +${reward} TAMA!`;
+            triggerAutoSave();
+        }
 
         const leaderboardBtn = document.getElementById('leaderboard-btn');
         const leaderboardModal = document.getElementById('leaderboard-modal');
