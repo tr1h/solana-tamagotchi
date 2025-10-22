@@ -3984,27 +3984,56 @@
                 console.log('🔍 Telegram WebApp check:', {
                     telegramExists: !!window.Telegram,
                     webAppExists: !!window.Telegram?.WebApp,
+                    initData: window.Telegram?.WebApp?.initData?.substring(0, 100) + '...',
                     initDataUnsafe: window.Telegram?.WebApp?.initDataUnsafe,
                     user: window.Telegram?.WebApp?.initDataUnsafe?.user
                 });
                 
                 // Try to load from Supabase first (cloud save)
                 let cloudLoaded = false;
+                let userId = null;
                 
-                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-                    const user = window.Telegram.WebApp.initDataUnsafe.user;
-                    const userId = user?.id?.toString();
-                    
-                    if (userId) {
-                        console.log('✅ Telegram user detected:', {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    // Method 1: Try initDataUnsafe.user
+                    const user = window.Telegram.WebApp.initDataUnsafe?.user;
+                    if (user && user.id) {
+                        userId = user.id.toString();
+                        console.log('✅ Method 1: Got user from initDataUnsafe:', {
                             id: userId,
                             username: user.username,
                             first_name: user.first_name
                         });
+                    } else {
+                        // Method 2: Try parsing initData manually
+                        const initData = window.Telegram.WebApp.initData;
+                        if (initData) {
+                            console.log('🔍 Method 2: Trying to parse initData manually');
+                            try {
+                                const params = new URLSearchParams(initData);
+                                const userParam = params.get('user');
+                                if (userParam) {
+                                    const parsedUser = JSON.parse(decodeURIComponent(userParam));
+                                    userId = parsedUser.id?.toString();
+                                    console.log('✅ Method 2: Parsed user from initData:', {
+                                        id: userId,
+                                        username: parsedUser.username,
+                                        first_name: parsedUser.first_name
+                                    });
+                                }
+                            } catch (e) {
+                                console.error('❌ Failed to parse initData:', e);
+                            }
+                        }
+                    }
+                    
+                    if (userId) {
                         console.log('📥 Loading from Supabase for user:', userId);
                         cloudLoaded = await loadFromSupabase(userId);
+                        
+                        // Store userId globally for leaderboard
+                        window.TELEGRAM_USER_ID = userId;
                     } else {
-                        console.warn('⚠️ Telegram WebApp initialized but no user found');
+                        console.warn('⚠️ Could not get user ID from Telegram WebApp');
                     }
                 } else {
                     console.warn('⚠️ Telegram WebApp not available - running in browser mode');
@@ -4607,13 +4636,18 @@
             try {
                 leaderboardList.innerHTML = '<div class="loading">⏳ Loading leaderboard...</div>';
                 
-                // Get current user's Telegram ID
-                let currentUserId = null;
-                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-                    currentUserId = window.Telegram.WebApp.initDataUnsafe.user?.id?.toString();
+                // Get current user's Telegram ID (use globally stored ID)
+                let currentUserId = window.TELEGRAM_USER_ID || null;
+                
+                // Fallback to trying initDataUnsafe again
+                if (!currentUserId && window.Telegram && window.Telegram.WebApp) {
+                    const user = window.Telegram.WebApp.initDataUnsafe?.user;
+                    if (user && user.id) {
+                        currentUserId = user.id.toString();
+                    }
                 }
                 
-                console.log('Loading leaderboard for user:', currentUserId);
+                console.log('📊 Loading leaderboard for user:', currentUserId);
                 
                 // Fetch from Supabase
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=*&order=tama.desc&limit=50`, {
