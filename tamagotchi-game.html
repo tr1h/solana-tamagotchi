@@ -265,6 +265,80 @@
             50% { transform: translate(-4px, -7px) rotate(45deg); opacity: 1; }
         }
 
+        /* Premium Pet Animations 💎 */
+        .premium-body {
+            animation: premiumFloat 3s ease-in-out infinite;
+        }
+
+        .premium-eye-left, .premium-eye-right {
+            animation: premiumBlink 4s infinite;
+        }
+
+        .premium-antenna {
+            animation: premiumAntennaBob 2s ease-in-out infinite;
+        }
+
+        .premium-line-1, .premium-line-2, .premium-line-3, .premium-line-4 {
+            animation: premiumGlow 2.5s ease-in-out infinite;
+        }
+
+        .premium-particle-1 { animation: premiumFloat1 3s ease-in-out infinite; }
+        .premium-particle-2 { animation: premiumFloat2 3.5s ease-in-out infinite; }
+        .premium-particle-3 { animation: premiumFloat3 4s ease-in-out infinite; }
+        .premium-particle-4 { animation: premiumFloat4 3.2s ease-in-out infinite; }
+        .premium-particle-5 { animation: premiumFloat5 3.8s ease-in-out infinite; }
+        .premium-particle-6 { animation: premiumFloat6 4.2s ease-in-out infinite; }
+
+        @keyframes premiumFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.02); }
+        }
+
+        @keyframes premiumBlink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+
+        @keyframes premiumAntennaBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-1px) rotate(2deg); }
+        }
+
+        @keyframes premiumGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes premiumFloat1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(3px, -4px) rotate(180deg); opacity: 1; }
+        }
+
+        @keyframes premiumFloat2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(-2px, -6px) rotate(-180deg); opacity: 1; }
+        }
+
+        @keyframes premiumFloat3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(4px, -3px) rotate(90deg); opacity: 1; }
+        }
+
+        @keyframes premiumFloat4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(-3px, -5px) rotate(-90deg); opacity: 1; }
+        }
+
+        @keyframes premiumFloat5 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(2px, -4px) rotate(270deg); opacity: 1; }
+        }
+
+        @keyframes premiumFloat6 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(-4px, -3px) rotate(45deg); opacity: 1; }
+        }
+
         .pet-area {
             position: relative;
             height: 300px;
@@ -1890,6 +1964,75 @@
                         <rect x="166" y="130" width="4" height="4" fill="#00FF00" opacity="0.7" class="retro-particle-4"/>
                         <rect x="50" y="160" width="4" height="4" fill="#FF00FF" opacity="0.7" class="retro-particle-5"/>
                         <rect x="150" y="170" width="4" height="4" fill="#00FFFF" opacity="0.7" class="retro-particle-6"/>
+                    </g>
+                </svg>
+                
+                <!-- PREMIUM Geometric Pet 💎 -->
+                <svg class="vector-pet premium-pet" width="200" height="200" viewBox="0 0 200 200">
+                    <defs>
+                        <!-- Premium Gradients -->
+                        <linearGradient id="premiumBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#374151;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <linearGradient id="premiumGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#D97706;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#B45309;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <filter id="premiumGlow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                        
+                        <filter id="premiumShadow">
+                            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Premium Pet Body - Hexagon -->
+                    <polygon points="100,60 130,80 130,120 100,140 70,120 70,80" 
+                             fill="url(#premiumBodyGrad)" 
+                             stroke="url(#premiumGoldGrad)" 
+                             stroke-width="3"
+                             filter="url(#premiumGlow)"
+                             class="premium-body"/>
+                    
+                    <!-- Premium Eyes - Diamond shapes -->
+                    <polygon points="85,95 90,100 85,105 80,100" fill="#F59E0B" class="premium-eye-left"/>
+                    <polygon points="115,95 120,100 115,105 110,100" fill="#F59E0B" class="premium-eye-right"/>
+                    
+                    <!-- Premium Eye Highlights -->
+                    <polygon points="87,97 89,99 87,101 85,99" fill="#FFFFFF" opacity="0.9"/>
+                    <polygon points="117,97 119,99 117,101 115,99" fill="#FFFFFF" opacity="0.9"/>
+                    
+                    <!-- Premium Mouth - Geometric line -->
+                    <polygon points="90,115 95,120 105,120 110,115 105,110 95,110" fill="#F59E0B" class="premium-mouth"/>
+                    
+                    <!-- Premium Antenna - Triangle -->
+                    <polygon points="100,50 95,60 105,60" fill="url(#premiumGoldGrad)" class="premium-antenna"/>
+                    <circle cx="100" cy="45" r="3" fill="#F59E0B" class="premium-antenna-tip"/>
+                    
+                    <!-- Premium Decorative Lines -->
+                    <line x1="60" y1="85" x2="80" y2="85" stroke="#F59E0B" stroke-width="2" opacity="0.6" class="premium-line-1"/>
+                    <line x1="120" y1="85" x2="140" y2="85" stroke="#F59E0B" stroke-width="2" opacity="0.6" class="premium-line-2"/>
+                    <line x1="60" y1="135" x2="80" y2="135" stroke="#F59E0B" stroke-width="2" opacity="0.6" class="premium-line-3"/>
+                    <line x1="120" y1="135" x2="140" y2="135" stroke="#F59E0B" stroke-width="2" opacity="0.6" class="premium-line-4"/>
+                    
+                    <!-- Premium Particles - Golden geometric shapes -->
+                    <g class="premium-particles">
+                        <polygon points="40,70 45,75 40,80 35,75" fill="#F59E0B" opacity="0.8" class="premium-particle-1"/>
+                        <polygon points="155,80 160,85 155,90 150,85" fill="#D97706" opacity="0.7" class="premium-particle-2"/>
+                        <polygon points="30,120 35,125 30,130 25,125" fill="#F59E0B" opacity="0.6" class="premium-particle-3"/>
+                        <polygon points="165,130 170,135 165,140 160,135" fill="#D97706" opacity="0.8" class="premium-particle-4"/>
+                        <polygon points="50,160 55,165 50,170 45,165" fill="#F59E0B" opacity="0.7" class="premium-particle-5"/>
+                        <polygon points="145,170 150,175 145,180 140,175" fill="#D97706" opacity="0.6" class="premium-particle-6"/>
                     </g>
                 </svg>
             </div>
