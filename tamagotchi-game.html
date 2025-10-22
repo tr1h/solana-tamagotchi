@@ -339,6 +339,246 @@
             50% { transform: translate(-4px, -3px) rotate(45deg); opacity: 1; }
         }
 
+        /* New Pet Animations 🐾 */
+        
+        /* NEKO CAT Animations 🐱 */
+        .neko-body { animation: nekoPurr 2.5s ease-in-out infinite; }
+        .neko-tail { animation: nekoTailWag 1.5s ease-in-out infinite; }
+        .neko-ear-left, .neko-ear-right { animation: nekoEarTwitch 3s infinite; }
+        .neko-eye-left, .neko-eye-right { animation: nekoBlink 4s infinite; }
+        .neko-particle-1 { animation: nekoFloat1 2.5s ease-in-out infinite; }
+        .neko-particle-2 { animation: nekoFloat2 3s ease-in-out infinite; }
+        .neko-particle-3 { animation: nekoFloat3 2.8s ease-in-out infinite; }
+
+        @keyframes nekoPurr {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        @keyframes nekoTailWag {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(10deg); }
+        }
+        @keyframes nekoEarTwitch {
+            0%, 90%, 100% { transform: rotate(0deg); }
+            95% { transform: rotate(-5deg); }
+        }
+        @keyframes nekoBlink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+        @keyframes nekoFloat1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(3px, -5px) rotate(180deg); opacity: 1; }
+        }
+        @keyframes nekoFloat2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(-2px, -6px) rotate(-180deg); opacity: 1; }
+        }
+        @keyframes nekoFloat3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(4px, -3px) rotate(90deg); opacity: 1; }
+        }
+
+        /* CYBER DOG Animations 🤖 */
+        .cyber-body { animation: cyberPulse 2s ease-in-out infinite; }
+        .cyber-eye-left, .cyber-eye-right { animation: cyberBlink 3s infinite; }
+        .cyber-antenna { animation: cyberAntennaBob 1.8s ease-in-out infinite; }
+        .cyber-particle-1 { animation: cyberFloat1 2.2s ease-in-out infinite; }
+        .cyber-particle-2 { animation: cyberFloat2 2.7s ease-in-out infinite; }
+        .cyber-particle-3 { animation: cyberFloat3 3.1s ease-in-out infinite; }
+        .cyber-particle-4 { animation: cyberFloat4 2.4s ease-in-out infinite; }
+        .cyber-particle-5 { animation: cyberFloat5 2.9s ease-in-out infinite; }
+        .cyber-particle-6 { animation: cyberFloat6 2.6s ease-in-out infinite; }
+
+        @keyframes cyberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes cyberBlink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.2; }
+        }
+        @keyframes cyberAntennaBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        @keyframes cyberFloat1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(4px, -4px) rotate(180deg); opacity: 1; }
+        }
+        @keyframes cyberFloat2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(-3px, -5px) rotate(-180deg); opacity: 1; }
+        }
+        @keyframes cyberFloat3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(5px, -3px) rotate(90deg); opacity: 1; }
+        }
+        @keyframes cyberFloat4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.9; }
+            50% { transform: translate(-4px, -6px) rotate(-90deg); opacity: 1; }
+        }
+        @keyframes cyberFloat5 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(3px, -4px) rotate(270deg); opacity: 1; }
+        }
+        @keyframes cyberFloat6 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(-5px, -3px) rotate(45deg); opacity: 1; }
+        }
+
+        /* SPACE ALIEN Animations 👾 */
+        .alien-body { animation: alienFloat 3s ease-in-out infinite; }
+        .alien-eye-left, .alien-eye-right { animation: alienBlink 5s infinite; }
+        .alien-antenna { animation: alienAntennaBob 2.2s ease-in-out infinite; }
+        .alien-particle-1 { animation: alienFloat1 2.8s ease-in-out infinite; }
+        .alien-particle-2 { animation: alienFloat2 3.3s ease-in-out infinite; }
+        .alien-particle-3 { animation: alienFloat3 2.9s ease-in-out infinite; }
+        .alien-particle-4 { animation: alienFloat4 3.1s ease-in-out infinite; }
+
+        @keyframes alienFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-4px) scale(1.01); }
+        }
+        @keyframes alienBlink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.4; }
+        }
+        @keyframes alienAntennaBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-1px) rotate(1deg); }
+        }
+        @keyframes alienFloat1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(3px, -4px) rotate(180deg); opacity: 1; }
+        }
+        @keyframes alienFloat2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(-2px, -5px) rotate(-180deg); opacity: 1; }
+        }
+        @keyframes alienFloat3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(4px, -3px) rotate(90deg); opacity: 1; }
+        }
+        @keyframes alienFloat4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(-3px, -4px) rotate(-90deg); opacity: 1; }
+        }
+
+        /* KITSUNE FOX Animations 🦊 */
+        .kitsune-body { animation: kitsuneFloat 2.8s ease-in-out infinite; }
+        .kitsune-tail-1, .kitsune-tail-2, .kitsune-tail-3, .kitsune-tail-4, .kitsune-tail-5, .kitsune-tail-6, .kitsune-tail-7, .kitsune-tail-8, .kitsune-tail-9 { 
+            animation: kitsuneTailWave 2s ease-in-out infinite; 
+        }
+        .kitsune-eye-left, .kitsune-eye-right { animation: kitsuneBlink 4.5s infinite; }
+        .kitsune-particle-1 { animation: kitsuneFloat1 2.6s ease-in-out infinite; }
+        .kitsune-particle-2 { animation: kitsuneFloat2 3.2s ease-in-out infinite; }
+        .kitsune-particle-3 { animation: kitsuneFloat3 2.9s ease-in-out infinite; }
+        .kitsune-particle-4 { animation: kitsuneFloat4 3.4s ease-in-out infinite; }
+        .kitsune-particle-5 { animation: kitsuneFloat5 2.7s ease-in-out infinite; }
+        .kitsune-particle-6 { animation: kitsuneFloat6 3.0s ease-in-out infinite; }
+
+        @keyframes kitsuneFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.02); }
+        }
+        @keyframes kitsuneTailWave {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+        @keyframes kitsuneBlink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+        @keyframes kitsuneFloat1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(3px, -4px) rotate(180deg); opacity: 1; }
+        }
+        @keyframes kitsuneFloat2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(-2px, -5px) rotate(-180deg); opacity: 1; }
+        }
+        @keyframes kitsuneFloat3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translate(4px, -3px) rotate(90deg); opacity: 1; }
+        }
+        @keyframes kitsuneFloat4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.9; }
+            50% { transform: translate(-3px, -4px) rotate(-90deg); opacity: 1; }
+        }
+        @keyframes kitsuneFloat5 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(2px, -4px) rotate(270deg); opacity: 1; }
+        }
+        @keyframes kitsuneFloat6 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translate(-4px, -3px) rotate(45deg); opacity: 1; }
+        }
+
+        /* Pet Selector Styles 🐾 */
+        .pet-selector {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-width: 80px;
+            z-index: 100;
+        }
+
+        .pet-btn {
+            width: 35px;
+            height: 35px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .pet-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.6);
+            transform: scale(1.1);
+        }
+
+        .pet-btn.active {
+            background: rgba(255,255,255,0.3);
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .pet-btn span {
+            display: block;
+            line-height: 1;
+        }
+
+        /* Pet Display Rules 🐾 */
+        .kawai-pet, .retro-pet, .premium-pet, .neko-pet, .cyber-pet, .alien-pet, .kitsune-pet {
+            display: none;
+        }
+
+        /* Show active pet based on data-pet attribute */
+        body[data-pet="kawai"] .kawai-pet { display: block; }
+        body[data-pet="retro"] .retro-pet { display: block; }
+        body[data-pet="premium"] .premium-pet { display: block; }
+        body[data-pet="neko"] .neko-pet { display: block; }
+        body[data-pet="cyber"] .cyber-pet { display: block; }
+        body[data-pet="alien"] .alien-pet { display: block; }
+        body[data-pet="kitsune"] .kitsune-pet { display: block; }
+
+        /* Default: show kawai pet */
+        .kawai-pet {
+            display: block;
+        }
+
         .pet-area {
             position: relative;
             height: 300px;
@@ -1676,18 +1916,43 @@
                 </div>
             </div>
             
-            <!-- Theme Switcher 🎨 -->
-            <div class="theme-switcher">
-                <button class="theme-btn active" data-theme="kawai" title="🌸 Kawai Theme">
-                    <span>🌸</span>
-                </button>
-                <button class="theme-btn" data-theme="retro" title="🕹️ Retro Theme">
-                    <span>🕹️</span>
-                </button>
-                <button class="theme-btn" data-theme="premium" title="💎 Premium Theme">
-                    <span>💎</span>
-                </button>
-            </div>
+        <!-- Theme Switcher 🎨 -->
+        <div class="theme-switcher">
+            <button class="theme-btn active" data-theme="kawai" title="🌸 Kawai Theme">
+                <span>🌸</span>
+            </button>
+            <button class="theme-btn" data-theme="retro" title="🕹️ Retro Theme">
+                <span>🕹️</span>
+            </button>
+            <button class="theme-btn" data-theme="premium" title="💎 Premium Theme">
+                <span>💎</span>
+            </button>
+        </div>
+        
+        <!-- Pet Selector 🐾 -->
+        <div class="pet-selector">
+            <button class="pet-btn active" data-pet="kawai" title="🌸 Kawai Blob">
+                <span>🌸</span>
+            </button>
+            <button class="pet-btn" data-pet="retro" title="🕹️ Retro Pixel">
+                <span>🕹️</span>
+            </button>
+            <button class="pet-btn" data-pet="premium" title="💎 Premium Hex">
+                <span>💎</span>
+            </button>
+            <button class="pet-btn" data-pet="neko" title="🐱 Neko Cat">
+                <span>🐱</span>
+            </button>
+            <button class="pet-btn" data-pet="cyber" title="🤖 Cyber Dog">
+                <span>🤖</span>
+            </button>
+            <button class="pet-btn" data-pet="alien" title="👾 Space Alien">
+                <span>👾</span>
+            </button>
+            <button class="pet-btn" data-pet="kitsune" title="🦊 Kitsune Fox">
+                <span>🦊</span>
+            </button>
+        </div>
         </div>
 
         <!-- Pet Area -->
@@ -1712,6 +1977,7 @@
             <div class="heart-cloud" style="top: 150px; left: -30px; animation-delay: 10s;">💗</div>
             
             <div class="shop-btn" id="shop-btn">🛒</div>
+            <div class="pet-change-btn" id="pet-change-btn" title="Change Pet">🐾</div>
             <div class="combo-counter" id="combo-counter">🔥 COMBO x<span id="combo-value">0</span></div>
             <div class="pet-status" id="pet-status"></div>
             <div class="pet-mood" id="pet-mood">😊</div>
@@ -2033,6 +2299,275 @@
                         <polygon points="165,130 170,135 165,140 160,135" fill="#D97706" opacity="0.8" class="premium-particle-4"/>
                         <polygon points="50,160 55,165 50,170 45,165" fill="#F59E0B" opacity="0.7" class="premium-particle-5"/>
                         <polygon points="145,170 150,175 145,180 140,175" fill="#D97706" opacity="0.6" class="premium-particle-6"/>
+                    </g>
+                </svg>
+                
+                <!-- NEKO CAT Pet 🐱 -->
+                <svg class="vector-pet neko-pet" width="200" height="200" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="nekoBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FF69B4;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FF1493;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="nekoGlow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Cat Body -->
+                    <ellipse cx="100" cy="110" rx="45" ry="50" fill="url(#nekoBodyGrad)" filter="url(#nekoGlow)" class="neko-body"/>
+                    
+                    <!-- Cat Ears -->
+                    <polygon points="85,70 95,50 105,70" fill="#FF69B4" class="neko-ear-left"/>
+                    <polygon points="95,70 105,50 115,70" fill="#FF69B4" class="neko-ear-right"/>
+                    
+                    <!-- Inner Ears -->
+                    <polygon points="90,65 95,55 100,65" fill="#FFB6C1"/>
+                    <polygon points="100,65 105,55 110,65" fill="#FFB6C1"/>
+                    
+                    <!-- Cat Eyes -->
+                    <ellipse cx="90" cy="100" rx="8" ry="12" fill="#FF1493" class="neko-eye-left"/>
+                    <ellipse cx="110" cy="100" rx="8" ry="12" fill="#FF1493" class="neko-eye-right"/>
+                    
+                    <!-- Eye Highlights -->
+                    <ellipse cx="92" cy="95" rx="3" ry="4" fill="#FFFFFF" opacity="0.9"/>
+                    <ellipse cx="112" cy="95" rx="3" ry="4" fill="#FFFFFF" opacity="0.9"/>
+                    
+                    <!-- Cat Nose -->
+                    <polygon points="100,110 95,115 105,115" fill="#FF69B4"/>
+                    
+                    <!-- Cat Mouth -->
+                    <path d="M 100 115 Q 95 120 90 115" stroke="#FF1493" stroke-width="2" fill="none"/>
+                    <path d="M 100 115 Q 105 120 110 115" stroke="#FF1493" stroke-width="2" fill="none"/>
+                    
+                    <!-- Cat Whiskers -->
+                    <line x1="70" y1="105" x2="85" y2="105" stroke="#FF1493" stroke-width="2"/>
+                    <line x1="70" y1="110" x2="85" y2="110" stroke="#FF1493" stroke-width="2"/>
+                    <line x1="115" y1="105" x2="130" y2="105" stroke="#FF1493" stroke-width="2"/>
+                    <line x1="115" y1="110" x2="130" y2="110" stroke="#FF1493" stroke-width="2"/>
+                    
+                    <!-- Cat Tail -->
+                    <path d="M 145 120 Q 160 100 170 80 Q 175 70 180 60" stroke="#FF69B4" stroke-width="8" fill="none" class="neko-tail"/>
+                    
+                    <!-- Cat Paws -->
+                    <ellipse cx="85" cy="150" rx="8" ry="6" fill="#FFB6C1" class="neko-paw-left"/>
+                    <ellipse cx="115" cy="150" rx="8" ry="6" fill="#FFB6C1" class="neko-paw-right"/>
+                    
+                    <!-- Cat Particles - Hearts -->
+                    <g class="neko-particles">
+                        <path d="M 50 80 C 50 75, 45 70, 40 70 C 35 70, 30 75, 30 80 C 30 85, 35 90, 50 100 C 65 90, 70 85, 70 80 C 70 75, 65 70, 60 70 C 55 70, 50 75, 50 80 Z" fill="#FF69B4" opacity="0.7" class="neko-particle-1"/>
+                        <path d="M 150 70 C 150 65, 145 60, 140 60 C 135 60, 130 65, 130 70 C 130 75, 135 80, 150 90 C 165 80, 170 75, 170 70 C 170 65, 165 60, 160 60 C 155 60, 150 65, 150 70 Z" fill="#FFB6C1" opacity="0.6" class="neko-particle-2"/>
+                        <path d="M 40 140 C 40 135, 35 130, 30 130 C 25 130, 20 135, 20 140 C 20 145, 25 150, 40 160 C 55 150, 60 145, 60 140 C 60 135, 55 130, 50 130 C 45 130, 40 135, 40 140 Z" fill="#FF1493" opacity="0.8" class="neko-particle-3"/>
+                    </g>
+                </svg>
+                
+                <!-- CYBER DOG Pet 🤖 -->
+                <svg class="vector-pet cyber-pet" width="200" height="200" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="cyberBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00FFFF;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#0080FF;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0040FF;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="cyberGlow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Cyber Dog Body -->
+                    <rect x="70" y="80" width="60" height="70" rx="10" fill="url(#cyberBodyGrad)" filter="url(#cyberGlow)" class="cyber-body"/>
+                    
+                    <!-- Cyber Head -->
+                    <rect x="75" y="60" width="50" height="40" rx="8" fill="#00FFFF" class="cyber-head"/>
+                    
+                    <!-- Cyber Eyes - LED -->
+                    <rect x="85" y="70" width="8" height="8" fill="#FF0080" class="cyber-eye-left"/>
+                    <rect x="107" y="70" width="8" height="8" fill="#FF0080" class="cyber-eye-right"/>
+                    
+                    <!-- Eye Glow -->
+                    <rect x="87" y="72" width="4" height="4" fill="#FFFFFF" opacity="0.9"/>
+                    <rect x="109" y="72" width="4" height="4" fill="#FFFFFF" opacity="0.9"/>
+                    
+                    <!-- Cyber Antenna -->
+                    <line x1="100" y1="60" x2="100" y2="40" stroke="#00FFFF" stroke-width="3" class="cyber-antenna"/>
+                    <circle cx="100" cy="35" r="3" fill="#FF0080" class="cyber-antenna-tip"/>
+                    
+                    <!-- Cyber Mouth -->
+                    <rect x="90" y="85" width="20" height="4" fill="#0080FF" class="cyber-mouth"/>
+                    
+                    <!-- Cyber Ears -->
+                    <rect x="80" y="55" width="8" height="15" fill="#0040FF" class="cyber-ear-left"/>
+                    <rect x="112" y="55" width="8" height="15" fill="#0040FF" class="cyber-ear-right"/>
+                    
+                    <!-- Cyber Legs -->
+                    <rect x="75" y="150" width="12" height="20" fill="#00FFFF" class="cyber-leg-left"/>
+                    <rect x="113" y="150" width="12" height="20" fill="#00FFFF" class="cyber-leg-right"/>
+                    
+                    <!-- Cyber Tail -->
+                    <rect x="130" y="120" width="15" height="4" fill="#0080FF" class="cyber-tail"/>
+                    
+                    <!-- Cyber Circuit Lines -->
+                    <line x1="60" y1="90" x2="70" y2="90" stroke="#00FFFF" stroke-width="2" opacity="0.6"/>
+                    <line x1="60" y1="95" x2="70" y2="95" stroke="#00FFFF" stroke-width="2" opacity="0.6"/>
+                    <line x1="130" y1="90" x2="140" y2="90" stroke="#00FFFF" stroke-width="2" opacity="0.6"/>
+                    <line x1="130" y1="95" x2="140" y2="95" stroke="#00FFFF" stroke-width="2" opacity="0.6"/>
+                    
+                    <!-- Cyber Particles - Digital -->
+                    <g class="cyber-particles">
+                        <rect x="40" y="60" width="6" height="6" fill="#00FFFF" opacity="0.8" class="cyber-particle-1"/>
+                        <rect x="154" y="70" width="6" height="6" fill="#0080FF" opacity="0.7" class="cyber-particle-2"/>
+                        <rect x="30" y="120" width="6" height="6" fill="#0040FF" opacity="0.6" class="cyber-particle-3"/>
+                        <rect x="164" y="130" width="6" height="6" fill="#00FFFF" opacity="0.9" class="cyber-particle-4"/>
+                        <rect x="50" y="160" width="6" height="6" fill="#0080FF" opacity="0.8" class="cyber-particle-5"/>
+                        <rect x="144" y="170" width="6" height="6" fill="#0040FF" opacity="0.7" class="cyber-particle-6"/>
+                    </g>
+                </svg>
+                
+                <!-- SPACE ALIEN Pet 👾 -->
+                <svg class="vector-pet alien-pet" width="200" height="200" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="alienBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#90EE90;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#32CD32;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#228B22;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="alienGlow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Alien Body -->
+                    <ellipse cx="100" cy="120" rx="40" ry="50" fill="url(#alienBodyGrad)" filter="url(#alienGlow)" class="alien-body"/>
+                    
+                    <!-- Alien Head -->
+                    <ellipse cx="100" cy="80" rx="35" ry="40" fill="#90EE90" class="alien-head"/>
+                    
+                    <!-- Alien Eyes - Big -->
+                    <ellipse cx="85" y="75" rx="12" ry="18" fill="#32CD32" class="alien-eye-left"/>
+                    <ellipse cx="115" y="75" rx="12" ry="18" fill="#32CD32" class="alien-eye-right"/>
+                    
+                    <!-- Eye Pupils -->
+                    <ellipse cx="85" y="75" rx="6" ry="9" fill="#000000"/>
+                    <ellipse cx="115" y="75" rx="6" ry="9" fill="#000000"/>
+                    
+                    <!-- Eye Highlights -->
+                    <ellipse cx="87" y="70" rx="3" ry="4" fill="#FFFFFF" opacity="0.9"/>
+                    <ellipse cx="117" y="70" rx="3" ry="4" fill="#FFFFFF" opacity="0.9"/>
+                    
+                    <!-- Alien Mouth -->
+                    <ellipse cx="100" cy="90" rx="8" ry="4" fill="#228B22" class="alien-mouth"/>
+                    
+                    <!-- Alien Antenna -->
+                    <line x1="100" y1="40" x2="100" y2="20" stroke="#32CD32" stroke-width="4" class="alien-antenna"/>
+                    <circle cx="100" cy="15" r="5" fill="#90EE90" class="alien-antenna-tip"/>
+                    
+                    <!-- Alien Arms -->
+                    <ellipse cx="60" cy="110" rx="15" ry="25" fill="#90EE90" class="alien-arm-left"/>
+                    <ellipse cx="140" cy="110" rx="15" ry="25" fill="#90EE90" class="alien-arm-right"/>
+                    
+                    <!-- Alien Fingers -->
+                    <ellipse cx="50" cy="100" rx="4" ry="8" fill="#32CD32"/>
+                    <ellipse cx="45" cy="105" rx="4" ry="8" fill="#32CD32"/>
+                    <ellipse cx="55" cy="105" rx="4" ry="8" fill="#32CD32"/>
+                    <ellipse cx="150" cy="100" rx="4" ry="8" fill="#32CD32"/>
+                    <ellipse cx="145" cy="105" rx="4" ry="8" fill="#32CD32"/>
+                    <ellipse cx="155" cy="105" rx="4" ry="8" fill="#32CD32"/>
+                    
+                    <!-- Alien Legs -->
+                    <ellipse cx="85" cy="160" rx="12" ry="20" fill="#90EE90" class="alien-leg-left"/>
+                    <ellipse cx="115" cy="160" rx="12" ry="20" fill="#90EE90" class="alien-leg-right"/>
+                    
+                    <!-- Alien Particles - UFOs -->
+                    <g class="alien-particles">
+                        <ellipse cx="40" y="50" rx="8" ry="4" fill="#32CD32" opacity="0.7" class="alien-particle-1"/>
+                        <ellipse cx="160" y="60" rx="8" ry="4" fill="#90EE90" opacity="0.6" class="alien-particle-2"/>
+                        <ellipse cx="30" y="130" rx="8" ry="4" fill="#228B22" opacity="0.8" class="alien-particle-3"/>
+                        <ellipse cx="170" y="140" rx="8" ry="4" fill="#32CD32" opacity="0.7" class="alien-particle-4"/>
+                    </g>
+                </svg>
+                
+                <!-- KITSUNE FOX Pet 🦊 -->
+                <svg class="vector-pet kitsune-pet" width="200" height="200" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="kitsuneBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FF8C00;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FF4500;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="kitsuneGlow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- Kitsune Body -->
+                    <ellipse cx="100" cy="120" rx="45" ry="55" fill="url(#kitsuneBodyGrad)" filter="url(#kitsuneGlow)" class="kitsune-body"/>
+                    
+                    <!-- Kitsune Head -->
+                    <ellipse cx="100" cy="80" rx="40" ry="45" fill="#FFD700" class="kitsune-head"/>
+                    
+                    <!-- Kitsune Ears -->
+                    <polygon points="75,50 85,30 95,50" fill="#FF8C00" class="kitsune-ear-left"/>
+                    <polygon points="105,50 115,30 125,50" fill="#FF8C00" class="kitsune-ear-right"/>
+                    
+                    <!-- Inner Ears -->
+                    <polygon points="80,45 85,35 90,45" fill="#FFD700"/>
+                    <polygon points="110,45 115,35 120,45" fill="#FFD700"/>
+                    
+                    <!-- Kitsune Eyes -->
+                    <ellipse cx="90" y="75" rx="8" ry="12" fill="#FF4500" class="kitsune-eye-left"/>
+                    <ellipse cx="110" y="75" rx="8" ry="12" fill="#FF4500" class="kitsune-eye-right"/>
+                    
+                    <!-- Eye Highlights -->
+                    <ellipse cx="92" y="70" rx="3" ry="4" fill="#FFFFFF" opacity="0.9"/>
+                    <ellipse cx="112" y="70" rx="3" ry="4" fill="#FFFFFF" opacity="0.9"/>
+                    
+                    <!-- Kitsune Nose -->
+                    <ellipse cx="100" cy="85" rx="3" ry="2" fill="#FF8C00"/>
+                    
+                    <!-- Kitsune Mouth -->
+                    <path d="M 100 90 Q 95 95 90 90" stroke="#FF4500" stroke-width="2" fill="none"/>
+                    <path d="M 100 90 Q 105 95 110 90" stroke="#FF4500" stroke-width="2" fill="none"/>
+                    
+                    <!-- Kitsune Tails (9 tails!) -->
+                    <path d="M 145 100 Q 160 80 170 60 Q 175 50 180 40" stroke="#FFD700" stroke-width="6" fill="none" class="kitsune-tail-1"/>
+                    <path d="M 145 105 Q 155 85 165 65 Q 170 55 175 45" stroke="#FF8C00" stroke-width="5" fill="none" class="kitsune-tail-2"/>
+                    <path d="M 145 110 Q 150 90 160 70 Q 165 60 170 50" stroke="#FF4500" stroke-width="4" fill="none" class="kitsune-tail-3"/>
+                    <path d="M 145 115 Q 155 95 165 75 Q 170 65 175 55" stroke="#FFD700" stroke-width="5" fill="none" class="kitsune-tail-4"/>
+                    <path d="M 145 120 Q 160 100 170 80 Q 175 70 180 60" stroke="#FF8C00" stroke-width="4" fill="none" class="kitsune-tail-5"/>
+                    <path d="M 145 125 Q 150 105 160 85 Q 165 75 170 65" stroke="#FF4500" stroke-width="4" fill="none" class="kitsune-tail-6"/>
+                    <path d="M 145 130 Q 155 110 165 90 Q 170 80 175 70" stroke="#FFD700" stroke-width="4" fill="none" class="kitsune-tail-7"/>
+                    <path d="M 145 135 Q 160 115 170 95 Q 175 85 180 75" stroke="#FF8C00" stroke-width="4" fill="none" class="kitsune-tail-8"/>
+                    <path d="M 145 140 Q 150 120 160 100 Q 165 90 170 80" stroke="#FF4500" stroke-width="4" fill="none" class="kitsune-tail-9"/>
+                    
+                    <!-- Kitsune Paws -->
+                    <ellipse cx="85" cy="160" rx="10" ry="8" fill="#FFD700" class="kitsune-paw-left"/>
+                    <ellipse cx="115" cy="160" rx="10" ry="8" fill="#FFD700" class="kitsune-paw-right"/>
+                    
+                    <!-- Kitsune Particles - Magic Orbs -->
+                    <g class="kitsune-particles">
+                        <circle cx="50" y="60" r="4" fill="#FFD700" opacity="0.8" class="kitsune-particle-1"/>
+                        <circle cx="150" y="70" r="4" fill="#FF8C00" opacity="0.7" class="kitsune-particle-2"/>
+                        <circle cx="40" y="130" r="4" fill="#FF4500" opacity="0.6" class="kitsune-particle-3"/>
+                        <circle cx="160" y="140" r="4" fill="#FFD700" opacity="0.9" class="kitsune-particle-4"/>
+                        <circle cx="60" y="170" r="4" fill="#FF8C00" opacity="0.8" class="kitsune-particle-5"/>
+                        <circle cx="140" y="180" r="4" fill="#FF4500" opacity="0.7" class="kitsune-particle-6"/>
                     </g>
                 </svg>
             </div>
@@ -4189,6 +4724,9 @@
             
             // Initialize theme system
             initThemeSystem();
+            
+            // Initialize pet selector system
+            initPetSelector();
         });
 
         // Theme System 🎨
@@ -4206,7 +4744,7 @@
                 });
             });
         }
-
+        
         function switchTheme(theme) {
             // Update body data attribute
             document.body.setAttribute('data-theme', theme);
@@ -4218,6 +4756,38 @@
             document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
             
             console.log(`Theme switched to: ${theme}`);
+        }
+
+        // Pet Selector System 🐾
+        function initPetSelector() {
+            // Load saved pet
+            const savedPet = localStorage.getItem('tamagotchi-pet') || 'kawai';
+            switchPet(savedPet);
+            
+            // Add click listeners to pet buttons
+            document.querySelectorAll('.pet-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const pet = btn.dataset.pet;
+                    switchPet(pet);
+                    localStorage.setItem('tamagotchi-pet', pet);
+                });
+            });
+        }
+        
+        function switchPet(pet) {
+            // Update body data attribute
+            document.body.setAttribute('data-pet', pet);
+            
+            // Update active button
+            document.querySelectorAll('.pet-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.querySelector(`[data-pet="${pet}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
+            console.log(`Pet switched to: ${pet}`);
         }
     </script>
 </body>
