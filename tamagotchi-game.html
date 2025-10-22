@@ -2410,6 +2410,22 @@
         let lastSaveTime = 0;
         const SAVE_COOLDOWN = 3000; // 3 seconds minimum between saves
 
+        // Degradation system ⚖️
+        let lastDegradationTime = Date.now();
+        const DEGRADATION_INTERVAL = 30000; // 30 seconds
+        const DEGRADATION_RATES = {
+            hp: 1,      // 1% per 30 sec
+            food: 2,    // 2% per 30 sec
+            happy: 1.5  // 1.5% per 30 sec
+        };
+
+        // Fatigue system ⚡
+        let clicksInWindow = 0;
+        let lastClickWindowReset = Date.now();
+        const CLICK_WINDOW = 60000; // 1 minute
+        const MAX_CLICKS_PER_WINDOW = 50;
+        let clickEfficiency = 1.0; // 1.0 = normal, 0.5 = fatigued
+
         // Pet evolution stages (based on level)
         const EVOLUTION_STAGES = [
             { minLevel: 1, name: 'Egg', prefix: '🥚', sizeMultiplier: 0.7 },
@@ -2464,10 +2480,20 @@
             // NEW: Update pet status and mood
             updatePetStatus();
 
-            // Button states
-            feedBtn.disabled = gameState.tama < 50;
-            playBtn.disabled = gameState.tama < 30;
-            healBtn.disabled = gameState.tama < 100;
+            // ⚖️ Apply degradation
+            degradeStats();
+
+            // 💰 Update progressive prices
+            updateActionPrices();
+
+            // Button states (updated with progressive prices)
+            const feedCost = getProgressivePrice(50);
+            const playCost = getProgressivePrice(30);
+            const healCost = getProgressivePrice(100);
+            
+            feedBtn.disabled = gameState.tama < feedCost;
+            playBtn.disabled = gameState.tama < playCost;
+            healBtn.disabled = gameState.tama < healCost;
         }
 
         // NEW: Update pet status and mood indicators
@@ -2646,6 +2672,40 @@
                 gameState.petType = currentStage.emoji;
                 updateVectorPetAppearance(currentStage);
                 showMessage(`🎉 Your pet evolved into ${currentStage.name}!`);
+            }
+        }
+
+        // ⚖️ DEGRADATION SYSTEM - Pets need care!
+        function degradeStats() {
+            const now = Date.now();
+            const timeSinceLastDeg = now - lastDegradationTime;
+            
+            if (timeSinceLastDeg >= DEGRADATION_INTERVAL) {
+                // Calculate degradation
+                gameState.hp = Math.max(0, gameState.hp - (gameState.maxHp * DEGRADATION_RATES.hp / 100));
+                gameState.food = Math.max(0, gameState.food - (gameState.maxFood * DEGRADATION_RATES.food / 100));
+                gameState.happy = Math.max(0, gameState.happy - (gameState.maxHappy * DEGRADATION_RATES.happy / 100));
+                
+                // Critical warnings
+                if (gameState.food < 20) {
+                    showMessage('⚠️ Your pet is very hungry!');
+                    // Low food accelerates HP loss
+                    gameState.hp = Math.max(0, gameState.hp - (gameState.maxHp * 0.5 / 100));
+                }
+                
+                if (gameState.happy < 20) {
+                    showMessage('😢 Your pet is very sad!');
+                }
+                
+                if (gameState.hp < 20) {
+                    showMessage('🚨 Your pet is critically ill!');
+                    // Low HP reduces click efficiency
+                    clickEfficiency = Math.min(clickEfficiency, 0.5);
+                }
+                
+                lastDegradationTime = now;
+                updateUI();
+                saveToLocalStorage();
             }
         }
 
@@ -2855,6 +2915,23 @@
         function clickPet(e) {
             const now = Date.now();
             
+            // ⚡ FATIGUE SYSTEM - Track clicks per minute
+            if (now - lastClickWindowReset >= CLICK_WINDOW) {
+                clicksInWindow = 0;
+                lastClickWindowReset = now;
+                clickEfficiency = 1.0; // Reset efficiency
+            }
+            
+            clicksInWindow++;
+            
+            // Apply fatigue after max clicks
+            if (clicksInWindow > MAX_CLICKS_PER_WINDOW) {
+                clickEfficiency = 0.5; // 50% efficiency when fatigued
+                if (clicksInWindow === MAX_CLICKS_PER_WINDOW + 1) {
+                    showMessage('😴 Your pet is tired! Efficiency reduced to 50%. Rest for 60 seconds.');
+                }
+            }
+            
             // NEW: Check if pet is too weak to interact
             if (gameState.hp <= 0) {
                 showMessage('💀 Your pet is unconscious! Heal it first!');
@@ -2872,7 +2949,6 @@
             }
 
             // NEW: Pet condition affects click efficiency
-            let clickEfficiency = 1.0;
             if (gameState.hp < 30) clickEfficiency *= 0.5; // 50% efficiency
             if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
             if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
@@ -3023,22 +3099,43 @@
             }
         }
 
+        // 💰 PROGRESSIVE PRICING - Prices scale with level
+        function getProgressivePrice(basePrice) {
+            // Every 5 levels = +20% price
+            const levelMultiplier = 1 + (Math.floor(gameState.level / 5) * 0.2);
+            return Math.floor(basePrice * levelMultiplier);
+        }
+
+        function updateActionPrices() {
+            const feedCost = getProgressivePrice(50);
+            const playCost = getProgressivePrice(30);
+            const healCost = getProgressivePrice(100);
+            
+            feedBtn.innerHTML = `🍔<br>Feed<br><small>-${feedCost} TAMA</small>`;
+            playBtn.innerHTML = `🎮<br>Play<br><small>-${playCost} TAMA</small>`;
+            healBtn.innerHTML = `💊<br>Heal<br><small>-${healCost} TAMA</small>`;
+        }
+
         // Actions
         feedBtn.addEventListener('click', () => {
-            if (gameState.tama >= 50) {
-                gameState.tama -= 50;
+            const cost = getProgressivePrice(50);
+            if (gameState.tama >= cost) {
+                gameState.tama -= cost;
                 gameState.food = Math.min(gameState.maxFood, gameState.food + 30);
                 gameState.xp += 10;
                 showMessage('🍔 Yummy! Food +30');
                 checkLevelUp();
                 updateUI();
                 triggerAutoSave(); // Auto-save after feeding
+            } else {
+                showMessage('❌ Not enough TAMA!');
             }
         });
 
         playBtn.addEventListener('click', () => {
-            if (gameState.tama >= 30) {
-                gameState.tama -= 30;
+            const cost = getProgressivePrice(30);
+            if (gameState.tama >= cost) {
+                gameState.tama -= cost;
                 gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 40);
                 gameState.food = Math.max(0, gameState.food - 10);
                 gameState.xp += 15;
@@ -3046,18 +3143,24 @@
                 checkLevelUp();
                 updateUI();
                 triggerAutoSave(); // Auto-save after playing
+            } else {
+                showMessage('❌ Not enough TAMA!');
             }
         });
 
         healBtn.addEventListener('click', () => {
-            if (gameState.tama >= 100) {
-                gameState.tama -= 100;
+            const cost = getProgressivePrice(100);
+            if (gameState.tama >= cost) {
+                gameState.tama -= cost;
                 gameState.hp = Math.min(gameState.maxHp, gameState.hp + 50);
                 gameState.xp += 20;
+                clickEfficiency = 1.0; // Restore click efficiency
                 showMessage('💊 Feeling better! HP +50');
                 checkLevelUp();
                 updateUI();
                 triggerAutoSave(); // Auto-save after healing
+            } else {
+                showMessage('❌ Not enough TAMA!');
             }
         });
 
