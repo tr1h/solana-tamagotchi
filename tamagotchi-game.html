@@ -4131,12 +4131,24 @@
         // Save game when page is about to close
         window.addEventListener('beforeunload', () => {
             saveToLocalStorage();
+            
+            // Also save to Supabase (synchronous attempt)
+            const userId = window.TELEGRAM_USER_ID;
+            if (userId) {
+                saveDirectToSupabase(userId);
+            }
         });
 
         // Save game when page becomes hidden (mobile)
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 saveToLocalStorage();
+                
+                // Also save to Supabase when hiding
+                const userId = window.TELEGRAM_USER_ID;
+                if (userId) {
+                    saveDirectToSupabase(userId);
+                }
             }
         });
 
@@ -4186,25 +4198,74 @@
 
         // Enhanced auto-save system with local backup
 
+        // Direct save to Supabase function
+        async function saveDirectToSupabase(userId) {
+            try {
+                // Prepare pet_data JSON
+                const pet_data = {
+                    hp: gameState.hp,
+                    food: gameState.food,
+                    happy: gameState.happy,
+                    totalClicks: gameState.totalClicks,
+                    maxCombo: gameState.maxCombo,
+                    xp: gameState.xp,
+                    achievements: gameState.achievements,
+                    selectedPet: gameState.selectedPet,
+                    ownedPets: gameState.ownedPets,
+                    petType: gameState.petType,
+                    hasAutoFeeder: gameState.hasAutoFeeder
+                };
+                
+                // Direct save to Supabase
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${userId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        tama: gameState.tama,
+                        level: gameState.level,
+                        pet_data: JSON.stringify(pet_data),
+                        last_active: new Date().toISOString()
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Saved to Supabase:', { level: gameState.level, tama: gameState.tama });
+                    return true;
+                } else {
+                    console.error('❌ Supabase save failed:', response.status);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error saving to Supabase:', error);
+                return false;
+            }
+        }
+
         function triggerAutoSave() {
             const now = Date.now();
             if (now - lastSaveTime > SAVE_COOLDOWN) {
                 // Save to localStorage first (backup)
                 saveToLocalStorage();
                 
-                // Then send to bot
-                sendDataToBot('auto_save', {
-                    level: gameState.level,
-                    tama: gameState.tama,
-                    hp: gameState.hp,
-                    food: gameState.food,
-                    happy: gameState.happy,
-                    totalClicks: gameState.totalClicks,
-                    maxCombo: gameState.maxCombo,
-                    achievements: gameState.achievements,
-                    petType: gameState.petType,
-                    hasAutoFeeder: gameState.hasAutoFeeder
-                });
+                // Get user ID and save directly to Supabase
+                const userId = window.TELEGRAM_USER_ID;
+                if (userId) {
+                    saveDirectToSupabase(userId).then(success => {
+                        if (success) {
+                            console.log('💾 Auto-save successful');
+                        } else {
+                            console.warn('⚠️ Auto-save failed, data in localStorage');
+                        }
+                    });
+                } else {
+                    console.warn('⚠️ No user ID, saving only to localStorage');
+                }
+                
                 lastSaveTime = now;
             }
         }
