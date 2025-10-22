@@ -670,10 +670,11 @@
             color: #ef4444;
         }
 
-        /* BLOB Pet Animations */
+        /* BLOB Pet Animations - Optimized */
         .vector-pet {
             transition: all 0.3s ease;
             cursor: pointer;
+            will-change: transform;
         }
 
         .vector-pet:hover {
@@ -685,18 +686,21 @@
             transform: scale(0.92);
         }
 
-        /* Blob Body Breathing - Organic pulsing */
+        /* Blob Body Breathing - Optimized */
         .blob-body {
             animation: blobBreathe 4s ease-in-out infinite;
             transform-origin: center;
+            will-change: transform;
         }
 
         .blob-aura {
             animation: auraPulse 3s ease-in-out infinite;
+            will-change: opacity, transform;
         }
 
         .blob-shine {
             animation: shineMove 5s ease-in-out infinite;
+            will-change: transform, opacity;
         }
 
         /* Eye Blinking */
@@ -704,51 +708,38 @@
             animation: blink 5s infinite;
         }
 
-        /* Antenna Bobbing */
+        /* Reduced animations for performance */
         .blob-antenna {
-            animation: antennaBob 2.5s ease-in-out infinite;
+            animation: antennaBob 3s ease-in-out infinite;
             transform-origin: 100px 50px;
+            will-change: transform;
         }
 
-        /* Arms Waving */
-        .blob-arm-left {
-            animation: armWaveLeft 3s ease-in-out infinite;
-            transform-origin: 45px 105px;
+        /* Arms - simplified */
+        .blob-arm-left, .blob-arm-right {
+            animation: none;
         }
 
-        .blob-arm-right {
-            animation: armWaveRight 3s ease-in-out infinite;
-            transform-origin: 155px 105px;
+        /* Feet - simplified */
+        .blob-foot-left, .blob-foot-right {
+            animation: none;
         }
 
-        /* Feet Wiggling */
-        .blob-foot-left {
-            animation: footWiggle 2s ease-in-out infinite;
-        }
-
-        .blob-foot-right {
-            animation: footWiggle 2s ease-in-out infinite 0.3s;
-        }
-
-        /* Blush Pulsing */
+        /* Blush - simplified */
         .blob-blush-left, .blob-blush-right {
-            animation: blushPulse 2s ease-in-out infinite;
+            animation: none;
         }
 
-        /* Particles Floating */
-        .particle-1 { animation: particleFloat1 4s ease-in-out infinite; }
-        .particle-2 { animation: particleFloat2 5s ease-in-out infinite; }
-        .particle-3 { animation: particleFloat3 3.5s ease-in-out infinite; }
-        .particle-4 { animation: particleFloat4 4.5s ease-in-out infinite; }
-        .particle-5 { animation: particleFloat5 3s ease-in-out infinite; }
+        /* Particles Floating - Disabled for performance */
+        .particle-1, .particle-2, .particle-3, .particle-4, .particle-5 { 
+            animation: none;
+        }
 
-        /* Stars Twinkling */
+        /* Stars Twinkling - Disabled for performance */
         .star-1, .star-2, .star-3 {
-            animation: starTwinkle 2s ease-in-out infinite;
+            animation: none;
+            opacity: 0.5;
         }
-
-        .star-2 { animation-delay: 0.5s; }
-        .star-3 { animation-delay: 1s; }
 
         /* Keyframes for BLOB */
         @keyframes blobBreathe {
@@ -1170,27 +1161,30 @@
             animation: starTwinkle 2s ease-out forwards;
         }
 
-        /* BLOB Particles - Purple Magic! */
+        /* BLOB Particles - Optimized */
         .particle.blob-purple {
             color: #C084FC;
-            font-size: 24px;
-            animation: blobParticle 1.5s ease-out forwards;
+            font-size: 20px;
+            animation: blobParticle 1s ease-out forwards;
+            will-change: transform, opacity;
         }
 
         .particle.blob-glow {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: radial-gradient(circle, #E9D5FF, #C084FC);
             border-radius: 50%;
-            animation: blobGlowParticle 1.8s ease-out forwards;
-            box-shadow: 0 0 10px #C084FC;
+            animation: blobGlowParticle 1.2s ease-out forwards;
+            box-shadow: 0 0 8px #C084FC;
+            will-change: transform, opacity;
         }
 
         .particle.blob-star {
             color: #FFFFFF;
-            font-size: 20px;
-            text-shadow: 0 0 10px #C084FC;
-            animation: blobStarParticle 2s ease-out forwards;
+            font-size: 18px;
+            text-shadow: 0 0 8px #C084FC;
+            animation: blobStarParticle 1.3s ease-out forwards;
+            will-change: transform, opacity;
         }
 
         @keyframes blobParticle {
@@ -2136,7 +2130,16 @@
             }
         }
 
+        // Throttle particle creation to prevent lag
+        let lastParticleTime = 0;
+        const PARTICLE_COOLDOWN = 100; // ms between particle bursts
+
         function createParticleBurst(x, y, combo) {
+            const now = Date.now();
+            if (now - lastParticleTime < PARTICLE_COOLDOWN) {
+                return; // Skip if too soon
+            }
+            lastParticleTime = now;
             const particleTypes = [
                 { class: 'blob-purple', emoji: '🟣', size: 20 },
                 { class: 'blob-glow', emoji: '', size: 12 },
@@ -2145,7 +2148,7 @@
                 { class: 'blob-glow', emoji: '', size: 10 },
                 { class: 'blob-star', emoji: '⭐', size: 16 }
             ];
-            const particleCount = Math.min(8 + combo, 18); // Max 18 particles (reduced)
+            const particleCount = Math.min(5 + Math.floor(combo / 2), 12); // Max 12 particles (optimized)
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -2173,31 +2176,15 @@
                 
                 document.body.appendChild(particle);
                 
-                // Remove after animation
+                // Remove after animation (shorter for performance)
                 setTimeout(() => {
                     if (particle.parentNode) {
                         particle.parentNode.removeChild(particle);
                     }
-                }, 2000);
+                }, 1300);
             }
             
-            // Add extra sparkle effects on VERY high combo only
-            if (combo >= 15) {
-                for (let i = 0; i < 3; i++) {
-                    setTimeout(() => {
-                        const sparkle = document.createElement('div');
-                        sparkle.className = 'particle blob-star';
-                        sparkle.innerHTML = '✨';
-                        sparkle.style.left = (x + (Math.random() - 0.5) * 80) + 'px';
-                        sparkle.style.top = (y + (Math.random() - 0.5) * 80) + 'px';
-                        sparkle.style.setProperty('--dx', (Math.random() - 0.5) * 120 + 'px');
-                        sparkle.style.setProperty('--dy', -Math.random() * 80 + 'px');
-                        sparkle.style.fontSize = '20px';
-                        document.body.appendChild(sparkle);
-                        setTimeout(() => sparkle.remove(), 2000);
-                    }, i * 120);
-                }
-            }
+            // Extra sparkles disabled for performance
         }
 
         function createParticles(type, count) {
