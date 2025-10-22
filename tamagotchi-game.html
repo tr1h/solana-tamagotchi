@@ -730,9 +730,32 @@
             animation: none;
         }
 
-        /* Particles Floating - Disabled for performance */
-        .particle-1, .particle-2, .particle-3, .particle-4, .particle-5 { 
-            animation: none;
+        /* Particles Floating - ENABLED for magic! ✨ */
+        .particle-1 { 
+            animation: particleFloat1 3s ease-in-out infinite;
+        }
+        .particle-2 { 
+            animation: particleFloat2 3.5s ease-in-out infinite;
+        }
+        .particle-3 { 
+            animation: particleFloat3 2.8s ease-in-out infinite;
+        }
+        .particle-4 { 
+            animation: particleFloat4 3.2s ease-in-out infinite;
+        }
+        .particle-5 { 
+            animation: particleFloat5 3.7s ease-in-out infinite;
+        }
+        .particle-6 { 
+            animation: particleFloat1 4s ease-in-out infinite reverse;
+        }
+        .particle-7 { 
+            animation: particleFloat2 3.3s ease-in-out infinite reverse;
+        }
+        
+        /* Stars twinkling */
+        .star-1, .star-2, .star-3 { 
+            animation: starTwinkle 2s ease-in-out infinite;
         }
         
         /* Mobile performance optimizations */
@@ -753,13 +776,17 @@
             .vector-pet {
                 will-change: auto; /* Remove will-change on mobile */
             }
+            
+            /* Disable particle animations on mobile */
+            .particle-1, .particle-2, .particle-3, .particle-4, .particle-5, .particle-6, .particle-7 {
+                animation: none !important;
+            }
+            
+            .star-1, .star-2, .star-3 {
+                animation: none !important;
+            }
         }
 
-        /* Stars Twinkling - Disabled for performance */
-        .star-1, .star-2, .star-3 {
-            animation: none;
-            opacity: 0.5;
-        }
 
         /* Keyframes for BLOB */
         @keyframes blobBreathe {
@@ -1348,9 +1375,9 @@
                             filter="url(#shadow)"
                             class="blob-body"/>
                     
-                    <!-- Top shine - big white spot like in reference -->
-                    <ellipse cx="75" cy="70" rx="28" ry="32" fill="#FFFFFF" opacity="0.35" class="blob-shine"/>
-                    <circle cx="82" cy="62" r="8" fill="#FFFFFF" opacity="0.5"/>
+                    <!-- Top shine - smaller, lighter spot -->
+                    <ellipse cx="75" cy="70" rx="20" ry="24" fill="#FFFFFF" opacity="0.25" class="blob-shine"/>
+                    <circle cx="80" cy="63" r="6" fill="#FFFFFF" opacity="0.35"/>
                     
                     <!-- Eyes - HUGE ANIME STYLE like Variant 2! -->
                     <g class="blob-eyes">
@@ -1396,42 +1423,75 @@
                     <!-- Tongue inside mouth -->
                     <ellipse cx="100" cy="127" rx="6" ry="4" fill="#EC4899" opacity="0.8"/>
                     
-                    <!-- Antenna/horn - Tamagotchi style! -->
+                    <!-- HEART ANTENNA - Like Variant 3! 💜 -->
                     <g filter="url(#glow)" class="blob-antenna">
-                        <path d="M 100 50 Q 95 35 92 25" 
-                              stroke="url(#antennaGrad)" 
-                              stroke-width="5" 
-                              fill="none" 
-                              stroke-linecap="round"/>
-                        <circle cx="92" cy="22" r="7" fill="#E9D5FF" stroke="#C084FC" stroke-width="2"/>
-                        <circle cx="92" cy="20" r="4" fill="#FFFFFF" opacity="0.8"/>
+                        <!-- Heart shape -->
+                        <path d="M 100 55 
+                                 C 100 52, 97 48, 94 48
+                                 C 91 48, 89 50, 89 53
+                                 C 89 55, 90 57, 100 63
+                                 C 110 57, 111 55, 111 53
+                                 C 111 50, 109 48, 106 48
+                                 C 103 48, 100 52, 100 55 Z" 
+                              fill="url(#antennaGrad)" 
+                              stroke="#7C3AED" 
+                              stroke-width="2"/>
+                        <!-- Heart shine -->
+                        <circle cx="97" cy="52" r="3" fill="#FFFFFF" opacity="0.7"/>
                     </g>
                     
-                    <!-- Tiny stubby feet like Variant 2 -->
+                    <!-- Tiny stubby feet with HEARTS like Variant 3! 💕 -->
                     <g class="blob-feet">
                         <!-- Left foot -->
-                        <ellipse cx="85" cy="158" rx="8" ry="6" fill="#8B5CF6" 
-                                 stroke="#5B21B6" stroke-width="2" 
+                        <ellipse cx="85" cy="158" rx="9" ry="7" fill="#A78BFA" 
+                                 stroke="#7C3AED" stroke-width="2" 
                                  class="blob-foot-left"/>
+                        <!-- Left heart -->
+                        <path d="M 85 157 
+                                 C 85 156, 84 155, 83 155
+                                 C 82 155, 81.5 155.5, 81.5 156.5
+                                 C 81.5 157, 82 158, 85 159.5
+                                 C 88 158, 88.5 157, 88.5 156.5
+                                 C 88.5 155.5, 88 155, 87 155
+                                 C 86 155, 85 156, 85 157 Z" 
+                              fill="#F0ABFC" opacity="0.8"/>
                         
                         <!-- Right foot -->
-                        <ellipse cx="115" cy="158" rx="8" ry="6" fill="#8B5CF6" 
-                                 stroke="#5B21B6" stroke-width="2" 
+                        <ellipse cx="115" cy="158" rx="9" ry="7" fill="#A78BFA" 
+                                 stroke="#7C3AED" stroke-width="2" 
                                  class="blob-foot-right"/>
+                        <!-- Right heart -->
+                        <path d="M 115 157 
+                                 C 115 156, 114 155, 113 155
+                                 C 112 155, 111.5 155.5, 111.5 156.5
+                                 C 111.5 157, 112 158, 115 159.5
+                                 C 118 158, 118.5 157, 118.5 156.5
+                                 C 118.5 155.5, 118 155, 117 155
+                                 C 116 155, 115 156, 115 157 Z" 
+                              fill="#F0ABFC" opacity="0.8"/>
                     </g>
                     
-                    <!-- Magic particles -->
+                    <!-- Magic particles with HEARTS! 💕✨ -->
                     <g filter="url(#glow)" class="blob-particles">
-                        <circle cx="50" cy="60" r="3" fill="#E9D5FF" class="particle-1"/>
-                        <circle cx="150" cy="65" r="2.5" fill="#E9D5FF" class="particle-2"/>
-                        <circle cx="100" cy="35" r="2" fill="#FFFFFF" class="particle-3"/>
-                        <circle cx="130" cy="50" r="2.5" fill="#F0ABFC" class="particle-4"/>
-                        <circle cx="70" cy="45" r="2" fill="#F0ABFC" class="particle-5"/>
+                        <!-- Floating hearts -->
+                        <path d="M 50 65 C 50 64, 49.5 63, 49 63 C 48.5 63, 48 63.5, 48 64 C 48 64.5, 48.5 65.5, 50 67 C 51.5 65.5, 52 64.5, 52 64 C 52 63.5, 51.5 63, 51 63 C 50.5 63, 50 64, 50 65 Z" fill="#F0ABFC" opacity="0.7" class="particle-1"/>
                         
-                        <!-- Stars -->
-                        <path d="M 45 55 L 46 56 L 45 57 L 44 56 Z" fill="#FFFFFF" opacity="0.9" class="star-1"/>
-                        <path d="M 155 60 L 156 61 L 155 62 L 154 61 Z" fill="#FFFFFF" opacity="0.8" class="star-2"/>
-                        <path d="M 105 30 L 106 31 L 105 32 L 104 31 Z" fill="#FFFFFF" opacity="0.9" class="star-3"/>
+                        <path d="M 150 70 C 150 69, 149.5 68, 149 68 C 148.5 68, 148 68.5, 148 69 C 148 69.5, 148.5 70.5, 150 72 C 151.5 70.5, 152 69.5, 152 69 C 152 68.5, 151.5 68, 151 68 C 150.5 68, 150 69, 150 70 Z" fill="#E9D5FF" opacity="0.6" class="particle-2"/>
+                        
+                        <!-- Sparkles -->
+                        <circle cx="100" cy="40" r="2.5" fill="#FFFFFF" opacity="0.9" class="particle-3"/>
+                        <circle cx="130" cy="55" r="2" fill="#F0ABFC" opacity="0.8" class="particle-4"/>
+                        <circle cx="70" cy="50" r="2" fill="#F0ABFC" opacity="0.7" class="particle-5"/>
+                        
+                        <!-- Bigger stars -->
+                        <path d="M 45 60 L 46.5 62 L 45 64 L 43.5 62 Z" fill="#FFFFFF" opacity="0.85" class="star-1"/>
+                        <path d="M 155 65 L 156.5 67 L 155 69 L 153.5 67 Z" fill="#FDE68A" opacity="0.8" class="star-2"/>
+                        <path d="M 100 30 L 101.5 32 L 100 34 L 98.5 32 Z" fill="#FFFFFF" opacity="0.9" class="star-3"/>
+                        
+                        <!-- Extra mini hearts -->
+                        <path d="M 120 45 C 120 44.5, 119.7 44, 119.3 44 C 118.9 44, 118.5 44.3, 118.5 44.7 C 118.5 45, 119 45.5, 120 46.5 C 121 45.5, 121.5 45, 121.5 44.7 C 121.5 44.3, 121.1 44, 120.7 44 C 120.3 44, 120 44.5, 120 45 Z" fill="#F9A8D4" opacity="0.6" class="particle-6"/>
+                        
+                        <path d="M 80 38 C 80 37.5, 79.7 37, 79.3 37 C 78.9 37, 78.5 37.3, 78.5 37.7 C 78.5 38, 79 38.5, 80 39.5 C 81 38.5, 81.5 38, 81.5 37.7 C 81.5 37.3, 81.1 37, 80.7 37 C 80.3 37, 80 37.5, 80 38 Z" fill="#DDD6FE" opacity="0.6" class="particle-7"/>
                     </g>
                 </svg>
             </div>
