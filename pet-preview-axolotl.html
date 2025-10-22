@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🦎 Axolotl Pet Preview</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+        .pet-display {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦎 AXOLOTL - Super Cute</h1>
+        <div class="pet-display">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <defs>
+                    <radialGradient id="bodyGrad" cx="40%" cy="35%">
+                        <stop offset="0%" style="stop-color:#FFE8F5;stop-opacity:1" />
+                        <stop offset="60%" style="stop-color:#FFC9E8;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FF99D5;stop-opacity:1" />
+                    </radialGradient>
+                    
+                    <radialGradient id="headGrad" cx="35%" cy="30%">
+                        <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#FFF0F9;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FFD9F2;stop-opacity:1" />
+                    </radialGradient>
+                    
+                    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#764ba2;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#667eea;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <radialGradient id="gillGrad">
+                        <stop offset="0%" style="stop-color:#FF99D5;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FF66B3;stop-opacity:0.5" />
+                    </radialGradient>
+                    
+                    <filter id="shadow">
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.2"/>
+                    </filter>
+                    
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                
+                <!-- Magical glow -->
+                <circle cx="100" cy="100" r="80" fill="#FFE8F5" opacity="0.3"/>
+                
+                <!-- Ground shadow -->
+                <ellipse cx="100" cy="165" rx="55" ry="10" fill="#000000" opacity="0.08"/>
+                
+                <!-- Tail -->
+                <path d="M 40 130 Q 20 125 15 115 Q 12 105 20 95 Q 28 88 35 92" 
+                      fill="url(#bodyGrad)" stroke="#FF99D5" stroke-width="2" 
+                      filter="url(#shadow)"/>
+                
+                <!-- Body - Long and smooth -->
+                <ellipse cx="100" cy="115" rx="48" ry="35" fill="url(#bodyGrad)" 
+                         stroke="#FFFFFF" stroke-width="3" filter="url(#shadow)"/>
+                
+                <!-- Head - Rounded and cute -->
+                <ellipse cx="100" cy="70" rx="42" ry="36" fill="url(#headGrad)" 
+                         stroke="#FFFFFF" stroke-width="3" filter="url(#shadow)"/>
+                
+                <!-- External gills - Signature feature! -->
+                <g filter="url(#glow)">
+                    <!-- Left gills (3 branches) -->
+                    <path d="M 65 65 Q 45 60 35 55" stroke="url(#gillGrad)" stroke-width="4" 
+                          fill="none" stroke-linecap="round"/>
+                    <path d="M 65 70 Q 42 70 30 70" stroke="url(#gillGrad)" stroke-width="4" 
+                          fill="none" stroke-linecap="round"/>
+                    <path d="M 65 75 Q 45 80 35 85" stroke="url(#gillGrad)" stroke-width="4" 
+                          fill="none" stroke-linecap="round"/>
+                    <!-- Gill tips -->
+                    <circle cx="35" cy="55" r="6" fill="#FF99D5" opacity="0.8"/>
+                    <circle cx="30" cy="70" r="6" fill="#FF99D5" opacity="0.8"/>
+                    <circle cx="35" cy="85" r="6" fill="#FF99D5" opacity="0.8"/>
+                    
+                    <!-- Right gills (3 branches) -->
+                    <path d="M 135 65 Q 155 60 165 55" stroke="url(#gillGrad)" stroke-width="4" 
+                          fill="none" stroke-linecap="round"/>
+                    <path d="M 135 70 Q 158 70 170 70" stroke="url(#gillGrad)" stroke-width="4" 
+                          fill="none" stroke-linecap="round"/>
+                    <path d="M 135 75 Q 155 80 165 85" stroke="url(#gillGrad)" stroke-width="4" 
+                          fill="none" stroke-linecap="round"/>
+                    <!-- Gill tips -->
+                    <circle cx="165" cy="55" r="6" fill="#FF99D5" opacity="0.8"/>
+                    <circle cx="170" cy="70" r="6" fill="#FF99D5" opacity="0.8"/>
+                    <circle cx="165" cy="85" r="6" fill="#FF99D5" opacity="0.8"/>
+                </g>
+                
+                <!-- Eyes - Big and kawaii -->
+                <g>
+                    <ellipse cx="85" cy="68" rx="13" ry="15" fill="#FFFFFF"/>
+                    <circle cx="85" cy="70" r="10" fill="url(#eyeGrad)"/>
+                    <circle cx="85" cy="72" r="6" fill="#1A202C"/>
+                    <ellipse cx="82" cy="66" rx="5" ry="6" fill="#FFFFFF" opacity="0.9"/>
+                    <circle cx="88" cy="69" r="2.5" fill="#FFFFFF" opacity="0.7"/>
+                    
+                    <ellipse cx="115" cy="68" rx="13" ry="15" fill="#FFFFFF"/>
+                    <circle cx="115" cy="70" r="10" fill="url(#eyeGrad)"/>
+                    <circle cx="115" cy="72" r="6" fill="#1A202C"/>
+                    <ellipse cx="112" cy="66" rx="5" ry="6" fill="#FFFFFF" opacity="0.9"/>
+                    <circle cx="118" cy="69" r="2.5" fill="#FFFFFF" opacity="0.7"/>
+                </g>
+                
+                <!-- Mouth - Permanent smile (axolotl trademark!) -->
+                <path d="M 85 82 Q 100 88 115 82" stroke="#FF8CB4" stroke-width="3.5" 
+                      fill="none" stroke-linecap="round"/>
+                <!-- Mouth curves -->
+                <path d="M 82 80 Q 85 82 85 85" stroke="#FF8CB4" stroke-width="2.5" 
+                      fill="none" stroke-linecap="round"/>
+                <path d="M 118 80 Q 115 82 115 85" stroke="#FF8CB4" stroke-width="2.5" 
+                      fill="none" stroke-linecap="round"/>
+                
+                <!-- Little feet -->
+                <g filter="url(#shadow)">
+                    <ellipse cx="75" cy="145" rx="10" ry="12" fill="#FFD9F2" 
+                             stroke="#FFFFFF" stroke-width="2"/>
+                    <ellipse cx="125" cy="145" rx="10" ry="12" fill="#FFD9F2" 
+                             stroke="#FFFFFF" stroke-width="2"/>
+                    
+                    <!-- Tiny toes -->
+                    <path d="M 70 150 L 72 155 M 75 150 L 75 155 M 80 150 L 78 155" 
+                          stroke="#FFB3E5" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M 120 150 L 122 155 M 125 150 L 125 155 M 130 150 L 128 155" 
+                          stroke="#FFB3E5" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+                
+                <!-- Sparkles and bubbles -->
+                <circle cx="50" cy="50" r="3" fill="#FFFFFF" opacity="0.9" filter="url(#glow)"/>
+                <circle cx="150" cy="55" r="2.5" fill="#FFFFFF" opacity="0.8" filter="url(#glow)"/>
+                <circle cx="100" cy="30" r="2" fill="#FFFFFF" opacity="0.9" filter="url(#glow)"/>
+                <circle cx="60" cy="100" r="4" fill="#FFE8F5" opacity="0.6"/>
+                <circle cx="140" cy="110" r="3.5" fill="#FFE8F5" opacity="0.5"/>
+            </svg>
+        </div>
+        <p style="color: #666; font-size: 14px;">
+            💖 SUPER CUTE!<br>
+            🎨 Bright Pink Color<br>
+            😊 Always Smiling
+        </p>
+    </div>
+</body>
+</html>

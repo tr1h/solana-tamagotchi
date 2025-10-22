@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>🦫 Capybara Pet Preview</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+        .pet-display {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦫 CAPYBARA - Chill & Trendy</h1>
+        <div class="pet-display">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+                <defs>
+                    <radialGradient id="bodyGrad" cx="40%" cy="35%">
+                        <stop offset="0%" style="stop-color:#D4A574;stop-opacity:1" />
+                        <stop offset="60%" style="stop-color:#B8945F;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#9A7B4F;stop-opacity:1" />
+                    </radialGradient>
+                    
+                    <radialGradient id="headGrad" cx="35%" cy="30%">
+                        <stop offset="0%" style="stop-color:#E5C29F;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#D4A574;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#B8945F;stop-opacity:1" />
+                    </radialGradient>
+                    
+                    <linearGradient id="eyeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#2D3748;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#1A202C;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <filter id="shadow">
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.2"/>
+                    </filter>
+                    
+                    <filter id="softShadow">
+                        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+                    </filter>
+                </defs>
+                
+                <!-- Ground shadow -->
+                <ellipse cx="100" cy="165" rx="60" ry="12" fill="#000000" opacity="0.1"/>
+                
+                <!-- Body - Round and chubby -->
+                <ellipse cx="100" cy="125" rx="50" ry="42" fill="url(#bodyGrad)" 
+                         stroke="#A68A5F" stroke-width="2" filter="url(#shadow)"/>
+                
+                <!-- Belly lighter patch -->
+                <ellipse cx="100" cy="130" rx="35" ry="28" fill="#E5C29F" opacity="0.6"/>
+                
+                <!-- Head - Big and round -->
+                <ellipse cx="100" cy="70" rx="45" ry="38" fill="url(#headGrad)" 
+                         stroke="#A68A5F" stroke-width="2" filter="url(#shadow)"/>
+                
+                <!-- Snout - Signature capybara feature -->
+                <ellipse cx="100" cy="82" rx="28" ry="20" fill="#D4A574" 
+                         stroke="#A68A5F" stroke-width="1.5"/>
+                <ellipse cx="100" cy="78" rx="20" ry="14" fill="#E5C29F" opacity="0.7"/>
+                
+                <!-- Ears - Small and round -->
+                <g filter="url(#softShadow)">
+                    <ellipse cx="70" cy="50" rx="12" ry="16" fill="#B8945F" 
+                             stroke="#A68A5F" stroke-width="2" transform="rotate(-15 70 50)"/>
+                    <ellipse cx="70" cy="50" rx="7" ry="10" fill="#D4A574" 
+                             opacity="0.7" transform="rotate(-15 70 50)"/>
+                    
+                    <ellipse cx="130" cy="50" rx="12" ry="16" fill="#B8945F" 
+                             stroke="#A68A5F" stroke-width="2" transform="rotate(15 130 50)"/>
+                    <ellipse cx="130" cy="50" rx="7" ry="10" fill="#D4A574" 
+                             opacity="0.7" transform="rotate(15 130 50)"/>
+                </g>
+                
+                <!-- Eyes - Small and chill -->
+                <g>
+                    <ellipse cx="85" cy="65" rx="6" ry="8" fill="#FFFFFF"/>
+                    <ellipse cx="85" cy="67" rx="4" ry="6" fill="url(#eyeGrad)"/>
+                    <circle cx="84" cy="65" r="2" fill="#FFFFFF" opacity="0.8"/>
+                    
+                    <ellipse cx="115" cy="65" rx="6" ry="8" fill="#FFFFFF"/>
+                    <ellipse cx="115" cy="67" rx="4" ry="6" fill="url(#eyeGrad)"/>
+                    <circle cx="114" cy="65" r="2" fill="#FFFFFF" opacity="0.8"/>
+                </g>
+                
+                <!-- Nose - Two dots -->
+                <ellipse cx="95" cy="88" rx="3" ry="3.5" fill="#5D4E3A"/>
+                <ellipse cx="105" cy="88" rx="3" ry="3.5" fill="#5D4E3A"/>
+                
+                <!-- Mouth - Subtle smile -->
+                <path d="M 90 93 Q 100 96 110 93" stroke="#8A7456" stroke-width="2" 
+                      fill="none" stroke-linecap="round"/>
+                
+                <!-- Front legs -->
+                <g filter="url(#softShadow)">
+                    <ellipse cx="75" cy="155" rx="14" ry="18" fill="#B8945F" 
+                             stroke="#A68A5F" stroke-width="2"/>
+                    <ellipse cx="125" cy="155" rx="14" ry="18" fill="#B8945F" 
+                             stroke="#A68A5F" stroke-width="2"/>
+                    
+                    <!-- Paws -->
+                    <rect x="70" y="165" width="10" height="6" rx="2" fill="#8A7456" opacity="0.6"/>
+                    <rect x="120" y="165" width="10" height="6" rx="2" fill="#8A7456" opacity="0.6"/>
+                </g>
+                
+                <!-- Chill vibes sparkles -->
+                <circle cx="60" cy="55" r="2" fill="#FFD700" opacity="0.8"/>
+                <circle cx="140" cy="60" r="2.5" fill="#FFD700" opacity="0.7"/>
+                <circle cx="100" cy="35" r="1.5" fill="#FFD700" opacity="0.9"/>
+            </svg>
+        </div>
+        <p style="color: #666; font-size: 14px;">
+            ✨ Trendy & Chill<br>
+            🔥 Viral Meme Potential<br>
+            😌 Relaxed Vibe
+        </p>
+    </div>
+</body>
+</html>
