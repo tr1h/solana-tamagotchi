@@ -8,13 +8,13 @@
     <style>
         /* CSS Variables for Themes 🎨 */
         :root {
-            /* Kawai Theme (Default) 🌸 */
-            --theme-primary: #E9D5FF;
-            --theme-secondary: #C084FC;
-            --theme-accent: #F0ABFC;
-            --theme-bg: linear-gradient(180deg, #F3E8FF 0%, #E9D5FF 50%, #DDD6FE 100%);
-            --theme-text: #581C87;
-            --theme-shadow: rgba(147, 51, 234, 0.3);
+            /* Kawai Theme (Default) 🌸 - DARKER VERSION */
+            --theme-primary: #C084FC;
+            --theme-secondary: #9333EA;
+            --theme-accent: #E879F9;
+            --theme-bg: linear-gradient(180deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            --theme-text: #E9D5FF;
+            --theme-shadow: rgba(147, 51, 234, 0.5);
         }
 
         [data-theme="retro"] {
@@ -560,24 +560,19 @@
             line-height: 1;
         }
 
-        /* Pet Display Rules 🐾 */
+        /* Pet Display Rules 🐾 - FIXED! */
         .kawai-pet, .retro-pet, .premium-pet, .neko-pet, .cyber-pet, .alien-pet, .kitsune-pet {
-            display: none;
+            display: none !important;
         }
 
         /* Show active pet based on data-pet attribute */
-        body[data-pet="kawai"] .kawai-pet { display: block; }
-        body[data-pet="retro"] .retro-pet { display: block; }
-        body[data-pet="premium"] .premium-pet { display: block; }
-        body[data-pet="neko"] .neko-pet { display: block; }
-        body[data-pet="cyber"] .cyber-pet { display: block; }
-        body[data-pet="alien"] .alien-pet { display: block; }
-        body[data-pet="kitsune"] .kitsune-pet { display: block; }
-
-        /* Default: show kawai pet */
-        .kawai-pet {
-            display: block;
-        }
+        body[data-pet="kawai"] .kawai-pet { display: block !important; }
+        body[data-pet="retro"] .retro-pet { display: block !important; }
+        body[data-pet="premium"] .premium-pet { display: block !important; }
+        body[data-pet="neko"] .neko-pet { display: block !important; }
+        body[data-pet="cyber"] .cyber-pet { display: block !important; }
+        body[data-pet="alien"] .alien-pet { display: block !important; }
+        body[data-pet="kitsune"] .kitsune-pet { display: block !important; }
 
         .pet-area {
             position: relative;
@@ -1934,23 +1929,8 @@
             <button class="pet-btn active" data-pet="kawai" title="🌸 Kawai Blob">
                 <span>🌸</span>
             </button>
-            <button class="pet-btn" data-pet="retro" title="🕹️ Retro Pixel">
-                <span>🕹️</span>
-            </button>
-            <button class="pet-btn" data-pet="premium" title="💎 Premium Hex">
-                <span>💎</span>
-            </button>
-            <button class="pet-btn" data-pet="neko" title="🐱 Neko Cat">
-                <span>🐱</span>
-            </button>
             <button class="pet-btn" data-pet="cyber" title="🤖 Cyber Dog">
                 <span>🤖</span>
-            </button>
-            <button class="pet-btn" data-pet="alien" title="👾 Space Alien">
-                <span>👾</span>
-            </button>
-            <button class="pet-btn" data-pet="kitsune" title="🦊 Kitsune Fox">
-                <span>🦊</span>
             </button>
         </div>
         </div>
@@ -2384,10 +2364,10 @@
                     </defs>
                     
                     <!-- Cyber Dog Body -->
-                    <rect x="70" y="80" width="60" height="70" rx="10" fill="url(#cyberBodyGrad)" filter="url(#cyberGlow)" class="cyber-body"/>
+                    <rect x="70" y="80" width="60" height="70" rx="20" fill="url(#cyberBodyGrad)" filter="url(#cyberGlow)" class="cyber-body"/>
                     
                     <!-- Cyber Head -->
-                    <rect x="75" y="60" width="50" height="40" rx="8" fill="#00FFFF" class="cyber-head"/>
+                    <rect x="75" y="60" width="50" height="40" rx="15" fill="#00FFFF" class="cyber-head"/>
                     
                     <!-- Cyber Eyes - LED -->
                     <rect x="85" y="70" width="8" height="8" fill="#FF0080" class="cyber-eye-left"/>
