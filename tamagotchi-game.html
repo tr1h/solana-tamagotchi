@@ -68,7 +68,7 @@
         .pet-area {
             position: relative;
             height: 300px;
-            background: linear-gradient(180deg, #4299e1 0%, #48bb78 100%);
+            background: linear-gradient(180deg, #F3E8FF 0%, #E9D5FF 50%, #DDD6FE 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -76,21 +76,115 @@
             overflow: hidden;
         }
 
-        /* Clouds decoration */
+        /* Magical Space Background Elements 🌌 */
+        
+        /* Planets - floating circles */
         .cloud {
             position: absolute;
-            background: rgba(255,255,255,0.7);
-            border-radius: 50px;
-            animation: float 20s infinite ease-in-out;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: floatPlanet 25s infinite ease-in-out;
+            filter: blur(1px);
         }
 
-        .cloud1 { width: 60px; height: 30px; top: 20px; left: -60px; animation-delay: 0s; }
-        .cloud2 { width: 80px; height: 40px; top: 60px; left: -80px; animation-delay: 5s; }
-        .cloud3 { width: 70px; height: 35px; top: 100px; left: -70px; animation-delay: 10s; }
+        .cloud1 { 
+            width: 80px; 
+            height: 80px; 
+            top: 30px; 
+            left: -80px; 
+            background: radial-gradient(circle at 30% 30%, #FDE68A, #F59E0B);
+            animation-delay: 0s; 
+        }
+        
+        .cloud2 { 
+            width: 60px; 
+            height: 60px; 
+            top: 180px; 
+            left: -60px; 
+            background: radial-gradient(circle at 30% 30%, #FBCFE8, #EC4899);
+            animation-delay: 8s; 
+        }
+        
+        .cloud3 { 
+            width: 50px; 
+            height: 50px; 
+            top: 100px; 
+            left: -50px; 
+            background: radial-gradient(circle at 30% 30%, #C4B5FD, #9333EA);
+            animation-delay: 15s; 
+        }
 
-        @keyframes float {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(500px); }
+        @keyframes floatPlanet {
+            0% { 
+                transform: translateX(0) translateY(0) scale(1); 
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateX(400px) translateY(-20px) scale(1.1); 
+                opacity: 0.35;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% { 
+                transform: translateX(500px) translateY(0) scale(1); 
+                opacity: 0;
+            }
+        }
+
+        /* Background Stars 🌟 */
+        .bg-star {
+            position: absolute;
+            font-size: 16px;
+            opacity: 0.6;
+            animation: twinkle 3s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(0.9);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Heart Clouds 💜 */
+        .heart-cloud {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.4;
+            animation: floatHeart 20s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes floatHeart {
+            0% { 
+                transform: translateX(0) translateY(0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            50% { 
+                transform: translateX(350px) translateY(-30px) scale(1.2);
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% { 
+                transform: translateX(500px) translateY(0) scale(1);
+                opacity: 0;
+            }
         }
 
         .pet-sprite {
@@ -1311,9 +1405,25 @@
 
         <!-- Pet Area -->
         <div class="pet-area" id="pet-area">
+            <!-- Magical Space Background 🌌 -->
+            <!-- Floating planets -->
             <div class="cloud cloud1"></div>
             <div class="cloud cloud2"></div>
             <div class="cloud cloud3"></div>
+            
+            <!-- Twinkling stars -->
+            <div class="bg-star" style="top: 20px; left: 50px; animation-delay: 0s;">⭐</div>
+            <div class="bg-star" style="top: 60px; right: 80px; animation-delay: 1s;">✨</div>
+            <div class="bg-star" style="top: 120px; left: 100px; animation-delay: 2s;">⭐</div>
+            <div class="bg-star" style="top: 180px; right: 50px; animation-delay: 3s;">✨</div>
+            <div class="bg-star" style="top: 240px; left: 150px; animation-delay: 1.5s;">⭐</div>
+            <div class="bg-star" style="top: 90px; right: 120px; animation-delay: 2.5s;">💫</div>
+            <div class="bg-star" style="top: 40px; left: 200px; animation-delay: 0.5s;">✨</div>
+            
+            <!-- Heart clouds -->
+            <div class="heart-cloud" style="top: 50px; left: -30px; animation-delay: 0s;">💜</div>
+            <div class="heart-cloud" style="top: 150px; left: -30px; animation-delay: 10s;">💗</div>
+            
             <div class="shop-btn" id="shop-btn">🛒</div>
             <div class="combo-counter" id="combo-counter">🔥 COMBO x<span id="combo-value">0</span></div>
             <div class="pet-status" id="pet-status"></div>
