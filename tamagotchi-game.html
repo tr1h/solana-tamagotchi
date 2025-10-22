@@ -1911,19 +1911,6 @@
                 </div>
             </div>
             
-        <!-- Theme Switcher 🎨 -->
-        <div class="theme-switcher">
-            <button class="theme-btn active" data-theme="kawai" title="🌸 Kawai Theme">
-                <span>🌸</span>
-            </button>
-            <button class="theme-btn" data-theme="retro" title="🕹️ Retro Theme">
-                <span>🕹️</span>
-            </button>
-            <button class="theme-btn" data-theme="premium" title="💎 Premium Theme">
-                <span>💎</span>
-            </button>
-        </div>
-        
         <!-- Pet Selector 🐾 -->
         <div class="pet-selector">
             <button class="pet-btn active" data-pet="kawai" title="🌸 Kawai Blob">
@@ -4055,9 +4042,9 @@
                 if (data && data.length > 0) {
                     const userData = data[0];
                     
-                    // Load data from Supabase
+                    // Load TAMA and Level from Supabase (PRIMARY SOURCE OF TRUTH!)
                     gameState.tama = userData.tama || 0;
-                    gameState.level = Math.floor(gameState.tama / 1000) + 1; // Calculate level from TAMA
+                    gameState.level = userData.level || 1; // Use actual level from DB, not calculated!
                     gameState.xpToLevel = gameState.level * 100;
                     
                     // Try to parse pet_data if exists
@@ -4069,12 +4056,18 @@
                             gameState.happy = petData.happy || 100;
                             gameState.totalClicks = petData.totalClicks || 0;
                             gameState.achievements = petData.achievements || [];
+                            
+                            // Also load XP if available
+                            if (petData.xp !== undefined) {
+                                gameState.xp = petData.xp;
+                            }
                         } catch (e) {
                             console.log('Could not parse pet_data:', e);
                         }
                     }
                     
-                    console.log('Loaded from Supabase:', userData);
+                    console.log('✅ LOADED FROM SUPABASE (PRIMARY):', userData);
+                    console.log('📊 Current state: TAMA=' + gameState.tama + ', Level=' + gameState.level);
                     
                     // Also save to localStorage as backup
                     saveToLocalStorage();
@@ -4761,6 +4754,15 @@
             // Update body data attribute
             document.body.setAttribute('data-pet', pet);
             
+            // Auto-switch theme based on pet
+            const petThemeMap = {
+                'kawai': 'kawai',
+                'retro': 'retro',
+                'cyber': 'premium'
+            };
+            const theme = petThemeMap[pet] || 'kawai';
+            document.body.setAttribute('data-theme', theme);
+            
             // Update active button
             document.querySelectorAll('.pet-btn').forEach(btn => {
                 btn.classList.remove('active');
@@ -4770,7 +4772,7 @@
                 activeBtn.classList.add('active');
             }
             
-            console.log(`Pet switched to: ${pet}`);
+            console.log(`Pet switched to: ${pet}, Theme: ${theme}`);
         }
     </script>
 </body>
