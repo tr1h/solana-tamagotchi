@@ -1974,53 +1974,55 @@
             // Remove previous emotion classes
             vectorPet.classList.remove('happy', 'sad', 'sleepy', 'excited', 'angry', 'surprised', 'love');
             
-            // Update mouth shape based on mood
+            // Update mouth shape based on mood (BLOB coordinates)
             const mouthPath = vectorPet.querySelector('#mouth-path');
             if (mouthPath) {
                 switch(mood) {
                     case '😊':
                     case '😍':
-                        // Happy smile
-                        mouthPath.setAttribute('d', 'M 55 52 Q 60 56 65 52');
+                    case '🥰':
+                        // Happy smile (BLOB coordinates!)
+                        mouthPath.setAttribute('d', 'M 85 115 Q 100 125 115 115');
                         vectorPet.classList.add('happy');
                         break;
                     case '😢':
                     case '😔':
                     case '😰':
                         // Sad frown
-                        mouthPath.setAttribute('d', 'M 55 52 Q 60 48 65 52');
+                        mouthPath.setAttribute('d', 'M 85 115 Q 100 110 115 115');
                         vectorPet.classList.add('sad');
                         break;
                     case '😋':
                         // Excited (open mouth)
-                        mouthPath.setAttribute('d', 'M 55 52 Q 60 56 65 52 M 58 54 L 62 54');
+                        mouthPath.setAttribute('d', 'M 85 115 Q 100 130 115 115');
                         vectorPet.classList.add('excited');
                         break;
                     case '💀':
-                        // Sleepy (closed eyes)
+                    case '😵':
+                        // Dead (small x mouth)
+                        mouthPath.setAttribute('d', 'M 95 120 L 105 120');
                         vectorPet.classList.add('sleepy');
                         break;
                     case '😠':
                     case '😡':
-                        // Angry
-                        mouthPath.setAttribute('d', 'M 55 52 Q 60 50 65 52');
+                        // Angry (straight line)
+                        mouthPath.setAttribute('d', 'M 85 120 L 115 120');
                         vectorPet.classList.add('angry');
                         break;
                     case '😲':
                     case '😮':
-                        // Surprised
-                        mouthPath.setAttribute('d', 'M 58 50 Q 60 56 62 50');
+                        // Surprised (round open mouth)
+                        mouthPath.setAttribute('d', 'M 98 118 Q 100 123 102 118');
                         vectorPet.classList.add('surprised');
                         break;
                     case '😘':
-                    case '🥰':
-                        // Love
-                        mouthPath.setAttribute('d', 'M 55 52 Q 60 58 65 52');
+                        // Love (kissing)
+                        mouthPath.setAttribute('d', 'M 95 118 Q 100 123 105 118');
                         vectorPet.classList.add('love');
                         break;
                     default:
-                        // Neutral
-                        mouthPath.setAttribute('d', 'M 55 52 Q 60 56 65 52');
+                        // Neutral (default happy smile for BLOB!)
+                        mouthPath.setAttribute('d', 'M 85 115 Q 100 125 115 115');
                         break;
                 }
             }
