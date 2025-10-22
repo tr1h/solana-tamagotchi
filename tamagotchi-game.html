@@ -734,6 +734,26 @@
         .particle-1, .particle-2, .particle-3, .particle-4, .particle-5 { 
             animation: none;
         }
+        
+        /* Mobile performance optimizations */
+        @media (max-width: 768px) or (hover: none) {
+            .blob-body {
+                animation: none; /* Disable breathing on mobile */
+            }
+            
+            .blob-aura {
+                opacity: 0.3; /* Static aura on mobile */
+                animation: none;
+            }
+            
+            .blob-shine {
+                animation: none; /* Disable shine animation */
+            }
+            
+            .vector-pet {
+                will-change: auto; /* Remove will-change on mobile */
+            }
+        }
 
         /* Stars Twinkling - Disabled for performance */
         .star-1, .star-2, .star-3 {
@@ -2756,29 +2776,102 @@
             }
         }, 10000); // Check every 10 seconds
 
-        // Initialize
-        // Try to load saved game first
-        const gameLoaded = loadFromLocalStorage();
-        
-        updateUI();
-        
-        // Load rank immediately on start
-        loadLeaderboard().catch(() => {
-            console.log('Leaderboard load failed, continuing with game');
-        });
-        
-        if (gameLoaded) {
-            showMessage('👋 Welcome back! Your progress was restored!');
-        } else {
-            showMessage('👋 Welcome! Click your pet to start earning TAMA!');
+        // Initialize game
+        async function initGame() {
+            try {
+                // Try to load from Supabase first (cloud save)
+                let cloudLoaded = false;
+                
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+                    const userId = window.Telegram.WebApp.initDataUnsafe.user?.id?.toString();
+                    if (userId) {
+                        console.log('Loading from Supabase for user:', userId);
+                        cloudLoaded = await loadFromSupabase(userId);
+                    }
+                }
+                
+                // Fallback to localStorage if cloud load failed
+                if (!cloudLoaded) {
+                    console.log('Loading from localStorage');
+                    loadFromLocalStorage();
+                }
+                
+                updateUI();
+                
+                // Load rank immediately on start
+                loadLeaderboard().catch(() => {
+                    console.log('Leaderboard load failed, continuing with game');
+                });
+                
+                if (cloudLoaded) {
+                    showMessage('☁️ Cloud progress loaded!');
+                } else {
+                    showMessage('👋 Welcome! Click your pet to earn TAMA!');
+                }
+                
+                // Check for first time player
+                setTimeout(() => {
+                    if (gameState.totalClicks === 0) {
+                        showMessage('💡 TIP: Click rapidly for COMBO bonuses! 🔥');
+                    }
+                }, 5000);
+            } catch (error) {
+                console.error('Init game error:', error);
+                loadFromLocalStorage();
+                updateUI();
+            }
         }
         
-        // Check for first time player
-        setTimeout(() => {
-            if (gameState.totalClicks === 0) {
-                showMessage('💡 TIP: Click rapidly for COMBO bonuses! 🔥');
+        // Load game data from Supabase
+        async function loadFromSupabase(userId) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${userId}&select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch from Supabase');
+                }
+                
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    const userData = data[0];
+                    
+                    // Load data from Supabase
+                    gameState.tama = userData.tama || 0;
+                    gameState.level = Math.floor(gameState.tama / 1000) + 1; // Calculate level from TAMA
+                    gameState.xpToLevel = gameState.level * 100;
+                    
+                    // Try to parse pet_data if exists
+                    if (userData.pet_data) {
+                        try {
+                            const petData = JSON.parse(userData.pet_data);
+                            gameState.hp = petData.hp || 100;
+                            gameState.food = petData.food || 100;
+                            gameState.happy = petData.happy || 100;
+                            gameState.totalClicks = petData.totalClicks || 0;
+                            gameState.achievements = petData.achievements || [];
+                        } catch (e) {
+                            console.log('Could not parse pet_data:', e);
+                        }
+                    }
+                    
+                    console.log('Loaded from Supabase:', userData);
+                    
+                    // Also save to localStorage as backup
+                    saveToLocalStorage();
+                    
+                    return true;
+                }
+            } catch (error) {
+                console.error('Error loading from Supabase:', error);
             }
-        }, 5000);
+            return false;
+        }
 
         // Save game when page is about to close
         window.addEventListener('beforeunload', () => {
