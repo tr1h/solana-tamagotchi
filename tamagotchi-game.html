@@ -3980,20 +3980,39 @@
         // Initialize game
         async function initGame() {
             try {
+                // Debug: Log Telegram WebApp state
+                console.log('🔍 Telegram WebApp check:', {
+                    telegramExists: !!window.Telegram,
+                    webAppExists: !!window.Telegram?.WebApp,
+                    initDataUnsafe: window.Telegram?.WebApp?.initDataUnsafe,
+                    user: window.Telegram?.WebApp?.initDataUnsafe?.user
+                });
+                
                 // Try to load from Supabase first (cloud save)
                 let cloudLoaded = false;
                 
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-                    const userId = window.Telegram.WebApp.initDataUnsafe.user?.id?.toString();
+                    const user = window.Telegram.WebApp.initDataUnsafe.user;
+                    const userId = user?.id?.toString();
+                    
                     if (userId) {
-                        console.log('Loading from Supabase for user:', userId);
+                        console.log('✅ Telegram user detected:', {
+                            id: userId,
+                            username: user.username,
+                            first_name: user.first_name
+                        });
+                        console.log('📥 Loading from Supabase for user:', userId);
                         cloudLoaded = await loadFromSupabase(userId);
+                    } else {
+                        console.warn('⚠️ Telegram WebApp initialized but no user found');
                     }
+                } else {
+                    console.warn('⚠️ Telegram WebApp not available - running in browser mode');
                 }
                 
                 // Fallback to localStorage if cloud load failed
                 if (!cloudLoaded) {
-                    console.log('Loading from localStorage');
+                    console.log('💾 Loading from localStorage (fallback)');
                     loadFromLocalStorage();
                 }
                 
@@ -4679,8 +4698,17 @@
         }
         
         // Initialize everything when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM loaded, initializing game...');
+            
+            // Wait for Telegram WebApp to initialize
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                
+                // Give Telegram WebApp time to initialize
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
             
             // Re-check elements after DOM is fully loaded
             const minigamesBtn = document.getElementById('minigames-btn');
@@ -4696,7 +4724,7 @@
             });
             
             // Initialize game
-            initGame();
+            await initGame();
             
             // Initialize theme system
             initThemeSystem();
