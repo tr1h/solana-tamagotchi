@@ -4953,6 +4953,134 @@
             
             console.log(`Pet switched to: ${pet}, Theme: ${theme}`);
         }
+
+        // ==================== ACTION BUTTONS ====================
+        
+        // Feed Pet Function
+        function feedPet() {
+            const feedCost = 50;
+            if (gameState.tama < feedCost) {
+                showMessage('❌ Not enough TAMA! Need 50 TAMA');
+                return;
+            }
+
+            // Log transaction BEFORE updating balance
+            const balanceBefore = gameState.tama;
+            gameState.tama -= feedCost;
+            const balanceAfter = gameState.tama;
+            
+            // Restore food
+            gameState.food = Math.min(gameState.maxFood, gameState.food + 30);
+            gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 10);
+            
+            showMessage('🍔 Pet fed! +30 Food, +10 Happy');
+            updateUI();
+            triggerAutoSave();
+            
+            // Log feed transaction
+            if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
+                TransactionLogger.logSpend(
+                    window.TELEGRAM_USER_ID,
+                    window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                    'feed',
+                    feedCost,
+                    balanceBefore,
+                    balanceAfter,
+                    { food_gained: 30, happy_gained: 10 }
+                );
+            }
+        }
+
+        // Play with Pet Function
+        function playWithPet() {
+            const playCost = 30;
+            if (gameState.tama < playCost) {
+                showMessage('❌ Not enough TAMA! Need 30 TAMA');
+                return;
+            }
+
+            // Log transaction BEFORE updating balance
+            const balanceBefore = gameState.tama;
+            gameState.tama -= playCost;
+            const balanceAfter = gameState.tama;
+            
+            // Increase happiness and slight food decrease
+            gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 25);
+            gameState.food = Math.max(0, gameState.food - 5);
+            
+            showMessage('🎮 Pet played! +25 Happy, -5 Food');
+            updateUI();
+            triggerAutoSave();
+            
+            // Log play transaction
+            if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
+                TransactionLogger.logSpend(
+                    window.TELEGRAM_USER_ID,
+                    window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                    'play',
+                    playCost,
+                    balanceBefore,
+                    balanceAfter,
+                    { happy_gained: 25, food_lost: 5 }
+                );
+            }
+        }
+
+        // Heal Pet Function
+        function healPet() {
+            const healCost = 100;
+            if (gameState.tama < healCost) {
+                showMessage('❌ Not enough TAMA! Need 100 TAMA');
+                return;
+            }
+
+            // Log transaction BEFORE updating balance
+            const balanceBefore = gameState.tama;
+            gameState.tama -= healCost;
+            const balanceAfter = gameState.tama;
+            
+            // Restore HP
+            gameState.hp = Math.min(gameState.maxHp, gameState.hp + 50);
+            gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 15);
+            
+            showMessage('💊 Pet healed! +50 HP, +15 Happy');
+            updateUI();
+            triggerAutoSave();
+            
+            // Log heal transaction
+            if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
+                TransactionLogger.logSpend(
+                    window.TELEGRAM_USER_ID,
+                    window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                    'heal',
+                    healCost,
+                    balanceBefore,
+                    balanceAfter,
+                    { hp_gained: 50, happy_gained: 15 }
+                );
+            }
+        }
+
+        // Add event listeners for action buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Feed button
+            const feedBtn = document.getElementById('feed-btn');
+            if (feedBtn) {
+                feedBtn.addEventListener('click', feedPet);
+            }
+
+            // Play button
+            const playBtn = document.getElementById('play-btn');
+            if (playBtn) {
+                playBtn.addEventListener('click', playWithPet);
+            }
+
+            // Heal button
+            const healBtn = document.getElementById('heal-btn');
+            if (healBtn) {
+                healBtn.addEventListener('click', healPet);
+            }
+        });
     </script>
 </body>
 </html>
