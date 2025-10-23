@@ -4958,7 +4958,10 @@
         
         // Feed Pet Function
         function feedPet() {
+            console.log('🍔 FEED PET CALLED - NEW VERSION!');
             const feedCost = 50;
+            console.log('💰 Feed cost:', feedCost, 'Current TAMA:', gameState.tama);
+            
             if (gameState.tama < feedCost) {
                 showMessage('❌ Not enough TAMA! Need 50 TAMA');
                 return;
@@ -4968,6 +4971,7 @@
             const balanceBefore = gameState.tama;
             gameState.tama -= feedCost;
             const balanceAfter = gameState.tama;
+            console.log('💸 TAMA SPENT:', feedCost, 'Balance:', balanceBefore, '->', balanceAfter);
             
             // Restore food
             gameState.food = Math.min(gameState.maxFood, gameState.food + 30);
