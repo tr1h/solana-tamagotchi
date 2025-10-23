@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 Transactions Admin Panel</title>
+    <title>📊 Transactions Admin Panel - Live</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: rgba(45, 55, 72, 0.95);
             border-radius: 20px;
@@ -27,11 +27,39 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        h1 {
-            text-align: center;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
+        }
+
+        h1 {
             font-size: 32px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(16, 185, 129, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #10b981;
+        }
+
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
         .stats {
@@ -47,6 +75,11 @@
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
 
         .stat-label {
@@ -98,6 +131,7 @@
             background: rgba(255,255,255,0.05);
             border-radius: 15px;
             overflow: hidden;
+            margin-top: 20px;
         }
 
         table {
@@ -122,8 +156,14 @@
             font-size: 13px;
         }
 
+        tr {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
         tr:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.01);
         }
 
         .type-badge {
@@ -183,20 +223,148 @@
             border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 20px;
             font-size: 14px;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s;
         }
 
         .export-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
         }
+
+        /* User Detail Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: #ef4444;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #dc2626;
+            transform: rotate(90deg);
+        }
+
+        .user-info {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .balance-highlight {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .balance-highlight .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .balance-highlight .value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .transaction-list {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .update-time {
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📊 TAMA Transactions Admin Panel</h1>
+        <div class="header">
+            <h1>📊 TAMA Transactions - Live Monitor</h1>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live Updates</span>
+            </div>
+        </div>
 
         <div class="stats">
             <div class="stat-card">
@@ -215,12 +383,16 @@
                 <div class="stat-label">Net Flow</div>
                 <div class="stat-value" id="net-flow">0 TAMA</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Users</div>
+                <div class="stat-value" id="active-users">0</div>
+            </div>
         </div>
 
         <div class="filters">
             <div class="filter-group">
-                <label>User ID</label>
-                <input type="text" id="filter-user" placeholder="Filter by user ID">
+                <label>User ID / Username</label>
+                <input type="text" id="filter-user" placeholder="Filter by user">
             </div>
             <div class="filter-group">
                 <label>Type</label>
@@ -264,6 +436,21 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="update-time" id="update-time">Last updated: Never</div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal" id="user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 User Details</h2>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div id="user-details-content">
+                <div class="loading">Loading user data...</div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -271,6 +458,8 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcmF6eXVwYW1laWR4cGppaHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5Mzc1NTAsImV4cCI6MjA3NTUxMzU1MH0.1EkMDqCNJoAjcJDh3Dd3yPfus-JpdcwE--z2dhjh7wU';
 
         let allTransactions = [];
+        let allUsers = {};
+        let autoUpdateInterval;
 
         async function loadTransactions() {
             try {
@@ -286,17 +475,43 @@
                 }
 
                 allTransactions = await response.json();
-                console.log('Loaded transactions:', allTransactions.length);
+                console.log('✅ Loaded transactions:', allTransactions.length);
+                
+                // Load users data
+                await loadUsersData();
                 
                 updateStats();
                 renderTransactions(allTransactions);
+                updateLastUpdateTime();
             } catch (error) {
-                console.error('Error loading transactions:', error);
+                console.error('❌ Error loading transactions:', error);
                 document.getElementById('transactions-body').innerHTML = `
                     <tr>
-                        <td colspan="6" class="loading">❌ Error loading transactions: ${error.message}</td>
+                        <td colspan="6" class="loading">❌ Error: ${error.message}</td>
                     </tr>
                 `;
+            }
+        }
+
+        async function loadUsersData() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (response.ok) {
+                    const users = await response.json();
+                    allUsers = {};
+                    users.forEach(user => {
+                        allUsers[user.telegram_id] = user;
+                    });
+                    console.log('✅ Loaded users:', Object.keys(allUsers).length);
+                }
+            } catch (error) {
+                console.error('⚠️ Error loading users:', error);
             }
         }
 
@@ -309,10 +524,13 @@
                 .filter(t => t.type.startsWith('spend'))
                 .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-            document.getElementById('total-transactions').textContent = allTransactions.length;
+            const uniqueUsers = new Set(allTransactions.map(t => t.user_id)).size;
+
+            document.getElementById('total-transactions').textContent = allTransactions.length.toLocaleString();
             document.getElementById('total-earned').textContent = Math.round(totalEarned).toLocaleString() + ' TAMA';
             document.getElementById('total-spent').textContent = Math.round(totalSpent).toLocaleString() + ' TAMA';
             document.getElementById('net-flow').textContent = Math.round(totalEarned - totalSpent).toLocaleString() + ' TAMA';
+            document.getElementById('active-users').textContent = uniqueUsers;
         }
 
         function renderTransactions(transactions) {
@@ -335,19 +553,115 @@
                 const amountClass = isEarn ? 'amount-positive' : 'amount-negative';
                 const amountPrefix = isEarn ? '+' : '-';
                 
-                const metadata = t.metadata ? JSON.stringify(t.metadata) : '';
+                const metadata = t.metadata ? JSON.stringify(t.metadata).substring(0, 50) + '...' : '';
+                const username = t.username || t.user_id;
                 
                 return `
-                    <tr>
+                    <tr onclick="showUserDetails('${t.user_id}')">
                         <td>${date}</td>
-                        <td>${t.username || t.user_id}</td>
+                        <td><strong>${username}</strong></td>
                         <td><span class="type-badge ${typeClass}">${t.type}</span></td>
                         <td class="${amountClass}">${amountPrefix}${Math.round(t.amount * 100) / 100}</td>
-                        <td>${Math.round(t.balance_after || 0)}</td>
+                        <td>${Math.round(t.balance_after || 0).toLocaleString()}</td>
                         <td style="font-size: 11px; opacity: 0.7;">${metadata}</td>
                     </tr>
                 `;
             }).join('');
+        }
+
+        async function showUserDetails(userId) {
+            const modal = document.getElementById('user-modal');
+            const content = document.getElementById('user-details-content');
+            
+            modal.classList.add('show');
+            content.innerHTML = '<div class="loading">⏳ Loading user data...</div>';
+
+            try {
+                // Get user from leaderboard
+                const user = allUsers[userId];
+                
+                // Get user transactions
+                const userTransactions = allTransactions.filter(t => t.user_id === userId);
+                
+                const totalEarned = userTransactions
+                    .filter(t => t.type.startsWith('earn') || t.type === 'level_up')
+                    .reduce((sum, t) => sum + (t.amount || 0), 0);
+                
+                const totalSpent = userTransactions
+                    .filter(t => t.type.startsWith('spend'))
+                    .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+                content.innerHTML = `
+                    <div class="user-info">
+                        <div class="info-card">
+                            <div class="info-label">User ID</div>
+                            <div class="info-value">${userId}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Username</div>
+                            <div class="info-value">${user?.telegram_username || 'Unknown'}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Pet Name</div>
+                            <div class="info-value">${user?.pet_name || 'No name'}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Level</div>
+                            <div class="info-value">${user?.level || 1}</div>
+                        </div>
+                    </div>
+
+                    <div class="balance-highlight">
+                        <div class="label">💰 Current Balance (Live)</div>
+                        <div class="value">${Math.round(user?.tama || 0).toLocaleString()} TAMA</div>
+                    </div>
+
+                    <div class="user-info">
+                        <div class="info-card">
+                            <div class="info-label">Total Earned</div>
+                            <div class="info-value" style="color: #10b981;">+${Math.round(totalEarned).toLocaleString()} TAMA</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Total Spent</div>
+                            <div class="info-value" style="color: #ef4444;">-${Math.round(totalSpent).toLocaleString()} TAMA</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Total Transactions</div>
+                            <div class="info-value">${userTransactions.length}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Last Activity</div>
+                            <div class="info-value">${user?.last_activity ? new Date(user.last_activity).toLocaleString() : 'Never'}</div>
+                        </div>
+                    </div>
+
+                    <div class="transaction-list">
+                        <h3 style="margin-bottom: 15px;">📜 Recent Transactions (Last 10)</h3>
+                        ${userTransactions.slice(0, 10).map(t => {
+                            const isEarn = t.type.startsWith('earn') || t.type === 'level_up';
+                            const color = isEarn ? '#10b981' : '#ef4444';
+                            const prefix = isEarn ? '+' : '-';
+                            return `
+                                <div class="transaction-item">
+                                    <div>
+                                        <div style="font-weight: bold;">${t.type}</div>
+                                        <div style="font-size: 11px; opacity: 0.7;">${new Date(t.created_at).toLocaleString()}</div>
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: bold; color: ${color};">
+                                        ${prefix}${Math.round(t.amount * 100) / 100}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                content.innerHTML = `<div class="loading">❌ Error loading user data: ${error.message}</div>`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('user-modal').classList.remove('show');
         }
 
         function filterTransactions() {
@@ -398,14 +712,49 @@
             a.click();
         }
 
+        function updateLastUpdateTime() {
+            document.getElementById('update-time').textContent = `Last updated: ${new Date().toLocaleString()}`;
+        }
+
+        function startAutoUpdate() {
+            // Update every 5 seconds
+            autoUpdateInterval = setInterval(() => {
+                console.log('🔄 Auto-updating...');
+                loadTransactions();
+            }, 5000);
+        }
+
+        function stopAutoUpdate() {
+            if (autoUpdateInterval) {
+                clearInterval(autoUpdateInterval);
+            }
+        }
+
         // Add filter listeners
         document.getElementById('filter-user').addEventListener('input', filterTransactions);
         document.getElementById('filter-type').addEventListener('change', filterTransactions);
         document.getElementById('filter-date-from').addEventListener('change', filterTransactions);
         document.getElementById('filter-date-to').addEventListener('change', filterTransactions);
 
+        // Close modal on background click
+        document.getElementById('user-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'user-modal') {
+                closeModal();
+            }
+        });
+
         // Load on page load
         loadTransactions();
+        startAutoUpdate();
+
+        // Stop auto-update when page is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoUpdate();
+            } else {
+                startAutoUpdate();
+            }
+        });
     </script>
 </body>
 </html>
