@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Solana Tamagotchi</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Transaction Logger -->
+    <script src="js/transaction-logger.js"></script>
     <style>
         /* CSS Variables for Themes 🎨 */
         :root {
@@ -3501,10 +3503,31 @@
             const earnedTama = Math.max(0.1, clickPower + comboBonus); // Minimum 0.1 TAMA
             const earnedXP = Math.max(1, 5 + comboBonus); // Minimum 1 XP
             
+            // Log transaction BEFORE updating balance
+            const balanceBefore = gameState.tama;
             gameState.tama += earnedTama;
+            const balanceAfter = gameState.tama;
             gameState.xp += earnedXP;
             gameState.totalClicks++;
             gameState.questClicks++;
+            
+            // Log transaction to Supabase
+            if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
+                TransactionLogger.logEarn(
+                    window.TELEGRAM_USER_ID,
+                    window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                    gameState.combo >= 5 ? 'combo' : 'click',
+                    earnedTama,
+                    balanceBefore,
+                    balanceAfter,
+                    { 
+                        combo: gameState.combo, 
+                        xp_gained: earnedXP,
+                        click_power: gameState.clickPower,
+                        efficiency: clickEfficiency
+                    }
+                );
+            }
             
             // Play click sound (disabled - too annoying)
             // playSound('click');
@@ -3593,8 +3616,25 @@
                 gameState.maxHappy += 5;
                 gameState.happy = gameState.maxHappy;
 
-                showMessage(`🎊 LEVEL UP! You are now Level ${gameState.level}! Earned ${gameState.level * 100} TAMA!`);
-                gameState.tama += gameState.level * 100;
+                // Log level up transaction
+                const levelBonus = gameState.level * 100;
+                const balanceBefore = gameState.tama;
+                gameState.tama += levelBonus;
+                const balanceAfter = gameState.tama;
+                
+                showMessage(`🎊 LEVEL UP! You are now Level ${gameState.level}! Earned ${levelBonus} TAMA!`);
+                
+                // Log level up transaction
+                if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
+                    TransactionLogger.logLevelUp(
+                        window.TELEGRAM_USER_ID,
+                        window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                        gameState.level,
+                        levelBonus,
+                        balanceBefore,
+                        balanceAfter
+                    );
+                }
                 
                 // Play level up sound
                 playSound('levelup');
@@ -3827,7 +3867,23 @@
                 return;
             }
 
+            // Log transaction BEFORE updating balance
+            const balanceBefore = gameState.tama;
             gameState.tama -= price;
+            const balanceAfter = gameState.tama;
+            
+            // Log shop transaction
+            if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
+                TransactionLogger.logSpend(
+                    window.TELEGRAM_USER_ID,
+                    window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                    'shop_' + itemType,
+                    price,
+                    balanceBefore,
+                    balanceAfter,
+                    { item_type: itemType, shop_item: true }
+                );
+            }
 
             switch(itemType) {
                 case 'energy':
