@@ -2756,53 +2756,115 @@
             
             <!-- Game Selection -->
             <div class="game-selection" id="game-selection">
-                <div class="game-card" data-game="slots">
+                <div class="game-card" data-game="slots" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
                     <div class="game-card-icon">🎰</div>
-                    <div class="game-card-name">Slot Machine</div>
-                    <div class="game-card-cost">Cost: 100 TAMA | Win: up to 1000 TAMA</div>
+                    <div class="game-card-name">Slot Machine 2.0</div>
+                    <div class="game-card-cost">Bet: 100-1000 TAMA | Win: up to 10x!</div>
                 </div>
-                <div class="game-card" data-game="mining">
-                    <div class="game-card-icon">⛏️</div>
-                    <div class="game-card-name">Crypto Mining</div>
-                    <div class="game-card-cost">Cost: 150 TAMA | Win: up to 2000 TAMA</div>
+                <div class="game-card" data-game="wheel" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <div class="game-card-icon">🎡</div>
+                    <div class="game-card-name">Lucky Wheel</div>
+                    <div class="game-card-cost">Bet: 100-1000 TAMA | Win: up to 10x!</div>
                 </div>
-                <div class="game-card" data-game="battle" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #fbbf24;">
-                    <div class="game-card-icon">⚔️</div>
-                    <div class="game-card-name">PVP Battle Arena</div>
-                    <div class="game-card-cost">Bet: 100-1000 TAMA | Win: 180% of bet!</div>
-                </div>
-                <div class="game-card" data-game="racing" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: 2px solid #fbbf24;">
-                    <div class="game-card-icon">🏁</div>
-                    <div class="game-card-name">Pet Racing</div>
-                    <div class="game-card-cost">Bet: 200-2000 TAMA | Win: up to 300%!</div>
+                <div class="game-card" data-game="dice" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <div class="game-card-icon">🎲</div>
+                    <div class="game-card-name">Dice Roll</div>
+                    <div class="game-card-cost">Bet: 50-500 TAMA | Win: up to 15x!</div>
                 </div>
             </div>
             
             <!-- Game Arenas (will be shown when game is selected) -->
-            <div class="game-arena" id="slots-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">🎰 Slot Machine</h3>
-                <div style="display: flex; justify-content: center; gap: 10px; font-size: 64px; margin: 20px 0;" id="slots-display">
-                    <div>🍒</div><div>🍒</div><div>🍒</div>
+            
+            <!-- 🎰 SLOT MACHINE 2.0 -->
+            <div class="game-arena" id="slots-arena" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎰 Slot Machine 2.0</h3>
+                
+                <!-- Bet Selection -->
+                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="slots-bet-btn" data-bet="100" style="padding: 10px 15px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">100 TAMA</button>
+                    <button class="slots-bet-btn" data-bet="300" style="padding: 10px 15px; background: #3b82f6; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">300 TAMA</button>
+                    <button class="slots-bet-btn" data-bet="500" style="padding: 10px 15px; background: #8b5cf6; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">500 TAMA</button>
+                    <button class="slots-bet-btn" data-bet="1000" style="padding: 10px 15px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">1000 TAMA</button>
                 </div>
-                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="slots-result"></div>
+                
+                <!-- 5 Reels -->
+                <div style="display: flex; justify-content: center; gap: 10px; font-size: 48px; margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;" id="slots-display">
+                    <div class="slot-reel">🍒</div>
+                    <div class="slot-reel">🍒</div>
+                    <div class="slot-reel">🍒</div>
+                    <div class="slot-reel">🍒</div>
+                    <div class="slot-reel">🍒</div>
+                </div>
+                
+                <div style="text-align: center; font-size: 18px; margin: 15px 0; min-height: 50px; font-weight: bold;" id="slots-result"></div>
+                
                 <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="spinSlots()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Spin (100 TAMA)</button>
-                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                    <button id="slots-spin-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🎰 SPIN!</button>
+                    <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
                 </div>
             </div>
             
-            <div class="game-arena" id="mining-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">⛏️ Crypto Mining</h3>
-                <div style="text-align: center; margin-bottom: 15px;">
-                    <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
-                        <div>
-                            <div style="font-size: 12px; opacity: 0.7;">Time Left</div>
-                            <div id="mining-timer" style="font-size: 24px; font-weight: bold;">30s</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 12px; opacity: 0.7;">Combo</div>
-                            <div id="mining-combo" style="font-size: 24px; font-weight: bold; color: #f59e0b;">x1</div>
-                        </div>
+            <!-- 🎡 LUCKY WHEEL -->
+            <div class="game-arena" id="wheel-arena" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎡 Lucky Wheel</h3>
+                
+                <!-- Bet Selection -->
+                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="wheel-bet-btn" data-bet="100" style="padding: 10px 15px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">100 TAMA</button>
+                    <button class="wheel-bet-btn" data-bet="300" style="padding: 10px 15px; background: #3b82f6; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">300 TAMA</button>
+                    <button class="wheel-bet-btn" data-bet="500" style="padding: 10px 15px; background: #8b5cf6; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">500 TAMA</button>
+                    <button class="wheel-bet-btn" data-bet="1000" style="padding: 10px 15px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">1000 TAMA</button>
+                </div>
+                
+                <!-- Wheel Container -->
+                <div style="display: flex; justify-content: center; margin: 30px 0;">
+                    <div id="wheel-container" style="position: relative; width: 300px; height: 300px;">
+                        <!-- Wheel will be drawn here -->
+                        <canvas id="wheel-canvas" width="300" height="300" style="border-radius: 50%; box-shadow: 0 0 20px rgba(0,0,0,0.5);"></canvas>
+                        <!-- Arrow pointer -->
+                        <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 40px; z-index: 10;">🔻</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; font-size: 20px; margin: 20px 0; min-height: 60px; font-weight: bold;" id="wheel-result"></div>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="wheel-spin-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🎡 SPIN!</button>
+                    <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
+                </div>
+            </div>
+            
+            <!-- 🎲 DICE ROLL -->
+            <div class="game-arena" id="dice-arena" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 15px;">🎲 Dice Roll</h3>
+                
+                <!-- Bet Selection -->
+                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="dice-bet-btn" data-bet="50" style="padding: 10px 15px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">50 TAMA</button>
+                    <button class="dice-bet-btn" data-bet="100" style="padding: 10px 15px; background: #3b82f6; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">100 TAMA</button>
+                    <button class="dice-bet-btn" data-bet="300" style="padding: 10px 15px; background: #8b5cf6; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">300 TAMA</button>
+                    <button class="dice-bet-btn" data-bet="500" style="padding: 10px 15px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">500 TAMA</button>
+                </div>
+                
+                <!-- Dice Display -->
+                <div style="display: flex; justify-content: center; gap: 15px; margin: 30px 0;">
+                    <div class="dice-face" id="dice-1" style="font-size: 64px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; min-width: 80px; text-align: center;">🎲</div>
+                    <div class="dice-face" id="dice-2" style="font-size: 64px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; min-width: 80px; text-align: center;">🎲</div>
+                    <div class="dice-face" id="dice-3" style="font-size: 64px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; min-width: 80px; text-align: center;">🎲</div>
+                </div>
+                
+                <div style="text-align: center; font-size: 18px; margin: 20px 0; min-height: 80px;" id="dice-result"></div>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="dice-roll-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🎲 ROLL!</button>
+                    <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
                         <div>
                             <div style="font-size: 12px; opacity: 0.7;">Mined</div>
                             <div id="mining-score" style="font-size: 24px; font-weight: bold; color: #10b981;">0 💎</div>
@@ -4911,6 +4973,231 @@
                 }
             }, 100);
         }
+        
+        // OLD SLOT MACHINE ABOVE - KEEPING FOR COMPATIBILITY
+        // NEW GAMES BELOW 🎰🎡🎲
+        
+        // 🎰 SLOT MACHINE 2.0 - 5 REELS
+        let slotsState = { betAmount: 100, spinning: false };
+        document.querySelectorAll('.slots-bet-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                slotsState.betAmount = parseInt(btn.dataset.bet);
+                document.querySelectorAll('.slots-bet-btn').forEach(b => b.style.opacity = '0.7');
+                btn.style.opacity = '1';
+            });
+        });
+        document.getElementById('slots-spin-btn')?.addEventListener('click', () => {
+            if (slotsState.spinning || gameState.tama < slotsState.betAmount) {
+                showMessage(`❌ Not enough TAMA! Need ${slotsState.betAmount} TAMA`);
+                return;
+            }
+            slotsState.spinning = true;
+            gameState.tama -= slotsState.betAmount;
+            if (typeof logTransaction === 'function') logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_slots', -slotsState.betAmount, `Spent ${slotsState.betAmount} TAMA to play Slot Machine 2.0`, gameState);
+            updateUI();
+            const reels = document.querySelectorAll('.slot-reel');
+            const slotsResult = document.getElementById('slots-result');
+            const symbols = ['🍒', '🍋', '🍊', '🍇', '💎', '⭐', '7️⃣', '🔔', '💰'];
+            slotsResult.textContent = 'Spinning...';
+            let spins = 0;
+            const interval = setInterval(() => {
+                reels.forEach(reel => reel.textContent = symbols[Math.floor(Math.random() * symbols.length)]);
+                if (++spins === 20) {
+                    clearInterval(interval);
+                    const result = Array.from({length: 5}, () => symbols[Math.floor(Math.random() * symbols.length)]);
+                    reels.forEach((reel, i) => reel.textContent = result[i]);
+                    let reward = 0, message = '';
+                    if (result.every(s => s === result[0])) {
+                        reward = slotsState.betAmount * (result[0] === '7️⃣' ? 10 : result[0] === '💎' ? 8 : 5);
+                        message = `🎰 MEGA JACKPOT! +${reward} TAMA!`;
+                    } else if (result.filter(s => s === result[0]).length === 4 || result.filter(s => s === result[1]).length === 4) {
+                        reward = slotsState.betAmount * 4;
+                        message = `⭐ BIG WIN! +${reward} TAMA!`;
+                    } else if (result.filter(s => s === result[0]).length === 3 || result.filter(s => s === result[1]).length === 3 || result.filter(s => s === result[2]).length === 3) {
+                        reward = slotsState.betAmount * 2;
+                        message = `✨ Nice! +${reward} TAMA!`;
+                    } else {
+                        const counts = {};
+                        result.forEach(s => counts[s] = (counts[s] || 0) + 1);
+                        if (Object.values(counts).some(c => c >= 3)) {
+                            reward = slotsState.betAmount;
+                            message = `💫 Match! +${reward} TAMA!`;
+                        } else message = `😔 Try again!`;
+                    }
+                    if (reward > 0) {
+                        gameState.tama += reward;
+                        if (typeof logTransaction === 'function') logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_slots', reward, `Won ${reward} TAMA from Slot Machine 2.0`, gameState);
+                    }
+                    slotsResult.textContent = message;
+                    updateUI();
+                    triggerAutoSave();
+                    slotsState.spinning = false;
+                }
+            }, 80);
+        });
+        
+        // 🎡 LUCKY WHEEL
+        let wheelState = { betAmount: 100, spinning: false, canvas: null, ctx: null, rotation: 0 };
+        function initWheel() {
+            wheelState.canvas = document.getElementById('wheel-canvas');
+            if (!wheelState.canvas) return;
+            wheelState.ctx = wheelState.canvas.getContext('2d');
+            const segments = [
+                { multiplier: 10, color: '#ef4444', text: '10x' },
+                { multiplier: 0.5, color: '#6b7280', text: '0.5x' },
+                { multiplier: 2, color: '#10b981', text: '2x' },
+                { multiplier: 0, color: '#374151', text: 'LOSE' },
+                { multiplier: 3, color: '#3b82f6', text: '3x' },
+                { multiplier: 0.5, color: '#6b7280', text: '0.5x' },
+                { multiplier: 5, color: '#8b5cf6', text: '5x' },
+                { multiplier: 0, color: '#374151', text: 'LOSE' }
+            ];
+            wheelState.segments = segments;
+            const drawWheel = () => {
+                const ctx = wheelState.ctx, centerX = 150, centerY = 150, radius = 140;
+                ctx.clearRect(0, 0, 300, 300);
+                segments.forEach((segment, i) => {
+                    const angle = (Math.PI * 2 / segments.length);
+                    const startAngle = angle * i + wheelState.rotation;
+                    const endAngle = angle * (i + 1) + wheelState.rotation;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = segment.color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.save();
+                    ctx.translate(centerX, centerY);
+                    ctx.rotate(startAngle + angle / 2);
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 20px Arial';
+                    ctx.fillText(segment.text, radius * 0.7, 5);
+                    ctx.restore();
+                });
+            };
+            wheelState.drawWheel = drawWheel;
+            drawWheel();
+        }
+        document.querySelectorAll('.wheel-bet-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                wheelState.betAmount = parseInt(btn.dataset.bet);
+                document.querySelectorAll('.wheel-bet-btn').forEach(b => b.style.opacity = '0.7');
+                btn.style.opacity = '1';
+            });
+        });
+        document.getElementById('wheel-spin-btn')?.addEventListener('click', () => {
+            if (wheelState.spinning || gameState.tama < wheelState.betAmount) {
+                showMessage(`❌ Not enough TAMA! Need ${wheelState.betAmount} TAMA`);
+                return;
+            }
+            wheelState.spinning = true;
+            gameState.tama -= wheelState.betAmount;
+            if (typeof logTransaction === 'function') logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_wheel', -wheelState.betAmount, `Spent ${wheelState.betAmount} TAMA to play Lucky Wheel`, gameState);
+            updateUI();
+            const wheelResult = document.getElementById('wheel-result');
+            wheelResult.textContent = 'Spinning...';
+            const targetRotation = Math.PI * 2 * 5 + (Math.random() * Math.PI * 2);
+            const startTime = Date.now(), duration = 3000;
+            function animateWheel() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                wheelState.rotation = targetRotation * easeOut;
+                wheelState.drawWheel();
+                if (progress < 1) {
+                    requestAnimationFrame(animateWheel);
+                } else {
+                    const normalizedRotation = wheelState.rotation % (Math.PI * 2);
+                    const segmentIndex = Math.floor((8 - (normalizedRotation / (Math.PI * 2) * 8)) % 8);
+                    const multiplier = wheelState.segments[segmentIndex].multiplier;
+                    const reward = Math.floor(wheelState.betAmount * multiplier);
+                    if (reward > 0) {
+                        gameState.tama += reward;
+                        wheelResult.textContent = `🎉 ${multiplier}x! Won ${reward} TAMA!`;
+                        if (typeof logTransaction === 'function') logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_wheel', reward, `Won ${reward} TAMA from Lucky Wheel (${multiplier}x)`, gameState);
+                    } else if (multiplier === 0.5) {
+                        const returned = Math.floor(wheelState.betAmount * 0.5);
+                        gameState.tama += returned;
+                        wheelResult.textContent = `😐 0.5x - Got ${returned} TAMA back`;
+                    } else {
+                        wheelResult.textContent = `💀 LOSE! Better luck next time!`;
+                    }
+                    updateUI();
+                    triggerAutoSave();
+                    wheelState.spinning = false;
+                }
+            }
+            animateWheel();
+        });
+        setTimeout(() => { if (document.getElementById('wheel-canvas')) initWheel(); }, 1000);
+        
+        // 🎲 DICE ROLL 2.0
+        let diceState = { betAmount: 50, rolling: false };
+        const diceEmojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        document.querySelectorAll('.dice-bet-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                diceState.betAmount = parseInt(btn.dataset.bet);
+                document.querySelectorAll('.dice-bet-btn').forEach(b => b.style.opacity = '0.7');
+                btn.style.opacity = '1';
+            });
+        });
+        document.getElementById('dice-roll-btn')?.addEventListener('click', () => {
+            if (diceState.rolling || gameState.tama < diceState.betAmount) {
+                showMessage(`❌ Not enough TAMA! Need ${diceState.betAmount} TAMA`);
+                return;
+            }
+            diceState.rolling = true;
+            gameState.tama -= diceState.betAmount;
+            if (typeof logTransaction === 'function') logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_dice', -diceState.betAmount, `Spent ${diceState.betAmount} TAMA to play Dice Roll`, gameState);
+            updateUI();
+            const dice1 = document.getElementById('dice-1');
+            const dice2 = document.getElementById('dice-2');
+            const dice3 = document.getElementById('dice-3');
+            const diceResult = document.getElementById('dice-result');
+            diceResult.innerHTML = 'Rolling...';
+            let rolls = 0;
+            const interval = setInterval(() => {
+                dice1.textContent = diceEmojis[Math.floor(Math.random() * 6)];
+                dice2.textContent = diceEmojis[Math.floor(Math.random() * 6)];
+                dice3.textContent = diceEmojis[Math.floor(Math.random() * 6)];
+                if (++rolls === 15) {
+                    clearInterval(interval);
+                    const d1 = Math.floor(Math.random() * 6) + 1;
+                    const d2 = Math.floor(Math.random() * 6) + 1;
+                    const d3 = Math.floor(Math.random() * 6) + 1;
+                    dice1.textContent = diceEmojis[d1 - 1];
+                    dice2.textContent = diceEmojis[d2 - 1];
+                    dice3.textContent = diceEmojis[d3 - 1];
+                    const total = d1 + d2 + d3;
+                    let reward = 0, message = '';
+                    if (d1 === d2 && d2 === d3) {
+                        reward = diceState.betAmount * 15;
+                        message = `🎰 TRIPLE ${d1}! JACKPOT! +${reward} TAMA!`;
+                    } else if (d1 === d2 || d2 === d3 || d1 === d3) {
+                        reward = diceState.betAmount * 3;
+                        message = `🎲 Pair! Nice! +${reward} TAMA!`;
+                    } else if (total >= 15) {
+                        reward = diceState.betAmount * 2;
+                        message = `✨ High Roll (${total})! +${reward} TAMA!`;
+                    } else if (total >= 10) {
+                        reward = diceState.betAmount;
+                        message = `💫 Medium Roll (${total})! +${reward} TAMA!`;
+                    } else message = `😔 Low Roll (${total}). Try again!`;
+                    if (reward > 0) {
+                        gameState.tama += reward;
+                        if (typeof logTransaction === 'function') logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_dice', reward, `Won ${reward} TAMA from Dice Roll (${d1}+${d2}+${d3}=${total})`, gameState);
+                    }
+                    diceResult.innerHTML = message + `<br><small>Total: ${total}</small>`;
+                    updateUI();
+                    triggerAutoSave();
+                    diceState.rolling = false;
+                }
+            }, 100);
+        });
         
         // 🏃 PET RACE
         function startRace() {
