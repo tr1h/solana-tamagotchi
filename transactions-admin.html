@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💰 Transaction Log - Admin Dashboard</title>
+    <title>📊 Transactions Admin Panel</title>
     <style>
         * {
             margin: 0;
@@ -12,29 +12,29 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
             padding: 20px;
+            color: #fff;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: rgba(45, 55, 72, 0.95);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
         h1 {
             text-align: center;
-            color: #667eea;
             margin-bottom: 30px;
-            font-size: 36px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        .stats-grid {
+        .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
@@ -43,243 +43,238 @@
 
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             text-align: center;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .stat-label {
             font-size: 14px;
             opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
         }
 
         .filters {
-            display: flex;
-            gap: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
         .filter-group {
-            flex: 1;
-            min-width: 200px;
+            display: flex;
+            flex-direction: column;
         }
 
         .filter-group label {
-            display: block;
             margin-bottom: 5px;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
             font-size: 14px;
         }
 
-        .btn {
-            padding: 10px 20px;
-            background: #667eea;
-            color: white;
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 14px;
         }
 
-        .btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
+        .filter-group input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .transactions-table {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
 
         thead {
-            background: #667eea;
-            color: white;
+            background: rgba(0,0,0,0.3);
         }
 
-        th, td {
-            padding: 12px;
+        th {
+            padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+            font-weight: bold;
+            font-size: 14px;
         }
 
-        tbody tr:hover {
-            background: #f5f5f5;
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px;
         }
 
-        .badge {
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .type-badge {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
         }
 
-        .badge-earn { background: #10b981; color: white; }
-        .badge-spend { background: #ef4444; color: white; }
-        .badge-referral { background: #8b5cf6; color: white; }
-        .badge-daily { background: #f59e0b; color: white; }
-        .badge-game { background: #06b6d4; color: white; }
-        .badge-level { background: #ec4899; color: white; }
-        .badge-admin { background: #6366f1; color: white; }
+        .type-earn {
+            background: #10b981;
+            color: #fff;
+        }
 
-        .amount-positive { color: #10b981; font-weight: bold; }
-        .amount-negative { color: #ef4444; font-weight: bold; }
+        .type-spend {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .type-level {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .type-quest {
+            background: #8b5cf6;
+            color: #fff;
+        }
+
+        .type-referral {
+            background: #06b6d4;
+            color: #fff;
+        }
+
+        .amount-positive {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .amount-negative {
+            color: #ef4444;
+            font-weight: bold;
+        }
 
         .loading {
             text-align: center;
             padding: 40px;
             font-size: 18px;
-            color: #667eea;
         }
 
         .export-btn {
-            background: #10b981;
-            margin-left: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
 
         .export-btn:hover {
-            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>💰 Transaction Log - Admin Dashboard</h1>
+        <h1>📊 TAMA Transactions Admin Panel</h1>
 
-        <!-- Statistics -->
-        <div class="stats-grid">
+        <div class="stats">
             <div class="stat-card">
-                <div class="stat-value" id="total-transactions">0</div>
                 <div class="stat-label">Total Transactions</div>
+                <div class="stat-value" id="total-transactions">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="total-earned">0</div>
                 <div class="stat-label">Total Earned</div>
+                <div class="stat-value" id="total-earned">0 TAMA</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="total-spent">0</div>
                 <div class="stat-label">Total Spent</div>
+                <div class="stat-value" id="total-spent">0 TAMA</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="net-flow">0</div>
                 <div class="stat-label">Net Flow</div>
+                <div class="stat-value" id="net-flow">0 TAMA</div>
             </div>
         </div>
 
-        <!-- Filters -->
         <div class="filters">
+            <div class="filter-group">
+                <label>User ID</label>
+                <input type="text" id="filter-user" placeholder="Filter by user ID">
+            </div>
             <div class="filter-group">
                 <label>Type</label>
                 <select id="filter-type">
                     <option value="">All Types</option>
                     <option value="earn">Earn</option>
                     <option value="spend">Spend</option>
-                    <option value="referral">Referral</option>
-                    <option value="daily_reward">Daily Reward</option>
-                    <option value="mini_game">Mini Game</option>
                     <option value="level_up">Level Up</option>
-                    <option value="admin_action">Admin Action</option>
+                    <option value="quest">Quest</option>
+                    <option value="referral">Referral</option>
                 </select>
             </div>
-
             <div class="filter-group">
-                <label>User ID</label>
-                <input type="text" id="filter-user" placeholder="Telegram ID">
+                <label>Date From</label>
+                <input type="date" id="filter-date-from">
             </div>
-
             <div class="filter-group">
-                <label>Limit</label>
-                <select id="filter-limit">
-                    <option value="50">50</option>
-                    <option value="100" selected>100</option>
-                    <option value="200">200</option>
-                    <option value="500">500</option>
-                    <option value="1000">1000</option>
-                </select>
-            </div>
-
-            <div class="filter-group" style="display: flex; align-items: flex-end;">
-                <button class="btn" onclick="loadTransactions()">🔍 Filter</button>
-                <button class="btn export-btn" onclick="exportToCSV()">📥 Export CSV</button>
+                <label>Date To</label>
+                <input type="date" id="filter-date-to">
             </div>
         </div>
 
-        <!-- Transactions Table -->
-        <div id="loading" class="loading" style="display: none;">Loading transactions...</div>
-        
-        <table id="transactions-table" style="display: none;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Time</th>
-                    <th>User</th>
-                    <th>Type</th>
-                    <th>Action</th>
-                    <th>Amount</th>
-                    <th>Balance</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody id="transactions-tbody">
-            </tbody>
-        </table>
+        <button class="export-btn" onclick="exportToCSV()">📥 Export to CSV</button>
+
+        <div class="transactions-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-body">
+                    <tr>
+                        <td colspan="6" class="loading">⏳ Loading transactions...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        // Supabase Configuration
         const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcmF6eXVwYW1laWR4cGppaHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5Mzc1NTAsImV4cCI6MjA3NTUxMzU1MH0.1EkMDqCNJoAjcJDh3Dd3yPfus-JpdcwE--z2dhjh7wU';
 
-        let currentTransactions = [];
-
-        // Load transactions on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadTransactions();
-        });
+        let allTransactions = [];
 
         async function loadTransactions() {
-            const loading = document.getElementById('loading');
-            const table = document.getElementById('transactions-table');
-            
-            loading.style.display = 'block';
-            table.style.display = 'none';
-
             try {
-                // Build query
-                const type = document.getElementById('filter-type').value;
-                const userId = document.getElementById('filter-user').value;
-                const limit = document.getElementById('filter-limit').value;
-
-                let url = `${SUPABASE_URL}/rest/v1/transactions?order=created_at.desc&limit=${limit}`;
-                
-                if (type) {
-                    url += `&type=eq.${type}`;
-                }
-                
-                if (userId) {
-                    url += `&telegram_id=eq.${userId}`;
-                }
-
-                const response = await fetch(url, {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=*&order=created_at.desc&limit=1000`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -287,103 +282,130 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch transactions');
+                    throw new Error(`Failed to fetch: ${response.status}`);
                 }
 
-                currentTransactions = await response.json();
+                allTransactions = await response.json();
+                console.log('Loaded transactions:', allTransactions.length);
                 
-                updateStats(currentTransactions);
-                renderTransactions(currentTransactions);
-                
-                loading.style.display = 'none';
-                table.style.display = 'table';
-
+                updateStats();
+                renderTransactions(allTransactions);
             } catch (error) {
                 console.error('Error loading transactions:', error);
-                loading.innerHTML = '❌ Error loading transactions: ' + error.message;
+                document.getElementById('transactions-body').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="loading">❌ Error loading transactions: ${error.message}</td>
+                    </tr>
+                `;
             }
         }
 
-        function updateStats(transactions) {
-            const totalEarned = transactions
-                .filter(t => t.amount > 0)
-                .reduce((sum, t) => sum + t.amount, 0);
-            
-            const totalSpent = Math.abs(transactions
-                .filter(t => t.amount < 0)
-                .reduce((sum, t) => sum + t.amount, 0));
+        function updateStats() {
+            const totalEarned = allTransactions
+                .filter(t => t.type.startsWith('earn') || t.type === 'level_up' || t.type === 'quest_complete' || t.type === 'referral_bonus')
+                .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-            document.getElementById('total-transactions').textContent = transactions.length.toLocaleString();
-            document.getElementById('total-earned').textContent = totalEarned.toLocaleString();
-            document.getElementById('total-spent').textContent = totalSpent.toLocaleString();
-            document.getElementById('net-flow').textContent = (totalEarned - totalSpent).toLocaleString();
+            const totalSpent = allTransactions
+                .filter(t => t.type.startsWith('spend'))
+                .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+            document.getElementById('total-transactions').textContent = allTransactions.length;
+            document.getElementById('total-earned').textContent = Math.round(totalEarned).toLocaleString() + ' TAMA';
+            document.getElementById('total-spent').textContent = Math.round(totalSpent).toLocaleString() + ' TAMA';
+            document.getElementById('net-flow').textContent = Math.round(totalEarned - totalSpent).toLocaleString() + ' TAMA';
         }
 
         function renderTransactions(transactions) {
-            const tbody = document.getElementById('transactions-tbody');
-            tbody.innerHTML = '';
-
-            transactions.forEach(tx => {
-                const row = document.createElement('tr');
-                
-                const badgeClass = `badge-${tx.type.replace('_', '-')}`;
-                const amountClass = tx.amount >= 0 ? 'amount-positive' : 'amount-negative';
-                const amountSign = tx.amount >= 0 ? '+' : '';
-                
-                const date = new Date(tx.created_at);
-                const timeStr = date.toLocaleString();
-
-                const balance = tx.balance_after !== null 
-                    ? `${tx.balance_before || 0} → ${tx.balance_after}` 
-                    : 'N/A';
-
-                row.innerHTML = `
-                    <td>#${tx.id}</td>
-                    <td>${timeStr}</td>
-                    <td>
-                        <div>${tx.telegram_username || 'N/A'}</div>
-                        <small style="color: #999;">${tx.telegram_id}</small>
-                    </td>
-                    <td><span class="badge ${badgeClass}">${tx.type}</span></td>
-                    <td>${tx.action}</td>
-                    <td class="${amountClass}">${amountSign}${tx.amount.toLocaleString()}</td>
-                    <td><small>${balance}</small></td>
-                    <td><small>${tx.description || 'N/A'}</small></td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        function exportToCSV() {
-            if (currentTransactions.length === 0) {
-                alert('No transactions to export!');
+            const tbody = document.getElementById('transactions-body');
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="loading">No transactions found</td></tr>';
                 return;
             }
 
-            // CSV Header
-            let csv = 'ID,Time,Telegram ID,Username,Type,Action,Amount,Balance Before,Balance After,Description\n';
+            tbody.innerHTML = transactions.map(t => {
+                const date = new Date(t.created_at).toLocaleString();
+                const isEarn = t.type.startsWith('earn') || t.type === 'level_up' || t.type === 'quest_complete' || t.type === 'referral_bonus';
+                const typeClass = t.type.startsWith('earn') ? 'type-earn' : 
+                                 t.type.startsWith('spend') ? 'type-spend' :
+                                 t.type === 'level_up' ? 'type-level' :
+                                 t.type === 'quest_complete' ? 'type-quest' :
+                                 t.type === 'referral_bonus' ? 'type-referral' : 'type-earn';
+                
+                const amountClass = isEarn ? 'amount-positive' : 'amount-negative';
+                const amountPrefix = isEarn ? '+' : '-';
+                
+                const metadata = t.metadata ? JSON.stringify(t.metadata) : '';
+                
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${t.username || t.user_id}</td>
+                        <td><span class="type-badge ${typeClass}">${t.type}</span></td>
+                        <td class="${amountClass}">${amountPrefix}${Math.round(t.amount * 100) / 100}</td>
+                        <td>${Math.round(t.balance_after || 0)}</td>
+                        <td style="font-size: 11px; opacity: 0.7;">${metadata}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
 
-            // CSV Rows
-            currentTransactions.forEach(tx => {
-                const date = new Date(tx.created_at).toISOString();
-                csv += `${tx.id},"${date}","${tx.telegram_id}","${tx.telegram_username || ''}","${tx.type}","${tx.action}",${tx.amount},${tx.balance_before || ''},${tx.balance_after || ''},"${tx.description || ''}"\n`;
+        function filterTransactions() {
+            const userFilter = document.getElementById('filter-user').value.toLowerCase();
+            const typeFilter = document.getElementById('filter-type').value;
+            const dateFrom = document.getElementById('filter-date-from').value;
+            const dateTo = document.getElementById('filter-date-to').value;
+
+            let filtered = allTransactions.filter(t => {
+                if (userFilter && !t.user_id.toLowerCase().includes(userFilter) && !(t.username || '').toLowerCase().includes(userFilter)) {
+                    return false;
+                }
+                if (typeFilter && !t.type.includes(typeFilter)) {
+                    return false;
+                }
+                if (dateFrom && new Date(t.created_at) < new Date(dateFrom)) {
+                    return false;
+                }
+                if (dateTo && new Date(t.created_at) > new Date(dateTo + 'T23:59:59')) {
+                    return false;
+                }
+                return true;
             });
 
-            // Download
+            renderTransactions(filtered);
+        }
+
+        function exportToCSV() {
+            const csv = [
+                ['Date', 'User ID', 'Username', 'Type', 'Amount', 'Balance Before', 'Balance After', 'Metadata'],
+                ...allTransactions.map(t => [
+                    new Date(t.created_at).toISOString(),
+                    t.user_id,
+                    t.username || '',
+                    t.type,
+                    t.amount,
+                    t.balance_before || '',
+                    t.balance_after || '',
+                    JSON.stringify(t.metadata || {})
+                ])
+            ].map(row => row.join(',')).join('\n');
+
             const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `transactions_${Date.now()}.csv`;
-            document.body.appendChild(a);
+            a.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-            alert('✅ Transactions exported to CSV!');
         }
+
+        // Add filter listeners
+        document.getElementById('filter-user').addEventListener('input', filterTransactions);
+        document.getElementById('filter-type').addEventListener('change', filterTransactions);
+        document.getElementById('filter-date-from').addEventListener('change', filterTransactions);
+        document.getElementById('filter-date-to').addEventListener('change', filterTransactions);
+
+        // Load on page load
+        loadTransactions();
     </script>
 </body>
 </html>
-
