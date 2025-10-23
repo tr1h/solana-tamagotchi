@@ -1891,6 +1891,35 @@
             40% { transform: translateY(-15px) scale(1.05); }
             70% { transform: translateY(0) scale(0.95, 1.05); }
         }
+
+        /* Battle Arena Styles ⚔️ */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .bet-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .bet-btn:active {
+            transform: translateY(0);
+        }
+
+        .battle-action:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .battle-action:active {
+            transform: scale(0.95);
+        }
+
+        .battle-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -2664,6 +2693,11 @@
                     <div class="game-card-name">Crypto Mining</div>
                     <div class="game-card-cost">Cost: 150 TAMA | Win: up to 2000 TAMA</div>
                 </div>
+                <div class="game-card" data-game="battle" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid #fbbf24;">
+                    <div class="game-card-icon">⚔️</div>
+                    <div class="game-card-name">PVP Battle Arena</div>
+                    <div class="game-card-cost">Bet: 100-1000 TAMA | Win: 180% of bet!</div>
+                </div>
             </div>
             
             <!-- Game Arenas (will be shown when game is selected) -->
@@ -2704,6 +2738,111 @@
                 <div style="text-align: center; margin-top: 15px;">
                     <button onclick="startMiningGame()" id="mining-start-btn" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Mining (150 TAMA)</button>
                     <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
+                </div>
+            </div>
+            
+            <!-- ⚔️ BATTLE ARENA -->
+            <div class="game-arena" id="battle-arena" style="display: none;">
+                <!-- Lobby Screen -->
+                <div id="battle-lobby">
+                    <h3 style="text-align: center; margin-bottom: 15px;">⚔️ PVP Battle Arena</h3>
+                    <p style="text-align: center; margin-bottom: 20px; opacity: 0.9;">Choose your bet and find an opponent!</p>
+                    
+                    <!-- Bet Selection -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+                        <button class="bet-btn" data-bet="100" style="padding: 15px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 20px;">💰 100 TAMA</div>
+                            <div style="font-size: 12px; opacity: 0.8;">Win: 180 TAMA</div>
+                        </button>
+                        <button class="bet-btn" data-bet="300" style="padding: 15px; background: linear-gradient(135deg, #3b82f6, #2563eb); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 20px;">💎 300 TAMA</div>
+                            <div style="font-size: 12px; opacity: 0.8;">Win: 540 TAMA</div>
+                        </button>
+                        <button class="bet-btn" data-bet="500" style="padding: 15px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 20px;">💜 500 TAMA</div>
+                            <div style="font-size: 12px; opacity: 0.8;">Win: 900 TAMA</div>
+                        </button>
+                        <button class="bet-btn" data-bet="1000" style="padding: 15px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 20px;">🔥 1000 TAMA</div>
+                            <div style="font-size: 12px; opacity: 0.8;">Win: 1800 TAMA</div>
+                        </button>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button onclick="backToGames()" style="padding: 10px 20px; background: #6b7280; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Back to Games</button>
+                    </div>
+                </div>
+                
+                <!-- Matchmaking Screen -->
+                <div id="battle-matchmaking" style="display: none;">
+                    <h3 style="text-align: center; margin-bottom: 15px;">🔍 Finding Opponent...</h3>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <div style="font-size: 48px; animation: spin 2s linear infinite;">⚔️</div>
+                        <p style="margin-top: 20px; opacity: 0.8;">Searching for worthy opponent...</p>
+                        <p id="matchmaking-timer" style="margin-top: 10px; font-size: 20px; color: #fbbf24;">0s</p>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="cancelMatchmaking()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Cancel</button>
+                    </div>
+                </div>
+                
+                <!-- Battle Screen -->
+                <div id="battle-fight" style="display: none;">
+                    <h3 style="text-align: center; margin-bottom: 10px;">⚔️ BATTLE!</h3>
+                    
+                    <!-- Battle Info -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                        <div style="text-align: center; flex: 1;">
+                            <div style="font-size: 12px; opacity: 0.7;">You</div>
+                            <div id="battle-player1-name" style="font-size: 16px; font-weight: bold;">Player 1</div>
+                            <div id="battle-player1-score" style="font-size: 24px; color: #10b981;">0</div>
+                        </div>
+                        <div style="text-align: center; flex: 1;">
+                            <div style="font-size: 12px; opacity: 0.7;">Round</div>
+                            <div id="battle-round" style="font-size: 24px; font-weight: bold;">1/5</div>
+                            <div id="battle-timer" style="font-size: 16px; color: #fbbf24;">10s</div>
+                        </div>
+                        <div style="text-align: center; flex: 1;">
+                            <div style="font-size: 12px; opacity: 0.7;">Opponent</div>
+                            <div id="battle-player2-name" style="font-size: 16px; font-weight: bold;">Player 2</div>
+                            <div id="battle-player2-score" style="font-size: 24px; color: #ef4444;">0</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Battle Actions -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                        <button class="battle-action" data-action="fast" style="padding: 20px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 32px;">⚡</div>
+                            <div style="font-size: 14px;">FAST</div>
+                            <div style="font-size: 10px; opacity: 0.8;">Beats Strong</div>
+                        </button>
+                        <button class="battle-action" data-action="strong" style="padding: 20px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 32px;">💪</div>
+                            <div style="font-size: 14px;">STRONG</div>
+                            <div style="font-size: 10px; opacity: 0.8;">Beats Block</div>
+                        </button>
+                        <button class="battle-action" data-action="block" style="padding: 20px; background: linear-gradient(135deg, #3b82f6, #2563eb); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+                            <div style="font-size: 32px;">🛡️</div>
+                            <div style="font-size: 14px;">BLOCK</div>
+                            <div style="font-size: 10px; opacity: 0.8;">Beats Fast</div>
+                        </button>
+                    </div>
+                    
+                    <!-- Battle Result -->
+                    <div id="battle-round-result" style="text-align: center; min-height: 40px; margin-bottom: 20px; font-size: 18px; font-weight: bold;"></div>
+                </div>
+                
+                <!-- Battle Result Screen -->
+                <div id="battle-result" style="display: none;">
+                    <h3 id="battle-result-title" style="text-align: center; margin-bottom: 15px; font-size: 32px;">🏆 VICTORY!</h3>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <div id="battle-result-icon" style="font-size: 80px;">🏆</div>
+                        <p id="battle-result-text" style="margin-top: 20px; font-size: 20px;">You won 180 TAMA!</p>
+                        <p style="margin-top: 10px; opacity: 0.8;">Final Score: <span id="battle-final-score">3-2</span></p>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="backToGames()" style="padding: 10px 30px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; font-size: 16px;">Back to Games</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -4859,6 +4998,275 @@
             }
         `;
         document.head.appendChild(style);
+        
+        // ⚔️ BATTLE ARENA - PVP SYSTEM
+        const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcmF6eXVwYW1laWR4cGppaHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5Mzc1NTAsImV4cCI6MjA3NTUxMzU1MH0.1EkMDqCNJoAjcJDh3Dd3yPfus-JpdcwE--z2dhjh7wU';
+        
+        let battleState = {
+            active: false,
+            battleId: null,
+            betAmount: 0,
+            isPlayer1: false,
+            currentRound: 1,
+            player1Score: 0,
+            player2Score: 0,
+            player1Move: null,
+            player2Move: null,
+            matchmakingInterval: null,
+            matchmakingTime: 0,
+            roundTimer: null,
+            roundTimeLeft: 10,
+            vsBot: false,
+            botDifficulty: 0.7 // 70% smart AI
+        };
+        
+        // Initialize battle buttons
+        document.querySelectorAll('.bet-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const bet = parseInt(btn.dataset.bet);
+                startMatchmaking(bet);
+            });
+        });
+        
+        // Initialize battle actions
+        document.querySelectorAll('.battle-action').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.action;
+                submitBattleMove(action);
+            });
+        });
+        
+        function startMatchmaking(betAmount) {
+            if (gameState.tama < betAmount) {
+                showMessage(`❌ Not enough TAMA! Need ${betAmount} TAMA`);
+                return;
+            }
+            
+            battleState.betAmount = betAmount;
+            
+            // Deduct bet
+            gameState.tama -= betAmount;
+            updateUI();
+            
+            // Log transaction
+            if (typeof logTransaction === 'function') {
+                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_battle_bet', -betAmount, `Placed ${betAmount} TAMA bet for PVP Battle`, gameState);
+            }
+            
+            // Show matchmaking screen
+            document.getElementById('battle-lobby').style.display = 'none';
+            document.getElementById('battle-matchmaking').style.display = 'block';
+            
+            battleState.matchmakingTime = 0;
+            
+            // Try to find opponent or start with bot after 10 seconds
+            battleState.matchmakingInterval = setInterval(async () => {
+                battleState.matchmakingTime++;
+                document.getElementById('matchmaking-timer').textContent = `${battleState.matchmakingTime}s`;
+                
+                // After 5 seconds, start with bot
+                if (battleState.matchmakingTime >= 5) {
+                    clearInterval(battleState.matchmakingInterval);
+                    startBattleWithBot();
+                } else {
+                    // Try to find real opponent (for future implementation)
+                    // const opponent = await findOpponent(betAmount);
+                    // if (opponent) {
+                    //     startBattle(opponent);
+                    // }
+                }
+            }, 1000);
+        }
+        
+        function cancelMatchmaking() {
+            clearInterval(battleState.matchmakingInterval);
+            
+            // Refund bet
+            gameState.tama += battleState.betAmount;
+            updateUI();
+            
+            // Log refund transaction
+            if (typeof logTransaction === 'function') {
+                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'refund_battle_bet', battleState.betAmount, `Refunded ${battleState.betAmount} TAMA (cancelled matchmaking)`, gameState);
+            }
+            
+            // Back to lobby
+            document.getElementById('battle-matchmaking').style.display = 'none';
+            document.getElementById('battle-lobby').style.display = 'block';
+            
+            battleState.betAmount = 0;
+        }
+        
+        function startBattleWithBot() {
+            battleState.active = true;
+            battleState.vsBot = true;
+            battleState.currentRound = 1;
+            battleState.player1Score = 0;
+            battleState.player2Score = 0;
+            
+            // Show battle screen
+            document.getElementById('battle-matchmaking').style.display = 'none';
+            document.getElementById('battle-fight').style.display = 'block';
+            
+            // Set player names
+            document.getElementById('battle-player1-name').textContent = window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name || 'You';
+            document.getElementById('battle-player2-name').textContent = getRandomBotName();
+            
+            // Start first round
+            startBattleRound();
+        }
+        
+        function getRandomBotName() {
+            const botNames = ['CryptoBot', 'TamaKing', 'PetMaster', 'BlockChain', 'SolanaWarrior', 'DiamondHands', 'MoonPet', 'RocketBot'];
+            return botNames[Math.floor(Math.random() * botNames.length)];
+        }
+        
+        function startBattleRound() {
+            battleState.player1Move = null;
+            battleState.player2Move = null;
+            battleState.roundTimeLeft = 10;
+            
+            // Update round display
+            document.getElementById('battle-round').textContent = `${battleState.currentRound}/5`;
+            document.getElementById('battle-player1-score').textContent = battleState.player1Score;
+            document.getElementById('battle-player2-score').textContent = battleState.player2Score;
+            document.getElementById('battle-round-result').textContent = 'Choose your move!';
+            
+            // Enable action buttons
+            document.querySelectorAll('.battle-action').forEach(btn => btn.disabled = false);
+            
+            // Start round timer
+            battleState.roundTimer = setInterval(() => {
+                battleState.roundTimeLeft--;
+                document.getElementById('battle-timer').textContent = `${battleState.roundTimeLeft}s`;
+                
+                if (battleState.roundTimeLeft <= 0) {
+                    // Time's up! Random move for player if not chosen
+                    if (!battleState.player1Move) {
+                        const moves = ['fast', 'strong', 'block'];
+                        battleState.player1Move = moves[Math.floor(Math.random() * moves.length)];
+                    }
+                    resolveBattleRound();
+                }
+            }, 1000);
+        }
+        
+        function submitBattleMove(move) {
+            if (battleState.player1Move) return; // Already submitted
+            
+            battleState.player1Move = move;
+            
+            // Disable action buttons
+            document.querySelectorAll('.battle-action').forEach(btn => btn.disabled = true);
+            
+            // Show waiting message
+            document.getElementById('battle-round-result').textContent = 'Waiting for opponent...';
+            
+            // Bot makes move (with small delay for realism)
+            setTimeout(() => {
+                battleState.player2Move = getBotMove();
+                resolveBattleRound();
+            }, Math.random() * 1000 + 500);
+        }
+        
+        function getBotMove() {
+            const moves = ['fast', 'strong', 'block'];
+            
+            // Smart AI: 70% chance to counter player's last move
+            if (Math.random() < battleState.botDifficulty && battleState.player1Move) {
+                const counters = {
+                    'fast': 'block',
+                    'strong': 'fast',
+                    'block': 'strong'
+                };
+                return counters[battleState.player1Move];
+            }
+            
+            // Otherwise random
+            return moves[Math.floor(Math.random() * moves.length)];
+        }
+        
+        function resolveBattleRound() {
+            clearInterval(battleState.roundTimer);
+            
+            const p1 = battleState.player1Move;
+            const p2 = battleState.player2Move;
+            
+            let result = '';
+            
+            // Determine winner
+            if (p1 === p2) {
+                result = '🤝 TIE!';
+            } else if (
+                (p1 === 'fast' && p2 === 'strong') ||
+                (p1 === 'strong' && p2 === 'block') ||
+                (p1 === 'block' && p2 === 'fast')
+            ) {
+                battleState.player1Score++;
+                result = '✅ YOU WIN THIS ROUND!';
+            } else {
+                battleState.player2Score++;
+                result = '❌ OPPONENT WINS THIS ROUND!';
+            }
+            
+            // Show result with moves
+            const moveEmojis = { fast: '⚡', strong: '💪', block: '🛡️' };
+            document.getElementById('battle-round-result').textContent = 
+                `${moveEmojis[p1]} vs ${moveEmojis[p2]} - ${result}`;
+            
+            // Update scores
+            document.getElementById('battle-player1-score').textContent = battleState.player1Score;
+            document.getElementById('battle-player2-score').textContent = battleState.player2Score;
+            
+            // Check if battle is over
+            if (battleState.currentRound >= 5 || battleState.player1Score >= 3 || battleState.player2Score >= 3) {
+                setTimeout(() => endBattle(), 2000);
+            } else {
+                // Next round
+                battleState.currentRound++;
+                setTimeout(() => startBattleRound(), 2000);
+            }
+        }
+        
+        function endBattle() {
+            battleState.active = false;
+            
+            const won = battleState.player1Score > battleState.player2Score;
+            const prize = won ? Math.floor(battleState.betAmount * 1.8) : 0;
+            
+            // Show result screen
+            document.getElementById('battle-fight').style.display = 'none';
+            document.getElementById('battle-result').style.display = 'block';
+            
+            if (won) {
+                document.getElementById('battle-result-title').textContent = '🏆 VICTORY!';
+                document.getElementById('battle-result-icon').textContent = '🏆';
+                document.getElementById('battle-result-text').textContent = `You won ${prize} TAMA!`;
+                
+                gameState.tama += prize;
+                
+                // Log win transaction
+                if (typeof logTransaction === 'function') {
+                    logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_battle_win', prize, `Won ${prize} TAMA from PVP Battle`, gameState);
+                }
+            } else {
+                document.getElementById('battle-result-title').textContent = '💀 DEFEAT!';
+                document.getElementById('battle-result-icon').textContent = '💀';
+                document.getElementById('battle-result-text').textContent = `You lost ${battleState.betAmount} TAMA...`;
+                
+                // Log loss transaction (already deducted at start, just for logging)
+                if (typeof logTransaction === 'function') {
+                    logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'lose_battle', 0, `Lost ${battleState.betAmount} TAMA bet in PVP Battle`, gameState);
+                }
+            }
+            
+            document.getElementById('battle-final-score').textContent = 
+                `${battleState.player1Score}-${battleState.player2Score}`;
+            
+            updateUI();
+            triggerAutoSave();
+        }
         
         // 🎯 DARTS GAME
         function throwDart() {
