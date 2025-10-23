@@ -2654,53 +2654,19 @@
             
             <!-- Game Selection -->
             <div class="game-selection" id="game-selection">
-                <div class="game-card" data-game="memory">
-                    <div class="game-card-icon">🎯</div>
-                    <div class="game-card-name">Memory Match</div>
-                    <div class="game-card-cost">Cost: 50 TAMA | Win: up to 500 TAMA</div>
-                </div>
-                <div class="game-card" data-game="dice">
-                    <div class="game-card-icon">🎲</div>
-                    <div class="game-card-name">Lucky Dice</div>
-                    <div class="game-card-cost">Cost: 30 TAMA | Win: up to 300 TAMA</div>
-                </div>
                 <div class="game-card" data-game="slots">
                     <div class="game-card-icon">🎰</div>
                     <div class="game-card-name">Slot Machine</div>
                     <div class="game-card-cost">Cost: 100 TAMA | Win: up to 1000 TAMA</div>
                 </div>
-                <div class="game-card" data-game="race">
-                    <div class="game-card-icon">🏃</div>
-                    <div class="game-card-name">Pet Race</div>
-                    <div class="game-card-cost">Cost: 75 TAMA | Win: up to 750 TAMA</div>
-                </div>
-                <div class="game-card" data-game="darts">
-                    <div class="game-card-icon">🎯</div>
-                    <div class="game-card-name">Darts</div>
-                    <div class="game-card-cost">Cost: 60 TAMA | Win: up to 600 TAMA</div>
+                <div class="game-card" data-game="mining">
+                    <div class="game-card-icon">⛏️</div>
+                    <div class="game-card-name">Crypto Mining</div>
+                    <div class="game-card-cost">Cost: 150 TAMA | Win: up to 2000 TAMA</div>
                 </div>
             </div>
             
             <!-- Game Arenas (will be shown when game is selected) -->
-            <div class="game-arena" id="memory-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">🎯 Memory Match</h3>
-                <div id="memory-board" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="startMemoryGame()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Game (50 TAMA)</button>
-                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
-                </div>
-            </div>
-            
-            <div class="game-arena" id="dice-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">🎲 Lucky Dice</h3>
-                <div style="text-align: center; font-size: 64px; margin: 20px 0;" id="dice-display">🎲</div>
-                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="dice-result"></div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="rollDice()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Roll Dice (30 TAMA)</button>
-                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
-                </div>
-            </div>
-            
             <div class="game-arena" id="slots-arena">
                 <h3 style="text-align: center; margin-bottom: 15px;">🎰 Slot Machine</h3>
                 <div style="display: flex; justify-content: center; gap: 10px; font-size: 64px; margin: 20px 0;" id="slots-display">
@@ -2713,34 +2679,30 @@
                 </div>
             </div>
             
-            <div class="game-arena" id="race-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">🏃 Pet Race</h3>
-                <div id="race-track" style="background: #1a202c; border-radius: 10px; padding: 20px; min-height: 200px;">
-                    <div style="margin-bottom: 15px; font-size: 24px;" id="racer-1">🐾</div>
-                    <div style="margin-bottom: 15px; font-size: 24px;" id="racer-2">🐶</div>
-                    <div style="margin-bottom: 15px; font-size: 24px;" id="racer-3">🐱</div>
+            <div class="game-arena" id="mining-arena">
+                <h3 style="text-align: center; margin-bottom: 15px;">⛏️ Crypto Mining</h3>
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 12px; opacity: 0.7;">Time Left</div>
+                            <div id="mining-timer" style="font-size: 24px; font-weight: bold;">30s</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; opacity: 0.7;">Combo</div>
+                            <div id="mining-combo" style="font-size: 24px; font-weight: bold; color: #f59e0b;">x1</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 12px; opacity: 0.7;">Mined</div>
+                            <div id="mining-score" style="font-size: 24px; font-weight: bold; color: #10b981;">0 💎</div>
+                        </div>
+                    </div>
                 </div>
-                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="race-result"></div>
+                <div id="mining-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0;">
+                    <!-- Blocks will be generated here -->
+                </div>
+                <div style="text-align: center; font-size: 16px; margin: 15px 0; min-height: 40px;" id="mining-result"></div>
                 <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="startRace()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Race (75 TAMA)</button>
-                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
-                </div>
-            </div>
-            
-            <div class="game-arena" id="darts-arena">
-                <h3 style="text-align: center; margin-bottom: 15px;">🎯 Darts</h3>
-                <div style="display: flex; justify-content: center; margin: 20px 0;">
-                    <svg width="200" height="200" viewBox="0 0 200 200" style="background: #1a202c; border-radius: 50%;">
-                        <circle cx="100" cy="100" r="90" fill="#dc2626" />
-                        <circle cx="100" cy="100" r="70" fill="#fbbf24" />
-                        <circle cx="100" cy="100" r="50" fill="#10b981" />
-                        <circle cx="100" cy="100" r="30" fill="#3b82f6" />
-                        <circle cx="100" cy="100" r="10" fill="#fbbf24" id="darts-bullseye" />
-                    </svg>
-                </div>
-                <div style="text-align: center; font-size: 18px; margin: 15px 0;" id="darts-result"></div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="throwDart()" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Throw Dart (60 TAMA)</button>
+                    <button onclick="startMiningGame()" id="mining-start-btn" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Mining (150 TAMA)</button>
                     <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
                 </div>
             </div>
@@ -4669,6 +4631,211 @@
                 }
             }, 50);
         }
+        
+        // ⛏️ CRYPTO MINING GAME
+        let miningGameActive = false;
+        let miningTimer = null;
+        let miningCombo = 1;
+        let miningScore = 0;
+        let miningTimeLeft = 30;
+        let lastBlockTime = 0;
+        
+        function startMiningGame() {
+            if (gameState.tama < 150) {
+                showMessage('❌ Not enough TAMA! Need 150 TAMA');
+                return;
+            }
+            
+            if (miningGameActive) return;
+            
+            gameState.tama -= 150;
+            updateUI();
+            
+            miningGameActive = true;
+            miningCombo = 1;
+            miningScore = 0;
+            miningTimeLeft = 30;
+            lastBlockTime = Date.now();
+            
+            document.getElementById('mining-start-btn').disabled = true;
+            document.getElementById('mining-result').textContent = '⛏️ Mine the blocks quickly to increase your combo!';
+            
+            generateMiningBlocks();
+            startMiningTimer();
+        }
+        
+        function generateMiningBlocks() {
+            const grid = document.getElementById('mining-grid');
+            grid.innerHTML = '';
+            
+            const blockTypes = [
+                { emoji: '🟫', value: 1, color: '#8b4513' },
+                { emoji: '⬜', value: 2, color: '#c0c0c0' },
+                { emoji: '🟨', value: 5, color: '#ffd700' },
+                { emoji: '💎', value: 10, color: '#4169e1' }
+            ];
+            
+            for (let i = 0; i < 16; i++) {
+                const block = document.createElement('div');
+                const rand = Math.random();
+                let blockType;
+                
+                if (rand < 0.4) blockType = blockTypes[0]; // 40% common
+                else if (rand < 0.7) blockType = blockTypes[1]; // 30% silver
+                else if (rand < 0.9) blockType = blockTypes[2]; // 20% gold
+                else blockType = blockTypes[3]; // 10% diamond
+                
+                block.style.cssText = `
+                    background: ${blockType.color};
+                    border: 2px solid rgba(255,255,255,0.3);
+                    border-radius: 10px;
+                    padding: 20px;
+                    font-size: 32px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    user-select: none;
+                `;
+                block.textContent = blockType.emoji;
+                block.dataset.value = blockType.value;
+                
+                block.addEventListener('click', () => mineBlock(block, blockType));
+                grid.appendChild(block);
+            }
+        }
+        
+        function mineBlock(block, blockType) {
+            if (!miningGameActive) return;
+            
+            const now = Date.now();
+            const timeSinceLastBlock = now - lastBlockTime;
+            
+            // Combo system: click within 1 second to maintain combo
+            if (timeSinceLastBlock < 1000) {
+                miningCombo = Math.min(miningCombo + 0.5, 5); // Max combo x5
+            } else {
+                miningCombo = Math.max(1, miningCombo - 0.5);
+            }
+            
+            lastBlockTime = now;
+            
+            const earnedPoints = Math.floor(blockType.value * miningCombo);
+            miningScore += earnedPoints;
+            
+            // Visual feedback
+            block.style.transform = 'scale(0.8) rotate(10deg)';
+            block.style.opacity = '0.5';
+            setTimeout(() => {
+                block.style.transform = 'scale(1.2)';
+                block.style.opacity = '0';
+            }, 100);
+            
+            // Show floating text
+            const floatingText = document.createElement('div');
+            floatingText.textContent = `+${earnedPoints} 💎`;
+            floatingText.style.cssText = `
+                position: fixed;
+                left: ${block.getBoundingClientRect().left}px;
+                top: ${block.getBoundingClientRect().top}px;
+                color: #10b981;
+                font-weight: bold;
+                font-size: 20px;
+                pointer-events: none;
+                animation: floatUp 1s ease-out;
+                z-index: 10000;
+            `;
+            document.body.appendChild(floatingText);
+            setTimeout(() => floatingText.remove(), 1000);
+            
+            // Update UI
+            document.getElementById('mining-combo').textContent = `x${miningCombo.toFixed(1)}`;
+            document.getElementById('mining-score').textContent = `${miningScore} 💎`;
+            
+            // Regenerate block
+            setTimeout(() => {
+                if (miningGameActive) {
+                    const blockTypes = [
+                        { emoji: '🟫', value: 1, color: '#8b4513' },
+                        { emoji: '⬜', value: 2, color: '#c0c0c0' },
+                        { emoji: '🟨', value: 5, color: '#ffd700' },
+                        { emoji: '💎', value: 10, color: '#4169e1' }
+                    ];
+                    
+                    const rand = Math.random();
+                    let newBlockType;
+                    if (rand < 0.4) newBlockType = blockTypes[0];
+                    else if (rand < 0.7) newBlockType = blockTypes[1];
+                    else if (rand < 0.9) newBlockType = blockTypes[2];
+                    else newBlockType = blockTypes[3];
+                    
+                    block.style.cssText = `
+                        background: ${newBlockType.color};
+                        border: 2px solid rgba(255,255,255,0.3);
+                        border-radius: 10px;
+                        padding: 20px;
+                        font-size: 32px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        user-select: none;
+                    `;
+                    block.textContent = newBlockType.emoji;
+                    block.dataset.value = newBlockType.value;
+                    block.onclick = () => mineBlock(block, newBlockType);
+                }
+            }, 200);
+        }
+        
+        function startMiningTimer() {
+            const timerDisplay = document.getElementById('mining-timer');
+            
+            miningTimer = setInterval(() => {
+                miningTimeLeft--;
+                timerDisplay.textContent = `${miningTimeLeft}s`;
+                
+                if (miningTimeLeft <= 0) {
+                    endMiningGame();
+                }
+            }, 1000);
+        }
+        
+        function endMiningGame() {
+            miningGameActive = false;
+            clearInterval(miningTimer);
+            
+            // Calculate reward: 1 💎 = 10 TAMA, max 2000 TAMA
+            const reward = Math.min(miningScore * 10, 2000);
+            gameState.tama += reward;
+            
+            const resultEl = document.getElementById('mining-result');
+            if (reward > 1500) {
+                resultEl.textContent = `🎉 LEGENDARY MINING! You earned ${reward} TAMA! Amazing combo!`;
+            } else if (reward > 1000) {
+                resultEl.textContent = `💎 EPIC MINING! You earned ${reward} TAMA! Great job!`;
+            } else if (reward > 500) {
+                resultEl.textContent = `⭐ GOOD MINING! You earned ${reward} TAMA!`;
+            } else {
+                resultEl.textContent = `⛏️ Mining complete! You earned ${reward} TAMA. Try for more combo next time!`;
+            }
+            
+            document.getElementById('mining-start-btn').disabled = false;
+            document.getElementById('mining-timer').textContent = '30s';
+            document.getElementById('mining-combo').textContent = 'x1';
+            document.getElementById('mining-score').textContent = '0 💎';
+            
+            updateUI();
+            triggerAutoSave();
+        }
+        
+        // Add floating animation for mining text
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes floatUp {
+                0% { transform: translateY(0); opacity: 1; }
+                100% { transform: translateY(-100px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
         
         // 🎯 DARTS GAME
         function throwDart() {
