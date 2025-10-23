@@ -4536,6 +4536,12 @@
             }
             
             gameState.tama -= 100;
+            
+            // Log transaction for spending TAMA on slots
+            if (typeof logTransaction === 'function') {
+                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_slots', -100, 'Spent 100 TAMA to play Slot Machine', gameState);
+            }
+            
             updateUI();
             
             const slotsDisplay = document.getElementById('slots-display');
@@ -4570,6 +4576,12 @@
                     }
                     
                     gameState.tama += reward;
+                    
+                    // Log transaction for winning TAMA from slots
+                    if (typeof logTransaction === 'function' && reward > 0) {
+                        logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_slots', reward, `Won ${reward} TAMA from Slot Machine`, gameState);
+                    }
+                    
                     updateUI();
                     triggerAutoSave();
                 }
@@ -4649,6 +4661,12 @@
             if (miningGameActive) return;
             
             gameState.tama -= 150;
+            
+            // Log transaction for spending TAMA on mining
+            if (typeof logTransaction === 'function') {
+                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_mining', -150, 'Spent 150 TAMA to start Crypto Mining', gameState);
+            }
+            
             updateUI();
             
             miningGameActive = true;
@@ -4806,6 +4824,11 @@
             // Calculate reward: 1 💎 = 10 TAMA, max 2000 TAMA
             const reward = Math.min(miningScore * 10, 2000);
             gameState.tama += reward;
+            
+            // Log transaction for winning TAMA from mining
+            if (typeof logTransaction === 'function' && reward > 0) {
+                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_mining', reward, `Mined ${miningScore} 💎 and earned ${reward} TAMA from Crypto Mining`, gameState);
+            }
             
             const resultEl = document.getElementById('mining-result');
             if (reward > 1500) {
