@@ -5681,7 +5681,60 @@
             if (healBtn) {
                 healBtn.addEventListener('click', healPet);
             }
+            
+            // INITIALIZE MINI GAMES HANDLERS
+            console.log('Initializing mini games handlers...');
+            
+            // Game card click handlers
+            document.querySelectorAll('.game-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const game = card.dataset.game;
+                    console.log('Game card clicked:', game);
+                    selectGame(game);
+                });
+            });
         });
+        
+        // Game selection function
+        function selectGame(game) {
+            // Hide game selection
+            document.getElementById('game-selection').style.display = 'none';
+            
+            // Hide all game arenas
+            document.querySelectorAll('.game-arena').forEach(arena => {
+                arena.style.display = 'none';
+            });
+            
+            // Show selected game arena
+            const arena = document.getElementById(`${game}-arena`);
+            if (arena) {
+                arena.style.display = 'block';
+            }
+        }
+        
+        // Back to games function
+        function backToGames() {
+            // Reset battle state if in battle
+            if (battleState && battleState.active) {
+                clearInterval(battleState.roundTimer);
+                clearInterval(battleState.matchmakingInterval);
+                battleState.active = false;
+            }
+            
+            // Hide all game arenas
+            document.querySelectorAll('.game-arena').forEach(arena => {
+                arena.style.display = 'none';
+            });
+            
+            // Hide all battle screens
+            document.getElementById('battle-lobby').style.display = 'block';
+            document.getElementById('battle-matchmaking').style.display = 'none';
+            document.getElementById('battle-fight').style.display = 'none';
+            document.getElementById('battle-result').style.display = 'none';
+            
+            // Show game selection
+            document.getElementById('game-selection').style.display = 'grid';
+        }
     </script>
 </body>
 </html>
