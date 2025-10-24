@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- VERSION: 1.6.1 | BUILD: 2025-10-24 22:40 | FIX: enemies are not walls, you can walk through them -->
+<!-- VERSION: 1.6.2 | BUILD: 2025-10-24 22:45 | CRITICAL: Fix player stuck at canvas edge - use levelWidth instead of canvas.width -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Solana Tamagotchi v1.6.1</title>
+    <title>Solana Tamagotchi v1.6.2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Transaction Logger -->
-    <script src="js/transaction-logger.js?v=1.6.1"></script>
+    <script src="js/transaction-logger.js?v=1.6.2"></script>
     <style>
         /* CSS Variables for Themes 🎨 */
         :root {
@@ -6139,10 +6139,10 @@
                 // Limit falling speed
                 if (this.player.vy > 10) this.player.vy = 10;
                 
-                // Keep player in bounds horizontally
+                // Keep player in bounds horizontally - НЕ canvas.width, а levelWidth!
                 if (this.player.x < 0) this.player.x = 0;
-                if (this.player.x > this.canvas.width - this.player.width) {
-                    this.player.x = this.canvas.width - this.player.width;
+                if (this.player.x > this.levelWidth - this.player.width) {
+                    this.player.x = this.levelWidth - this.player.width;
                 }
                 
                 // Check if fell off
@@ -7542,8 +7542,8 @@
         
         // Initialize everything when DOM is ready
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.1 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-24 22:40 | FIX: Walk through enemies', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-24 22:45 | CRITICAL: Player can walk past canvas edge!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Wait for Telegram WebApp to initialize
