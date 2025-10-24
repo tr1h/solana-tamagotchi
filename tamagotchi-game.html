@@ -1608,6 +1608,67 @@
             transform: translateY(0);
         }
 
+        /* Navigation Buttons Container */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 20px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            min-width: 0;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Individual nav button styles */
+        .nav-btn.help-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: 2px solid #5b21b6;
+        }
+
+        .nav-btn.minigames-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 2px solid #065f46;
+        }
+
+        .nav-btn.leaderboard-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border: 2px solid #78350f;
+        }
+
+        /* Mobile responsiveness for nav buttons */
+        @media (max-width: 480px) {
+            .nav-buttons {
+                margin: 10px 15px;
+                gap: 8px;
+            }
+            
+            .nav-btn {
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+        }
+
         /* Mini Games Modal */
         .minigames-modal {
             display: none;
@@ -2199,6 +2260,13 @@
                 <span>🤖</span>
             </button>
         </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button class="nav-btn help-btn" id="help-btn">📚 Help</button>
+            <button class="nav-btn minigames-btn" id="minigames-btn">🎮 Games</button>
+            <button class="nav-btn leaderboard-btn" id="leaderboard-btn">🏆 Top</button>
         </div>
 
         <!-- Pet Area -->
@@ -2909,14 +2977,6 @@
             </div>
         </div>
 
-        <!-- Mini Games Button -->
-        <button class="minigames-btn" id="minigames-btn">🎮 Mini Games</button>
-
-        <!-- Leaderboard Button -->
-        <button class="leaderboard-btn" id="leaderboard-btn">🏆 Leaderboard</button>
-
-        <!-- Help Button -->
-        <button class="help-btn" id="help-btn">📚 Help & Guide</button>
 
         <!-- Auto-save indicator removed - using silent save -->
     </div>
