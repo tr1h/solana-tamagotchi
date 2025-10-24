@@ -3199,11 +3199,11 @@
                 <!-- Mobile Controls for Fullscreen -->
                 <div id="mobile-controls-fullscreen" style="display: none; position: absolute; bottom: 20px; left: 0; right: 0; padding: 0 30px; pointer-events: none;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div style="display: flex; gap: 15px; pointer-events: auto;">
-                            <button id="btn-left-fs" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 28px; cursor: pointer; touch-action: none;">⬅️</button>
-                            <button id="btn-right-fs" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 28px; cursor: pointer; touch-action: none;">➡️</button>
+                        <div style="display: flex; gap: 10px; pointer-events: auto;">
+                            <button id="btn-left-fs" style="width: 55px; height: 55px; border-radius: 50%; background: rgba(0,0,0,0.65); border: 2px solid rgba(255,255,255,0.8); color: white; font-size: 22px; cursor: pointer; touch-action: none;">⬅️</button>
+                            <button id="btn-right-fs" style="width: 55px; height: 55px; border-radius: 50%; background: rgba(0,0,0,0.65); border: 2px solid rgba(255,255,255,0.8); color: white; font-size: 22px; cursor: pointer; touch-action: none;">➡️</button>
                     </div>
-                        <button id="btn-jump-fs" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,69,0,0.8); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 32px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
+                        <button id="btn-jump-fs" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,69,0,0.8); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 24px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
                 </div>
                 </div>
             </div>
@@ -5798,19 +5798,19 @@
                     }, 100);
                 }
                 
-                // Initialize player (выше из-за большего canvas)
+                // Initialize player (УВЕЛИЧЕН ДЛЯ ВИДИМОСТИ!)
                 this.player = {
                     x: 50,
-                    y: 380,
-                    width: 24,
-                    height: 24,
+                    y: 360,
+                    width: 40,  // Было 24, стало 40!
+                    height: 40, // Было 24, стало 40!
                     vx: 0,
                     vy: 0,
                     jumping: false,
                     onGround: false,
                     jump() {
                         if (this.onGround) {
-                            this.vy = -10;
+                            this.vy = -12; // Увеличен прыжок для большего игрока
                             this.jumping = true;
                             this.onGround = false;
                         }
@@ -6052,45 +6052,45 @@
             
             drawUI() {
                 // Game info panel at top (fixed position, not affected by camera)
-                const panelHeight = 45;
+                const panelHeight = 60; // УВЕЛИЧЕНА высота панели!
                 
                 // Semi-transparent background
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
                 this.ctx.fillRect(0, 0, this.canvas.width, panelHeight);
                 
-                // Stats text - BIGGER!
+                // Stats text - ОГРОМНЫЙ ТЕКСТ!
                 this.ctx.fillStyle = '#FFF';
                 this.ctx.strokeStyle = '#000';
-                this.ctx.lineWidth = 3;
-                this.ctx.font = 'bold 18px "Courier New"';
+                this.ctx.lineWidth = 4;
+                this.ctx.font = 'bold 28px "Courier New"'; // Было 18px, стало 28px!
                 
                 // Coins
-                this.ctx.strokeText(`💰 ${this.coinsCollected}`, 15, 28);
-                this.ctx.fillText(`💰 ${this.coinsCollected}`, 15, 28);
+                this.ctx.strokeText(`💰 ${this.coinsCollected}`, 20, 40);
+                this.ctx.fillText(`💰 ${this.coinsCollected}`, 20, 40);
                 
                 // Lives
-                this.ctx.strokeText(`❤️ ${this.lives}`, 120, 28);
-                this.ctx.fillText(`❤️ ${this.lives}`, 120, 28);
+                this.ctx.strokeText(`❤️ ${this.lives}`, 160, 40);
+                this.ctx.fillText(`❤️ ${this.lives}`, 160, 40);
                 
                 // Time
-                this.ctx.strokeText(`⏱️ ${this.gameTime}s`, 220, 28);
-                this.ctx.fillText(`⏱️ ${this.gameTime}s`, 220, 28);
+                this.ctx.strokeText(`⏱️ ${this.gameTime}s`, 300, 40);
+                this.ctx.fillText(`⏱️ ${this.gameTime}s`, 300, 40);
                 
                 // Score
-                this.ctx.strokeText(`★ ${this.score}`, 350, 28);
-                this.ctx.fillText(`★ ${this.score}`, 350, 28);
+                this.ctx.strokeText(`★ ${this.score}`, 480, 40);
+                this.ctx.fillText(`★ ${this.score}`, 480, 40);
                 
-                // Progress bar (how far in level) - BIGGER!
+                // Progress bar (how far in level) - БОЛЬШЕ!
                 const progress = (this.player.x / this.levelWidth) * 100;
-                const barWidth = this.canvas.width - 520;
-                const barX = this.canvas.width - barWidth - 20;
+                const barWidth = 300; // Фиксированная ширина
+                const barX = this.canvas.width - barWidth - 30;
                 this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                this.ctx.fillRect(barX, 15, barWidth, 20);
+                this.ctx.fillRect(barX, 20, barWidth, 25);
                 this.ctx.fillStyle = '#10B981';
-                this.ctx.fillRect(barX, 15, (barWidth * progress) / 100, 20);
+                this.ctx.fillRect(barX, 20, (barWidth * progress) / 100, 25);
                 this.ctx.strokeStyle = '#FFF';
-                this.ctx.lineWidth = 2;
-                this.ctx.strokeRect(barX, 15, barWidth, 20);
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeRect(barX, 20, barWidth, 25);
             },
             
             updatePlayer() {
@@ -6471,35 +6471,36 @@
                     this.ctx.fill();
                 }
                 
-                // Draw player (Mario-style)
+                // Draw player (БОЛЬШОЙ Mario-style!)
                 const playerColor = '#FF0000'; // Red like Mario
                 const overallsColor = '#0000FF'; // Blue overalls
+                const scale = 1.67; // 40/24 = 1.67
                 
-                // Body (overalls)
+                // Body (overalls) - увеличено!
                 this.ctx.fillStyle = overallsColor;
-                this.ctx.fillRect(this.player.x + 6, this.player.y + 10, 12, 14);
+                this.ctx.fillRect(this.player.x + 10, this.player.y + 16, 20, 22);
                 
-                // Head
+                // Head - увеличена!
                 this.ctx.fillStyle = '#FFDBAC';
-                this.ctx.fillRect(this.player.x + 6, this.player.y + 4, 12, 10);
+                this.ctx.fillRect(this.player.x + 10, this.player.y + 6, 20, 16);
                 
-                // Hat
+                // Hat - увеличена!
                 this.ctx.fillStyle = playerColor;
-                this.ctx.fillRect(this.player.x + 4, this.player.y, 16, 6);
+                this.ctx.fillRect(this.player.x + 6, this.player.y, 28, 10);
                 
-                // Eyes
+                // Eyes - увеличены!
                 this.ctx.fillStyle = '#000';
-                this.ctx.fillRect(this.player.x + 8, this.player.y + 8, 2, 2);
-                this.ctx.fillRect(this.player.x + 14, this.player.y + 8, 2, 2);
+                this.ctx.fillRect(this.player.x + 13, this.player.y + 12, 4, 4);
+                this.ctx.fillRect(this.player.x + 23, this.player.y + 12, 4, 4);
                 
-                // Mustache
+                // Mustache - увеличены!
                 this.ctx.fillStyle = '#000';
-                this.ctx.fillRect(this.player.x + 8, this.player.y + 11, 8, 2);
+                this.ctx.fillRect(this.player.x + 13, this.player.y + 18, 14, 3);
                 
-                // Shoes
+                // Shoes - увеличены!
                 this.ctx.fillStyle = '#8B4513';
-                this.ctx.fillRect(this.player.x + 4, this.player.y + 22, 6, 2);
-                this.ctx.fillRect(this.player.x + 14, this.player.y + 22, 6, 2);
+                this.ctx.fillRect(this.player.x + 6, this.player.y + 36, 10, 4);
+                this.ctx.fillRect(this.player.x + 24, this.player.y + 36, 10, 4);
             },
             
             endGame() {
