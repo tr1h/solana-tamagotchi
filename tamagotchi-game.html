@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- VERSION: 1.6.0 | BUILD: 2025-10-24 22:35 | PLATFORMER UI FIX + LANDSCAPE MODE -->
+<!-- VERSION: 1.6.1 | BUILD: 2025-10-24 22:40 | FIX: enemies are not walls, you can walk through them -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Solana Tamagotchi v1.6.0</title>
+    <title>Solana Tamagotchi v1.6.1</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Transaction Logger -->
-    <script src="js/transaction-logger.js?v=1.6.0"></script>
+    <script src="js/transaction-logger.js?v=1.6.1"></script>
     <style>
         /* CSS Variables for Themes 🎨 */
         :root {
@@ -6268,26 +6268,32 @@
                     }
                 });
                 
-                // Enemy collision
+                // Enemy collision - враги НЕ физические препятствия, только урон!
                 this.enemies.forEach(enemy => {
-                    if (!enemy.dead &&
-                        this.player.x < enemy.x + enemy.width &&
-                        this.player.x + this.player.width > enemy.x &&
+                    if (!enemy.dead && !enemy.justHit &&
+                        this.player.x < enemy.x + enemy.width - 5 &&
+                        this.player.x + this.player.width > enemy.x + 5 &&
                         this.player.y < enemy.y + enemy.height &&
                         this.player.y + this.player.height > enemy.y) {
                         
-                        // Jump on enemy (kill it)
-                        if (this.player.vy > 0 && this.player.y + this.player.height - 8 < enemy.y) {
+                        // Jump on enemy from TOP (kill it) - прыжок сверху
+                        if (this.player.vy > 0 && this.player.y + this.player.height - 15 < enemy.y + 8) {
                             enemy.dead = true;
-                            this.player.vy = -6;
+                            this.player.vy = -8; // Отскок после убийства
                             this.score += 20;
                             
                             setTimeout(() => {
                                 const index = this.enemies.indexOf(enemy);
                                 if (index > -1) this.enemies.splice(index, 1);
                             }, 500);
-            } else {
+                        } 
+                        // Касание сбоку/снизу - урон (но ПРОХОДИМ сквозь!)
+                        else {
+                            enemy.justHit = true; // Cooldown чтобы не умереть 100 раз подряд
                             this.loseLife();
+                            setTimeout(() => {
+                                enemy.justHit = false;
+                            }, 1000);
                         }
                     }
                 });
@@ -7536,8 +7542,8 @@
         
         // Initialize everything when DOM is ready
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.0 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-24 22:35 | UI FIX + LANDSCAPE MODE', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.1 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-24 22:40 | FIX: Walk through enemies', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Wait for Telegram WebApp to initialize
