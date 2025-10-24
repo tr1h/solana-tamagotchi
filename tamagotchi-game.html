@@ -6185,8 +6185,8 @@
                 // Reset ground detection
                 this.player.onGround = false;
                 
-                // Platform collision
-                this.platforms.forEach(platform => {
+                // Platform collision (ground and floating)
+                [...this.platforms, ...this.pipes].forEach(platform => {
                     if (this.player.x < platform.x + platform.width &&
                         this.player.x + this.player.width > platform.x &&
                         this.player.y + this.player.height > platform.y &&
@@ -6200,40 +6200,163 @@
                     }
                 });
                 
-                // Coin collision
-                this.coins.forEach(coin => {
-                    if (!coin.collected &&
-                        this.player.x < coin.x + coin.width &&
-                        this.player.x + this.player.width > coin.x &&
-                        this.player.y < coin.y + coin.height &&
-                        this.player.y + this.player.height > coin.y) {
+                // Question block collision from below
+                this.questionBlocks.forEach(block => {
+                    if (!block.hit && 
+                        this.player.x < block.x + block.width &&
+                        this.player.x + this.player.width > block.x &&
+                        this.player.y < block.y + block.height &&
+                        this.player.y > block.y &&
+                        this.player.vy < 0) {
                         
-                        coin.collected = true;
-                        this.coinsCollected++;
-                        this.score += 5;
+                        block.hit = true;
+                        this.coinsCollected += block.coins;
+                        this.score += block.coins * 10;
                         document.getElementById('platformer-coins').textContent = this.coinsCollected;
                         document.getElementById('platformer-score').textContent = this.score;
+                        
+                        // Spawn coin particles
+                        for (let i = 0; i < block.coins; i++) {
+                            this.particles.push({
+                                x: block.x + 12,
+                                y: block.y,
+                                vx: (Math.random() - 0.5) * 4,
+                                vy: -4,
+                                life: 30,
+                                type: 'coin'
+                            });
+                        }
+                        
+                        this.player.vy = 1; // Bounce back down
+                    }
+                    
+                    // Stand on question block
+                    if (this.player.x < block.x + block.width &&
+                        this.player.x + this.player.width > block.x &&
+                        this.player.y + this.player.height > block.y &&
+                        this.player.y + this.player.height < block.y + 10 &&
+                        this.player.vy >= 0) {
+                        
+                        this.player.y = block.y - this.player.height;
+                        this.player.vy = 0;
+                        this.player.onGround = true;
+                        this.player.jumping = false;
+                    }
+                });
+                
+                // Brick collision
+                this.bricks.forEach(brick => {
+                    if (!brick.broken) {
+                        // Hit from below
+                        if (this.player.x < brick.x + brick.width &&
+                            this.player.x + this.player.width > brick.x &&
+                            this.player.y < brick.y + brick.height &&
+                            this.player.y > brick.y &&
+                            this.player.vy < 0) {
+                            
+                            brick.broken = true;
+                            this.score += 5;
+                            document.getElementById('platformer-score').textContent = this.score;
+                            
+                            // Spawn brick particles
+                            for (let i = 0; i < 4; i++) {
+                                this.particles.push({
+                                    x: brick.x + 12,
+                                    y: brick.y + 12,
+                                    vx: (Math.random() - 0.5) * 5,
+                                    vy: -3 - Math.random() * 3,
+                                    life: 40,
+                                    type: 'brick'
+                                });
+                            }
+                            
+                            this.player.vy = 1;
+                        }
+                        
+                        // Stand on brick
+                        if (this.player.x < brick.x + brick.width &&
+                            this.player.x + this.player.width > brick.x &&
+                            this.player.y + this.player.height > brick.y &&
+                            this.player.y + this.player.height < brick.y + 10 &&
+                            this.player.vy >= 0) {
+                            
+                            this.player.y = brick.y - this.player.height;
+                            this.player.vy = 0;
+                            this.player.onGround = true;
+                            this.player.jumping = false;
+                        }
                     }
                 });
                 
                 // Enemy collision
                 this.enemies.forEach(enemy => {
-                    if (this.player.x < enemy.x + enemy.width &&
+                    if (!enemy.dead &&
+                        this.player.x < enemy.x + enemy.width &&
                         this.player.x + this.player.width > enemy.x &&
                         this.player.y < enemy.y + enemy.height &&
                         this.player.y + this.player.height > enemy.y) {
                         
                         // Jump on enemy (kill it)
-                        if (this.player.vy > 0 && this.player.y + this.player.height - 5 < enemy.y) {
-                            enemy.x = -100; // Remove enemy
+                        if (this.player.vy > 0 && this.player.y + this.player.height - 8 < enemy.y) {
+                            enemy.dead = true;
                             this.player.vy = -6;
-                            this.score += 10;
+                            this.score += 20;
                             document.getElementById('platformer-score').textContent = this.score;
+                            
+                            setTimeout(() => {
+                                const index = this.enemies.indexOf(enemy);
+                                if (index > -1) this.enemies.splice(index, 1);
+                            }, 500);
                         } else {
                             this.loseLife();
                         }
                     }
                 });
+                
+                // Finish flag
+                if (this.finishFlag && !this.finishFlag.reached &&
+                    this.player.x + this.player.width > this.finishFlag.x) {
+                    this.finishFlag.reached = true;
+                    this.winGame();
+                }
+            },
+            
+            winGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                cancelAnimationFrame(this.animFrame);
+                
+                // Huge bonus for finishing!
+                const timeBonus = this.gameTime * 5;
+                const totalReward = this.coinsCollected * 10 + timeBonus + 200;
+                
+                gameState.tama += totalReward;
+                updateUI();
+                
+                if (typeof TransactionLogger !== 'undefined') {
+                    TransactionLogger.logEarn(
+                        window.TELEGRAM_USER_ID,
+                        window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                        'platformer_complete',
+                        totalReward,
+                        gameState.tama - totalReward,
+                        gameState.tama,
+                        { coins: this.coinsCollected, timeBonus, finished: true }
+                    );
+                }
+                
+                const mobileControls = document.getElementById('mobile-controls');
+                if (mobileControls) mobileControls.style.display = 'none';
+                
+                document.getElementById('platformer-result').innerHTML = 
+                    `<strong>🏆 LEVEL COMPLETE!</strong><br>` +
+                    `Coins: ${this.coinsCollected} (+${this.coinsCollected * 10} TAMA)<br>` +
+                    `Time Bonus: ${timeBonus} TAMA<br>` +
+                    `Finish Bonus: +200 TAMA<br>` +
+                    `<strong>Total: +${totalReward} TAMA!</strong><br>` +
+                    `Net: +${totalReward - 100} TAMA 🎉`;
+                
+                triggerAutoSave();
             },
             
             loseLife() {
@@ -6252,57 +6375,170 @@
             },
             
             draw() {
-                // Draw platforms
+                // Draw ground blocks (Mario style)
                 this.platforms.forEach(platform => {
                     if (platform.type === 'ground') {
-                        // Ground - grass style
-                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillStyle = '#C84C09';
                         this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-                        this.ctx.fillStyle = '#228B22';
-                        this.ctx.fillRect(platform.x, platform.y, platform.width, 5);
+                        // Grid pattern
+                        this.ctx.strokeStyle = '#8B3A0E';
+                        this.ctx.lineWidth = 1;
+                        this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
                     } else {
-                        // Floating platform
-                        this.ctx.fillStyle = '#D2691E';
+                        // Floating platform - green like Mario
+                        this.ctx.fillStyle = '#10B981';
                         this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
-                        this.ctx.strokeStyle = '#8B4513';
+                        this.ctx.strokeStyle = '#059669';
                         this.ctx.lineWidth = 2;
                         this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
                     }
                 });
                 
-                // Draw coins
-                this.coins.forEach(coin => {
-                    if (!coin.collected) {
-                        this.ctx.fillStyle = '#FFD700';
-                        this.ctx.beginPath();
-                        this.ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI * 2);
-                        this.ctx.fill();
-                        this.ctx.strokeStyle = '#FFA500';
+                // Draw pipes (green Mario pipes)
+                this.pipes.forEach(pipe => {
+                    // Pipe body
+                    this.ctx.fillStyle = '#10B981';
+                    this.ctx.fillRect(pipe.x, pipe.y, pipe.width, pipe.height);
+                    // Pipe rim (top)
+                    this.ctx.fillStyle = '#059669';
+                    this.ctx.fillRect(pipe.x - 4, pipe.y, pipe.width + 8, 8);
+                    // Pipe outline
+                    this.ctx.strokeStyle = '#047857';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.strokeRect(pipe.x, pipe.y, pipe.width, pipe.height);
+                    this.ctx.strokeRect(pipe.x - 4, pipe.y, pipe.width + 8, 8);
+                });
+                
+                // Draw question blocks (animated)
+                this.questionBlocks.forEach(block => {
+                    if (!block.hit) {
+                        const bounce = Math.sin(this.animationFrame * 0.1) * 2;
+                        // Yellow block with question mark
+                        this.ctx.fillStyle = '#F59E0B';
+                        this.ctx.fillRect(block.x, block.y + bounce, block.width, block.height);
+                        // Border
+                        this.ctx.strokeStyle = '#D97706';
                         this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(block.x, block.y + bounce, block.width, block.height);
+                        // Question mark
+                        this.ctx.fillStyle = '#FFF';
+                        this.ctx.font = 'bold 18px Arial';
+                        this.ctx.fillText('?', block.x + 7, block.y + bounce + 18);
+                    } else {
+                        // Used block (brown)
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillRect(block.x, block.y, block.width, block.height);
+                        this.ctx.strokeStyle = '#654321';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(block.x, block.y, block.width, block.height);
+                    }
+                });
+                
+                // Draw bricks
+                this.bricks.forEach(brick => {
+                    if (!brick.broken) {
+                        this.ctx.fillStyle = '#DC2626';
+                        this.ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+                        // Brick pattern
+                        this.ctx.strokeStyle = '#991B1B';
+                        this.ctx.lineWidth = 1;
+                        this.ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(brick.x + 12, brick.y);
+                        this.ctx.lineTo(brick.x + 12, brick.y + brick.height);
                         this.ctx.stroke();
                     }
                 });
                 
-                // Draw enemies
-                this.enemies.forEach(enemy => {
-                    if (enemy.x > -50) {
-                        this.ctx.fillStyle = '#FF0000';
-                        this.ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-                        // Eyes
-                        this.ctx.fillStyle = '#FFF';
-                        this.ctx.fillRect(enemy.x + 4, enemy.y + 5, 4, 4);
-                        this.ctx.fillRect(enemy.x + 12, enemy.y + 5, 4, 4);
+                // Draw particles
+                this.particles.forEach(p => {
+                    if (p.type === 'coin') {
+                        this.ctx.fillStyle = '#FFD700';
+                        this.ctx.font = 'bold 12px Arial';
+                        this.ctx.fillText('$', p.x, p.y);
+                    } else if (p.type === 'brick') {
+                        this.ctx.fillStyle = '#DC2626';
+                        this.ctx.fillRect(p.x, p.y, 4, 4);
                     }
                 });
                 
-                // Draw player (use current pet emoji or blob)
-                this.ctx.fillStyle = '#FF69B4';
-                this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
-                this.ctx.fillStyle = '#FFF';
-                this.ctx.fillRect(this.player.x + 6, this.player.y + 6, 4, 4);
-                this.ctx.fillRect(this.player.x + 14, this.player.y + 6, 4, 4);
+                // Draw enemies (Goomba style)
+                this.enemies.forEach(enemy => {
+                    if (!enemy.dead) {
+                        // Brown mushroom enemy
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.beginPath();
+                        this.ctx.arc(enemy.x + 12, enemy.y + 10, 12, Math.PI, 0);
+                        this.ctx.fill();
+                        // Body
+                        this.ctx.fillStyle = '#A0522D';
+                        this.ctx.fillRect(enemy.x + 4, enemy.y + 10, 16, 14);
+                        // Eyes
+                        this.ctx.fillStyle = '#FFF';
+                        this.ctx.fillRect(enemy.x + 6, enemy.y + 6, 5, 5);
+                        this.ctx.fillRect(enemy.x + 13, enemy.y + 6, 5, 5);
+                        this.ctx.fillStyle = '#000';
+                        this.ctx.fillRect(enemy.x + 8, enemy.y + 8, 2, 2);
+                        this.ctx.fillRect(enemy.x + 15, enemy.y + 8, 2, 2);
+                        // Angry eyebrows
+                        this.ctx.strokeStyle = '#000';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(enemy.x + 6, enemy.y + 5);
+                        this.ctx.lineTo(enemy.x + 11, enemy.y + 7);
+                        this.ctx.moveTo(enemy.x + 13, enemy.y + 7);
+                        this.ctx.lineTo(enemy.x + 18, enemy.y + 5);
+                        this.ctx.stroke();
+                    } else {
+                        // Squashed enemy
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillRect(enemy.x, enemy.y + 18, enemy.width, 6);
+                    }
+                });
+                
+                // Draw finish flag
+                if (this.finishFlag) {
+                    // Flag pole
+                    this.ctx.fillStyle = '#4B5563';
+                    this.ctx.fillRect(this.finishFlag.x, this.finishFlag.y, this.finishFlag.width, this.finishFlag.height);
+                    // Flag
+                    this.ctx.fillStyle = this.finishFlag.reached ? '#10B981' : '#EF4444';
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.finishFlag.x + 10, this.finishFlag.y);
+                    this.ctx.lineTo(this.finishFlag.x + 50, this.finishFlag.y + 15);
+                    this.ctx.lineTo(this.finishFlag.x + 10, this.finishFlag.y + 30);
+                    this.ctx.fill();
+                }
+                
+                // Draw player (Mario-style)
+                const playerColor = '#FF0000'; // Red like Mario
+                const overallsColor = '#0000FF'; // Blue overalls
+                
+                // Body (overalls)
+                this.ctx.fillStyle = overallsColor;
+                this.ctx.fillRect(this.player.x + 6, this.player.y + 10, 12, 14);
+                
+                // Head
+                this.ctx.fillStyle = '#FFDBAC';
+                this.ctx.fillRect(this.player.x + 6, this.player.y + 4, 12, 10);
+                
+                // Hat
+                this.ctx.fillStyle = playerColor;
+                this.ctx.fillRect(this.player.x + 4, this.player.y, 16, 6);
+                
+                // Eyes
                 this.ctx.fillStyle = '#000';
-                this.ctx.fillRect(this.player.x + 8, this.player.y + 15, 8, 2);
+                this.ctx.fillRect(this.player.x + 8, this.player.y + 8, 2, 2);
+                this.ctx.fillRect(this.player.x + 14, this.player.y + 8, 2, 2);
+                
+                // Mustache
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(this.player.x + 8, this.player.y + 11, 8, 2);
+                
+                // Shoes
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(this.player.x + 4, this.player.y + 22, 6, 2);
+                this.ctx.fillRect(this.player.x + 14, this.player.y + 22, 6, 2);
             },
             
             endGame() {
@@ -7487,4 +7723,6 @@
     </script>
 </body>
 </html>
+
+
 
