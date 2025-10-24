@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solana Tamagotchi</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Solana Tamagotchi v1.5.2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Transaction Logger -->
     <script src="js/transaction-logger.js"></script>
@@ -2329,9 +2332,9 @@
                     <div class="header-stat-value" id="rank-display">#---</div>
                     <div class="header-stat-label">Rank</div>
                 </div>
+                </div>
             </div>
-        </div>
-
+            
         <!-- Navigation Buttons -->
         <div class="nav-buttons">
             <button class="nav-btn help-btn" id="help-btn">📚 Help</button>
@@ -3170,7 +3173,7 @@
                     <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
                 </div>
             </div>
-
+            
             <!-- 🍄 TAMA JUMP PLATFORMER -->
             <div class="game-arena" id="platformer-arena" style="display: none;">
                 <!-- СРАЗУ открываем fullscreen при выборе игры -->
@@ -3186,7 +3189,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.7); border-bottom: 3px solid #ef4444;">
                 <h2 style="margin: 0; color: white; font-size: 28px;">🍄 SUPER TAMA BROS</h2>
                 <button onclick="closePlatformerFullscreen()" style="padding: 12px 24px; background: #ef4444; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">✕ EXIT</button>
-            </div>
+                        </div>
             
             <!-- Game Canvas -->
             <div style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative; background: #000;">
@@ -3198,9 +3201,9 @@
                         <div style="display: flex; gap: 15px; pointer-events: auto;">
                             <button id="btn-left-fs" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 28px; cursor: pointer; touch-action: none;">⬅️</button>
                             <button id="btn-right-fs" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 28px; cursor: pointer; touch-action: none;">➡️</button>
-                        </div>
-                        <button id="btn-jump-fs" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,69,0,0.8); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 32px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
                     </div>
+                        <button id="btn-jump-fs" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,69,0,0.8); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 32px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
+                </div>
                 </div>
             </div>
             
@@ -3209,11 +3212,11 @@
                 <div id="platformer-result-fs" style="margin-bottom: 20px; font-size: 20px; color: white; min-height: 60px; font-weight: bold;"></div>
                 <button id="platformer-start-btn-fs" style="padding: 20px 60px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 15px; color: white; font-weight: bold; cursor: pointer; font-size: 24px; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6); transition: all 0.2s;">🍄 START GAME (100 TAMA)</button>
             </div>
-        </div>
-    </div>
+                </div>
+            </div>
 
     <!-- Leaderboard Modal -->
-
+            
             <!-- ⚔️ BATTLE ARENA -->
             <div class="game-arena" id="battle-arena" style="display: none;">
                 <!-- Lobby Screen -->
@@ -4727,7 +4730,7 @@
                     const randomSkin = skins[Math.floor(Math.random() * skins.length)];
                     const petSprite = document.getElementById('pet-sprite');
                     if (petSprite) {
-                        petSprite.textContent = randomSkin;
+                    petSprite.textContent = randomSkin;
                     }
                     gameState.petType = randomSkin;
                     itemEffect = `New pet skin! You got ${randomSkin}!`;
@@ -4871,10 +4874,10 @@
                 const now = Date.now();
                 // Cooldown: only auto-feed once per minute
                 if (now - lastAutoFeed > 60000) {
-                    gameState.food = Math.min(gameState.maxFood, gameState.food + 20);
-                    showMessage('💎 Auto-Feeder activated! +20 Food');
+                gameState.food = Math.min(gameState.maxFood, gameState.food + 20);
+                showMessage('💎 Auto-Feeder activated! +20 Food');
                     lastAutoFeed = now;
-                    updateUI();
+                updateUI();
                 }
             }
         }, 10000); // Check every 10 seconds
@@ -5703,7 +5706,7 @@
                 }
             }, 100);
         });
-
+        
         // 🍄 TAMA JUMP PLATFORMER GAME - REAL MARIO STYLE
         const platformerGame = {
             canvas: null,
@@ -5734,8 +5737,8 @@
                 this.canvas = document.getElementById('platformer-canvas-fullscreen');
                 if (!this.canvas) {
                     console.warn('Platformer canvas not found, will initialize on game start');
-                    return;
-                }
+                return;
+            }
                 this.ctx = this.canvas.getContext('2d');
                 
                 // Mobile touch controls setup
@@ -6091,7 +6094,7 @@
                     this.player.vx = -3;
                 } else if (this.keys['ArrowRight'] || this.keys['d']) {
                     this.player.vx = 3;
-                } else {
+                    } else {
                     this.player.vx *= 0.8;
                 }
                 
@@ -6252,7 +6255,7 @@
                                 const index = this.enemies.indexOf(enemy);
                                 if (index > -1) this.enemies.splice(index, 1);
                             }, 500);
-                        } else {
+            } else {
                             this.loseLife();
                         }
                     }
@@ -6442,7 +6445,7 @@
                         this.ctx.moveTo(enemy.x + 13, enemy.y + 7);
                         this.ctx.lineTo(enemy.x + 18, enemy.y + 5);
                         this.ctx.stroke();
-                    } else {
+            } else {
                         // Squashed enemy
                         this.ctx.fillStyle = '#8B4513';
                         this.ctx.fillRect(enemy.x, enemy.y + 18, enemy.width, 6);
@@ -6531,7 +6534,7 @@
                 }
                 
                 gameState.tama += reward;
-                updateUI();
+            updateUI();
                 
                 if (typeof TransactionLogger !== 'undefined' && reward > 0) {
                     TransactionLogger.logEarn(
@@ -6556,8 +6559,8 @@
                         `Net: ${reward - 100 >= 0 ? '+' : ''}${reward - 100} TAMA`;
                 }
                 
-                triggerAutoSave();
-            }
+            triggerAutoSave();
+        }
         };
         
         // Initialize platformer when page loads
@@ -7502,6 +7505,7 @@
         
         // Initialize everything when DOM is ready
         document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🎮 GAME VERSION: 1.5.2 | BUILD: 2025-10-24 22:15');
             console.log('DOM loaded, initializing game...');
             
             // Wait for Telegram WebApp to initialize
