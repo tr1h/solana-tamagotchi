@@ -3982,13 +3982,13 @@
                 gameState.xpToLevel = Math.floor(gameState.xpToLevel * 1.5);
                 gameState.clickPower = gameState.level;
                 
-                // Level up bonuses
+                // Level up bonuses - увеличиваем максимумы и даем частичное восстановление
                 gameState.maxHp += 10;
-                gameState.hp = gameState.maxHp;
+                gameState.hp = Math.min(gameState.maxHp, gameState.hp + 20); // +20 HP, но не больше максимума
                 gameState.maxFood += 5;
-                gameState.food = gameState.maxFood;
+                gameState.food = Math.min(gameState.maxFood, gameState.food + 15); // +15 Food, но не больше максимума
                 gameState.maxHappy += 5;
-                gameState.happy = gameState.maxHappy;
+                gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 15); // +15 Happy, но не больше максимума
 
                 // Log level up transaction
                 const levelBonus = gameState.level * 100;
