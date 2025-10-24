@@ -5942,22 +5942,22 @@
                     });
                 }
                 
-                // Question blocks (? блоки с монетами)
+                // Question blocks (? блоки с монетами) - НИЖЕ, чтобы можно было допрыгнуть
                 const questionPositions = [
-                    { x: 150, y: 150 },
-                    { x: 180, y: 150 },
-                    { x: 210, y: 150 },
-                    { x: 400, y: 120 },
-                    { x: 600, y: 150 },
-                    { x: 800, y: 120 },
-                    { x: 1000, y: 150 },
-                    { x: 1200, y: 120 },
-                    { x: 1400, y: 150 },
-                    { x: 1600, y: 120 },
-                    { x: 1800, y: 150 },
-                    { x: 2000, y: 120 },
-                    { x: 2200, y: 150 },
-                    { x: 2400, y: 120 },
+                    { x: 150, y: 350 },
+                    { x: 180, y: 350 },
+                    { x: 210, y: 350 },
+                    { x: 400, y: 330 },
+                    { x: 600, y: 350 },
+                    { x: 800, y: 330 },
+                    { x: 1000, y: 350 },
+                    { x: 1200, y: 330 },
+                    { x: 1400, y: 350 },
+                    { x: 1600, y: 330 },
+                    { x: 1800, y: 350 },
+                    { x: 2000, y: 330 },
+                    { x: 2200, y: 350 },
+                    { x: 2400, y: 330 },
                 ];
                 
                 questionPositions.forEach(pos => {
@@ -5971,18 +5971,18 @@
                     });
                 });
                 
-                // Brick blocks (разбиваемые блоки)
+                // Brick blocks (разбиваемые блоки) - НИЖЕ и меньше
                 const brickPatterns = [
-                    { x: 300, y: 180, count: 5 },
-                    { x: 500, y: 180, count: 3 },
-                    { x: 700, y: 180, count: 4 },
-                    { x: 900, y: 180, count: 6 },
-                    { x: 1100, y: 180, count: 4 },
-                    { x: 1300, y: 180, count: 5 },
-                    { x: 1500, y: 180, count: 3 },
-                    { x: 1700, y: 180, count: 4 },
-                    { x: 1900, y: 180, count: 5 },
-                    { x: 2100, y: 180, count: 3 },
+                    { x: 300, y: 370, count: 3 },
+                    { x: 500, y: 350, count: 2 },
+                    { x: 700, y: 370, count: 3 },
+                    { x: 900, y: 350, count: 4 },
+                    { x: 1100, y: 370, count: 2 },
+                    { x: 1300, y: 350, count: 3 },
+                    { x: 1500, y: 370, count: 2 },
+                    { x: 1700, y: 350, count: 3 },
+                    { x: 1900, y: 370, count: 2 },
+                    { x: 2100, y: 350, count: 2 },
                 ];
                 
                 brickPatterns.forEach(pattern => {
@@ -6018,16 +6018,18 @@
                     });
                 });
                 
-                // Floating platforms (парящие платформы)
+                // Floating platforms (парящие платформы) - на разных высотах
                 const platformData = [
-                    { x: 550, y: 200, width: 60 },
-                    { x: 650, y: 170, width: 45 },
-                    { x: 850, y: 180, width: 60 },
-                    { x: 1150, y: 190, width: 50 },
-                    { x: 1450, y: 180, width: 60 },
-                    { x: 1750, y: 170, width: 45 },
-                    { x: 2050, y: 190, width: 60 },
-                    { x: 2350, y: 180, width: 50 },
+                    { x: 550, y: 380, width: 60 },
+                    { x: 650, y: 350, width: 50 },
+                    { x: 750, y: 320, width: 45 },
+                    { x: 850, y: 360, width: 60 },
+                    { x: 1150, y: 370, width: 55 },
+                    { x: 1250, y: 340, width: 50 },
+                    { x: 1450, y: 360, width: 60 },
+                    { x: 1750, y: 350, width: 50 },
+                    { x: 2050, y: 370, width: 60 },
+                    { x: 2350, y: 360, width: 55 },
                 ];
                 
                 platformData.forEach(plat => {
@@ -6215,10 +6217,11 @@
                 // Reset ground detection
                 this.player.onGround = false;
                 
-                // Platform collision (ground and floating)
+                // Platform collision (ground and floating) - только сверху!
                 [...this.platforms, ...this.pipes].forEach(platform => {
-                    if (this.player.x < platform.x + platform.width &&
-                        this.player.x + this.player.width > platform.x &&
+                    // Landing on top
+                    if (this.player.x + 4 < platform.x + platform.width &&
+                        this.player.x + this.player.width - 4 > platform.x &&
                         this.player.y + this.player.height > platform.y &&
                         this.player.y + this.player.height < platform.y + 10 &&
                         this.player.vy >= 0) {
@@ -6232,11 +6235,12 @@
                 
                 // Question block collision from below
                 this.questionBlocks.forEach(block => {
+                    // Hit from below (with margin to avoid side collision)
                     if (!block.hit && 
-                        this.player.x < block.x + block.width &&
-                        this.player.x + this.player.width > block.x &&
+                        this.player.x + 4 < block.x + block.width &&
+                        this.player.x + this.player.width - 4 > block.x &&
                         this.player.y < block.y + block.height &&
-                        this.player.y > block.y &&
+                        this.player.y + 5 > block.y &&
                         this.player.vy < 0) {
                         
                         block.hit = true;
@@ -6258,9 +6262,9 @@
                         this.player.vy = 1; // Bounce back down
                     }
                     
-                    // Stand on question block
-                    if (this.player.x < block.x + block.width &&
-                        this.player.x + this.player.width > block.x &&
+                    // Stand on question block (with margin to avoid side collision)
+                    if (this.player.x + 4 < block.x + block.width &&
+                        this.player.x + this.player.width - 4 > block.x &&
                         this.player.y + this.player.height > block.y &&
                         this.player.y + this.player.height < block.y + 10 &&
                         this.player.vy >= 0) {
@@ -6275,11 +6279,11 @@
                 // Brick collision
                 this.bricks.forEach(brick => {
                     if (!brick.broken) {
-                        // Hit from below
-                        if (this.player.x < brick.x + brick.width &&
-                            this.player.x + this.player.width > brick.x &&
+                        // Hit from below (with margin to avoid side collision)
+                        if (this.player.x + 4 < brick.x + brick.width &&
+                            this.player.x + this.player.width - 4 > brick.x &&
                             this.player.y < brick.y + brick.height &&
-                            this.player.y > brick.y &&
+                            this.player.y + 5 > brick.y &&
                             this.player.vy < 0) {
                             
                             brick.broken = true;
@@ -6300,9 +6304,9 @@
                             this.player.vy = 1;
                         }
                         
-                        // Stand on brick
-                        if (this.player.x < brick.x + brick.width &&
-                            this.player.x + this.player.width > brick.x &&
+                        // Stand on brick (with margin to avoid side collision)
+                        if (this.player.x + 4 < brick.x + brick.width &&
+                            this.player.x + this.player.width - 4 > brick.x &&
                             this.player.y + this.player.height > brick.y &&
                             this.player.y + this.player.height < brick.y + 10 &&
                             this.player.vy >= 0) {
