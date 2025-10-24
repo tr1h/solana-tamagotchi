@@ -3175,29 +3175,9 @@
             <div class="game-arena" id="platformer-arena" style="display: none;">
                 <h3 style="text-align: center; margin-bottom: 15px;">🍄 TAMA Jump - Retro Platformer</h3>
                 
-                <!-- Game Info -->
-                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 12px; opacity: 0.8;">Coins</div>
-                        <div style="font-size: 18px; font-weight: bold;" id="platformer-coins">0</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 12px; opacity: 0.8;">Lives</div>
-                        <div style="font-size: 18px; font-weight: bold;" id="platformer-lives">3</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 12px; opacity: 0.8;">Time</div>
-                        <div style="font-size: 18px; font-weight: bold;" id="platformer-time">60</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 12px; opacity: 0.8;">Score</div>
-                        <div style="font-size: 18px; font-weight: bold;" id="platformer-score">0</div>
-                    </div>
-                </div>
-                
-                <!-- Canvas Game Area -->
-                <div style="position: relative; width: 100%; max-width: 400px; margin: 0 auto;">
-                    <canvas id="platformer-canvas" width="400" height="300" style="width: 100%; height: auto; display: block; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border: 3px solid #333; border-radius: 10px; image-rendering: pixelated;"></canvas>
+                <!-- Canvas Game Area (FULL SIZE) -->
+                <div style="position: relative; width: 100%; height: 500px;">
+                    <canvas id="platformer-canvas" width="480" height="500" style="width: 100%; height: 100%; display: block; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border: none; image-rendering: pixelated;"></canvas>
                     
                     <!-- Mobile Touch Controls -->
                     <div id="mobile-controls" style="display: none; position: absolute; bottom: 10px; left: 0; right: 0; padding: 0 20px; pointer-events: none;">
@@ -3214,19 +3194,8 @@
                     </div>
                 </div>
                 
-                <!-- Controls Info -->
-                <div style="text-align: center; margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                    <div style="font-size: 14px; margin-bottom: 8px;">
-                        <strong>Controls:</strong>
-                    </div>
-                    <div style="font-size: 12px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                        <span>💻 Desktop: ⬅️ ➡️ Move | 🔼 SPACE Jump</span>
-                        <span>📱 Mobile: Touch buttons appear in game</span>
-                    </div>
-                </div>
-                
-                <!-- Result -->
-                <div style="text-align: center; font-size: 16px; margin: 15px 0; min-height: 60px;" id="platformer-result"></div>
+                <!-- Result (compact) -->
+                <div style="text-align: center; font-size: 14px; margin: 10px 0; min-height: 40px;" id="platformer-result"></div>
                 
                 <!-- Buttons -->
                 <div style="text-align: center; margin-top: 15px;">
@@ -5877,10 +5846,10 @@
                     }, 100);
                 }
                 
-                // Initialize player
+                // Initialize player (выше из-за большего canvas)
                 this.player = {
                     x: 50,
-                    y: 200,
+                    y: 380,
                     width: 24,
                     height: 24,
                     vx: 0,
@@ -5889,7 +5858,7 @@
                     onGround: false,
                     jump() {
                         if (this.onGround) {
-                            this.vy = -8;
+                            this.vy = -10;
                             this.jumping = true;
                             this.onGround = false;
                         }
@@ -5899,18 +5868,13 @@
                 // Generate level
                 this.generateLevel();
                 
-                // Update UI
-                document.getElementById('platformer-coins').textContent = '0';
-                document.getElementById('platformer-lives').textContent = '3';
-                document.getElementById('platformer-time').textContent = '60';
-                document.getElementById('platformer-score').textContent = '0';
+                // Clear result
                 document.getElementById('platformer-result').innerHTML = '';
                 
                 // Start timer
                 this.timer = setInterval(() => {
                     if (this.gameActive) {
                         this.gameTime--;
-                        document.getElementById('platformer-time').textContent = this.gameTime;
                         
                         if (this.gameTime <= 0) {
                             this.endGame();
@@ -5932,13 +5896,13 @@
                 this.powerups = [];
                 this.particles = [];
                 
-                // Ground - длинная земля как в Марио
+                // Ground - длинная земля как в Марио (ниже из-за большего canvas)
                 for (let i = 0; i < this.levelWidth / 30; i++) {
                     this.platforms.push({ 
                         x: i * 30, 
-                        y: 270, 
+                        y: 450, 
                         width: 30, 
-                        height: 30, 
+                        height: 50, 
                         type: 'ground' 
                     });
                 }
@@ -6012,7 +5976,7 @@
                 pipePositions.forEach(pipe => {
                     this.pipes.push({
                         x: pipe.x,
-                        y: 270 - pipe.height,
+                        y: 450 - pipe.height,
                         width: 40,
                         height: pipe.height,
                         type: 'pipe'
@@ -6045,7 +6009,7 @@
                 for (let i = 0; i < 15; i++) {
                     this.enemies.push({
                         x: 300 + i * 200,
-                        y: 250,
+                        y: 426,
                         width: 24,
                         height: 24,
                         vx: 1.5,
@@ -6058,7 +6022,7 @@
                 // Finish flag (флаг в конце)
                 this.finishFlag = {
                     x: this.levelWidth - 100,
-                    y: 150,
+                    y: 330,
                     width: 10,
                     height: 120,
                     reached: false
@@ -6129,13 +6093,44 @@
             },
             
             drawUI() {
-                // Score display at top
+                // Game info panel at top (fixed position, not affected by camera)
+                const panelHeight = 35;
+                
+                // Semi-transparent background
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(0, 0, this.canvas.width, panelHeight);
+                
+                // Stats text
                 this.ctx.fillStyle = '#FFF';
                 this.ctx.strokeStyle = '#000';
-                this.ctx.lineWidth = 3;
-                this.ctx.font = 'bold 16px "Courier New"';
-                this.ctx.strokeText(`COINS: ${this.coinsCollected}`, 10, 25);
-                this.ctx.fillText(`COINS: ${this.coinsCollected}`, 10, 25);
+                this.ctx.lineWidth = 2;
+                this.ctx.font = 'bold 14px "Courier New"';
+                
+                // Coins
+                this.ctx.strokeText(`💰 ${this.coinsCollected}`, 10, 22);
+                this.ctx.fillText(`💰 ${this.coinsCollected}`, 10, 22);
+                
+                // Lives
+                this.ctx.strokeText(`❤️ ${this.lives}`, 100, 22);
+                this.ctx.fillText(`❤️ ${this.lives}`, 100, 22);
+                
+                // Time
+                this.ctx.strokeText(`⏱️ ${this.gameTime}s`, 180, 22);
+                this.ctx.fillText(`⏱️ ${this.gameTime}s`, 180, 22);
+                
+                // Score
+                this.ctx.strokeText(`★ ${this.score}`, 280, 22);
+                this.ctx.fillText(`★ ${this.score}`, 280, 22);
+                
+                // Progress bar (how far in level)
+                const progress = (this.player.x / this.levelWidth) * 100;
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                this.ctx.fillRect(380, 10, 90, 15);
+                this.ctx.fillStyle = '#10B981';
+                this.ctx.fillRect(380, 10, (90 * progress) / 100, 15);
+                this.ctx.strokeStyle = '#FFF';
+                this.ctx.lineWidth = 1;
+                this.ctx.strokeRect(380, 10, 90, 15);
             },
             
             updatePlayer() {
@@ -6212,8 +6207,6 @@
                         block.hit = true;
                         this.coinsCollected += block.coins;
                         this.score += block.coins * 10;
-                        document.getElementById('platformer-coins').textContent = this.coinsCollected;
-                        document.getElementById('platformer-score').textContent = this.score;
                         
                         // Spawn coin particles
                         for (let i = 0; i < block.coins; i++) {
@@ -6256,7 +6249,6 @@
                             
                             brick.broken = true;
                             this.score += 5;
-                            document.getElementById('platformer-score').textContent = this.score;
                             
                             // Spawn brick particles
                             for (let i = 0; i < 4; i++) {
@@ -6301,7 +6293,6 @@
                             enemy.dead = true;
                             this.player.vy = -6;
                             this.score += 20;
-                            document.getElementById('platformer-score').textContent = this.score;
                             
                             setTimeout(() => {
                                 const index = this.enemies.indexOf(enemy);
@@ -6361,14 +6352,13 @@
             
             loseLife() {
                 this.lives--;
-                document.getElementById('platformer-lives').textContent = this.lives;
                 
                 if (this.lives <= 0) {
                     this.endGame();
                 } else {
                     // Reset player position
                     this.player.x = 50;
-                    this.player.y = 200;
+                    this.player.y = 380;
                     this.player.vx = 0;
                     this.player.vy = 0;
                 }
