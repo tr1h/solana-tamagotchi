@@ -5723,7 +5723,7 @@
             }, 100);
         });
 
-        // 🍄 TAMA JUMP PLATFORMER GAME
+        // 🍄 TAMA JUMP PLATFORMER GAME - REAL MARIO STYLE
         const platformerGame = {
             canvas: null,
             ctx: null,
@@ -5731,14 +5731,22 @@
             platforms: [],
             coins: [],
             enemies: [],
+            questionBlocks: [],
+            bricks: [],
+            pipes: [],
+            powerups: [],
+            particles: [],
             score: 0,
             coinsCollected: 0,
             lives: 3,
-            gameTime: 60,
+            gameTime: 90,
             gameActive: false,
             keys: {},
             animFrame: null,
             timer: null,
+            camera: { x: 0 },
+            levelWidth: 3000,
+            animationFrame: 0,
             
             init() {
                 this.canvas = document.getElementById('platformer-canvas');
@@ -5918,65 +5926,166 @@
                 this.platforms = [];
                 this.coins = [];
                 this.enemies = [];
+                this.questionBlocks = [];
+                this.bricks = [];
+                this.pipes = [];
+                this.powerups = [];
+                this.particles = [];
                 
-                // Ground platform
-                this.platforms.push({ x: 0, y: 270, width: 400, height: 30, type: 'ground' });
+                // Ground - длинная земля как в Марио
+                for (let i = 0; i < this.levelWidth / 30; i++) {
+                    this.platforms.push({ 
+                        x: i * 30, 
+                        y: 270, 
+                        width: 30, 
+                        height: 30, 
+                        type: 'ground' 
+                    });
+                }
                 
-                // Floating platforms (procedurally generated)
-                for (let i = 0; i < 8; i++) {
-                    const x = 80 + i * 60 + Math.random() * 20;
-                    const y = 220 - Math.random() * 100;
-                    const width = 60 + Math.random() * 20;
-                    this.platforms.push({ x, y, width, height: 15, type: 'platform' });
-                    
-                    // Add coins on platforms
-                    if (Math.random() > 0.3) {
-                        this.coins.push({
-                            x: x + width / 2 - 6,
-                            y: y - 20,
-                            width: 12,
-                            height: 12,
-                            collected: false
+                // Question blocks (? блоки с монетами)
+                const questionPositions = [
+                    { x: 150, y: 150 },
+                    { x: 180, y: 150 },
+                    { x: 210, y: 150 },
+                    { x: 400, y: 120 },
+                    { x: 600, y: 150 },
+                    { x: 800, y: 120 },
+                    { x: 1000, y: 150 },
+                    { x: 1200, y: 120 },
+                    { x: 1400, y: 150 },
+                    { x: 1600, y: 120 },
+                    { x: 1800, y: 150 },
+                    { x: 2000, y: 120 },
+                    { x: 2200, y: 150 },
+                    { x: 2400, y: 120 },
+                ];
+                
+                questionPositions.forEach(pos => {
+                    this.questionBlocks.push({
+                        x: pos.x,
+                        y: pos.y,
+                        width: 24,
+                        height: 24,
+                        hit: false,
+                        coins: Math.floor(Math.random() * 3) + 1
+                    });
+                });
+                
+                // Brick blocks (разбиваемые блоки)
+                const brickPatterns = [
+                    { x: 300, y: 180, count: 5 },
+                    { x: 500, y: 180, count: 3 },
+                    { x: 700, y: 180, count: 4 },
+                    { x: 900, y: 180, count: 6 },
+                    { x: 1100, y: 180, count: 4 },
+                    { x: 1300, y: 180, count: 5 },
+                    { x: 1500, y: 180, count: 3 },
+                    { x: 1700, y: 180, count: 4 },
+                    { x: 1900, y: 180, count: 5 },
+                    { x: 2100, y: 180, count: 3 },
+                ];
+                
+                brickPatterns.forEach(pattern => {
+                    for (let i = 0; i < pattern.count; i++) {
+                        this.bricks.push({
+                            x: pattern.x + i * 24,
+                            y: pattern.y,
+                            width: 24,
+                            height: 24,
+                            broken: false
                         });
                     }
-                }
+                });
                 
-                // Add floating coins
-                for (let i = 0; i < 15; i++) {
-                    this.coins.push({
-                        x: 50 + Math.random() * 320,
-                        y: 80 + Math.random() * 140,
-                        width: 12,
+                // Pipes (трубы как в Марио)
+                const pipePositions = [
+                    { x: 450, height: 40 },
+                    { x: 750, height: 50 },
+                    { x: 1050, height: 40 },
+                    { x: 1350, height: 60 },
+                    { x: 1650, height: 40 },
+                    { x: 1950, height: 50 },
+                    { x: 2250, height: 40 },
+                ];
+                
+                pipePositions.forEach(pipe => {
+                    this.pipes.push({
+                        x: pipe.x,
+                        y: 270 - pipe.height,
+                        width: 40,
+                        height: pipe.height,
+                        type: 'pipe'
+                    });
+                });
+                
+                // Floating platforms (парящие платформы)
+                const platformData = [
+                    { x: 550, y: 200, width: 60 },
+                    { x: 650, y: 170, width: 45 },
+                    { x: 850, y: 180, width: 60 },
+                    { x: 1150, y: 190, width: 50 },
+                    { x: 1450, y: 180, width: 60 },
+                    { x: 1750, y: 170, width: 45 },
+                    { x: 2050, y: 190, width: 60 },
+                    { x: 2350, y: 180, width: 50 },
+                ];
+                
+                platformData.forEach(plat => {
+                    this.platforms.push({
+                        x: plat.x,
+                        y: plat.y,
+                        width: plat.width,
                         height: 12,
-                        collected: false
+                        type: 'platform'
+                    });
+                });
+                
+                // Enemies (враги-грибы)
+                for (let i = 0; i < 15; i++) {
+                    this.enemies.push({
+                        x: 300 + i * 200,
+                        y: 250,
+                        width: 24,
+                        height: 24,
+                        vx: 1.5,
+                        direction: 1,
+                        type: 'goomba',
+                        dead: false
                     });
                 }
                 
-                // Add enemies
-                for (let i = 0; i < 4; i++) {
-                    this.enemies.push({
-                        x: 100 + i * 80,
-                        y: 250,
-                        width: 20,
-                        height: 20,
-                        vx: 1 + Math.random(),
-                        direction: 1
-                    });
-                }
+                // Finish flag (флаг в конце)
+                this.finishFlag = {
+                    x: this.levelWidth - 100,
+                    y: 150,
+                    width: 10,
+                    height: 120,
+                    reached: false
+                };
             },
             
             gameLoop() {
                 if (!this.gameActive) return;
+                
+                this.animationFrame++;
                 
                 // Clear canvas
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 
                 // Sky gradient
                 const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-                gradient.addColorStop(0, '#87CEEB');
-                gradient.addColorStop(1, '#E0F6FF');
+                gradient.addColorStop(0, '#5C94FC');
+                gradient.addColorStop(1, '#87CEEB');
                 this.ctx.fillStyle = gradient;
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Update camera to follow player
+                this.updateCamera();
+                
+                // Save context and apply camera offset
+                this.ctx.save();
+                this.ctx.translate(-this.camera.x, 0);
                 
                 // Update player physics
                 this.updatePlayer();
@@ -5984,14 +6093,49 @@
                 // Update enemies
                 this.updateEnemies();
                 
+                // Update particles
+                this.updateParticles();
+                
                 // Check collisions
                 this.checkCollisions();
                 
                 // Draw everything
                 this.draw();
                 
+                // Restore context
+                this.ctx.restore();
+                
+                // Draw UI on top (not affected by camera)
+                this.drawUI();
+                
                 // Continue loop
                 this.animFrame = requestAnimationFrame(() => this.gameLoop());
+            },
+            
+            updateCamera() {
+                // Camera follows player (Mario style)
+                const targetX = this.player.x - this.canvas.width / 3;
+                this.camera.x = Math.max(0, Math.min(targetX, this.levelWidth - this.canvas.width));
+            },
+            
+            updateParticles() {
+                this.particles = this.particles.filter(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // gravity
+                    p.life--;
+                    return p.life > 0;
+                });
+            },
+            
+            drawUI() {
+                // Score display at top
+                this.ctx.fillStyle = '#FFF';
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 3;
+                this.ctx.font = 'bold 16px "Courier New"';
+                this.ctx.strokeText(`COINS: ${this.coinsCollected}`, 10, 25);
+                this.ctx.fillText(`COINS: ${this.coinsCollected}`, 10, 25);
             },
             
             updatePlayer() {
