@@ -3173,7 +3173,9 @@
 
             <!-- 🍄 TAMA JUMP PLATFORMER -->
             <div class="game-arena" id="platformer-arena" style="display: none;">
-                <h3 style="text-align: center; margin-bottom: 15px;">🍄 TAMA Jump - Retro Platformer</h3>
+                <button onclick="openPlatformerFullscreen()" style="width: 100%; padding: 20px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-size: 20px; font-weight: bold; cursor: pointer; margin-bottom: 15px;">
+                    🍄 OPEN GAME IN FULL WINDOW
+                </button>
                 
                 <!-- Canvas Game Area (FULL SIZE) -->
                 <div style="position: relative; width: 100%; height: 500px;">
@@ -3204,6 +3206,39 @@
                 </div>
             </div>
             
+        </div>
+    </div>
+
+    <!-- Platformer Fullscreen Modal -->
+    <div id="platformer-fullscreen-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #1a1a2e; z-index: 9999; overflow: hidden;">
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(0,0,0,0.5);">
+                <h2 style="margin: 0; color: white;">🍄 TAMA JUMP</h2>
+                <button onclick="closePlatformerFullscreen()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 16px;">✕ Close</button>
+            </div>
+            
+            <!-- Game Canvas -->
+            <div style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
+                <canvas id="platformer-canvas-fullscreen" width="800" height="600" style="max-width: 100%; max-height: 100%; display: block; background: linear-gradient(180deg, #5C94FC 0%, #87CEEB 100%); image-rendering: pixelated; box-shadow: 0 0 50px rgba(0,0,0,0.5);"></canvas>
+                
+                <!-- Mobile Controls for Fullscreen -->
+                <div id="mobile-controls-fullscreen" style="display: none; position: absolute; bottom: 20px; left: 0; right: 0; padding: 0 30px; pointer-events: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div style="display: flex; gap: 15px; pointer-events: auto;">
+                            <button id="btn-left-fs" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 28px; cursor: pointer; touch-action: none;">⬅️</button>
+                            <button id="btn-right-fs" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 28px; cursor: pointer; touch-action: none;">➡️</button>
+                        </div>
+                        <button id="btn-jump-fs" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,69,0,0.8); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 32px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Start Button -->
+            <div style="padding: 20px; text-align: center; background: rgba(0,0,0,0.3);">
+                <div id="platformer-result-fs" style="margin-bottom: 15px; font-size: 16px; color: white; min-height: 50px;"></div>
+                <button id="platformer-start-btn-fs" style="padding: 15px 50px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; font-size: 20px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">🍄 START GAME (100 TAMA)</button>
+            </div>
         </div>
     </div>
 
@@ -6339,13 +6374,22 @@
                 const mobileControls = document.getElementById('mobile-controls');
                 if (mobileControls) mobileControls.style.display = 'none';
                 
-                document.getElementById('platformer-result').innerHTML = 
-                    `<strong>🏆 LEVEL COMPLETE!</strong><br>` +
-                    `Coins: ${this.coinsCollected} (+${this.coinsCollected * 10} TAMA)<br>` +
-                    `Time Bonus: ${timeBonus} TAMA<br>` +
-                    `Finish Bonus: +200 TAMA<br>` +
-                    `<strong>Total: +${totalReward} TAMA!</strong><br>` +
-                    `Net: +${totalReward - 100} TAMA 🎉`;
+                const mobileControlsFs = document.getElementById('mobile-controls-fullscreen');
+                if (mobileControlsFs) mobileControlsFs.style.display = 'none';
+                
+                const resultElement = platformerFullscreenMode ? 
+                    document.getElementById('platformer-result-fs') : 
+                    document.getElementById('platformer-result');
+                    
+                if (resultElement) {
+                    resultElement.innerHTML = 
+                        `<strong>🏆 LEVEL COMPLETE!</strong><br>` +
+                        `Coins: ${this.coinsCollected} (+${this.coinsCollected * 10} TAMA)<br>` +
+                        `Time Bonus: ${timeBonus} TAMA<br>` +
+                        `Finish Bonus: +200 TAMA<br>` +
+                        `<strong>Total: +${totalReward} TAMA!</strong><br>` +
+                        `Net: +${totalReward - 100} TAMA 🎉`;
+                }
                 
                 triggerAutoSave();
             },
@@ -6542,6 +6586,11 @@
                     mobileControls.style.display = 'none';
                 }
                 
+                const mobileControlsFs = document.getElementById('mobile-controls-fullscreen');
+                if (mobileControlsFs) {
+                    mobileControlsFs.style.display = 'none';
+                }
+                
                 // Calculate reward
                 let reward = 0;
                 let message = '';
@@ -6577,10 +6626,16 @@
                     );
                 }
                 
-                document.getElementById('platformer-result').innerHTML = 
-                    `<strong>${message}</strong><br>` +
-                    `Coins: ${this.coinsCollected} | Score: ${this.score}<br>` +
-                    `Net: ${reward - 100 >= 0 ? '+' : ''}${reward - 100} TAMA`;
+                const resultElement = platformerFullscreenMode ? 
+                    document.getElementById('platformer-result-fs') : 
+                    document.getElementById('platformer-result');
+                    
+                if (resultElement) {
+                    resultElement.innerHTML = 
+                        `<strong>${message}</strong><br>` +
+                        `Coins: ${this.coinsCollected} | Score: ${this.score}<br>` +
+                        `Net: ${reward - 100 >= 0 ? '+' : ''}${reward - 100} TAMA`;
+                }
                 
                 triggerAutoSave();
             }
@@ -6588,6 +6643,123 @@
         
         // Initialize platformer when page loads
         platformerGame.init();
+        
+        // Fullscreen Platformer Functions
+        let platformerFullscreenMode = false;
+        
+        function openPlatformerFullscreen() {
+            const modal = document.getElementById('platformer-fullscreen-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                platformerFullscreenMode = true;
+                
+                // Switch game to fullscreen canvas
+                platformerGame.canvas = document.getElementById('platformer-canvas-fullscreen');
+                platformerGame.ctx = platformerGame.canvas.getContext('2d');
+                
+                // Setup fullscreen mobile controls
+                setupFullscreenMobileControls();
+                
+                // Re-attach start button
+                const startBtn = document.getElementById('platformer-start-btn-fs');
+                if (startBtn) {
+                    startBtn.replaceWith(startBtn.cloneNode(true));
+                    document.getElementById('platformer-start-btn-fs').addEventListener('click', () => {
+                        if (gameState.tama < 100) {
+                            showMessage('❌ Not enough TAMA! Need 100 TAMA');
+                            return;
+                        }
+                        
+                        gameState.tama -= 100;
+                        updateUI();
+                        if (typeof TransactionLogger !== 'undefined') {
+                            TransactionLogger.logSpend(
+                                window.TELEGRAM_USER_ID,
+                                window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                                'platformer_bet',
+                                100,
+                                gameState.tama + 100,
+                                gameState.tama,
+                                { game: 'platformer_fullscreen' }
+                            );
+                        }
+                        
+                        platformerGame.start();
+                    });
+                }
+            }
+        }
+        
+        function closePlatformerFullscreen() {
+            const modal = document.getElementById('platformer-fullscreen-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                platformerFullscreenMode = false;
+                
+                // Stop game if running
+                if (platformerGame.gameActive) {
+                    platformerGame.gameActive = false;
+                    clearInterval(platformerGame.timer);
+                    cancelAnimationFrame(platformerGame.animFrame);
+                }
+                
+                // Switch back to normal canvas
+                platformerGame.canvas = document.getElementById('platformer-canvas');
+                platformerGame.ctx = platformerGame.canvas.getContext('2d');
+            }
+        }
+        
+        function setupFullscreenMobileControls() {
+            const btnLeft = document.getElementById('btn-left-fs');
+            const btnRight = document.getElementById('btn-right-fs');
+            const btnJump = document.getElementById('btn-jump-fs');
+            const mobileControls = document.getElementById('mobile-controls-fullscreen');
+            
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (!btnLeft || !btnRight || !btnJump) return;
+            
+            if (isTouchDevice && mobileControls) {
+                mobileControls.style.display = 'block';
+            }
+            
+            // Left
+            btnLeft.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowLeft'] = true;
+                btnLeft.style.background = 'rgba(0,0,0,0.9)';
+            });
+            btnLeft.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowLeft'] = false;
+                btnLeft.style.background = 'rgba(0,0,0,0.6)';
+            });
+            
+            // Right
+            btnRight.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowRight'] = true;
+                btnRight.style.background = 'rgba(0,0,0,0.9)';
+            });
+            btnRight.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowRight'] = false;
+                btnRight.style.background = 'rgba(0,0,0,0.6)';
+            });
+            
+            // Jump
+            btnJump.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (platformerGame.gameActive && platformerGame.player) {
+                    platformerGame.player.jump();
+                }
+                btnJump.style.background = 'rgba(255,69,0,1)';
+            });
+            btnJump.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                btnJump.style.background = 'rgba(255,69,0,0.8)';
+            });
+        }
         
         // 🏃 PET RACE
         function startRace() {
