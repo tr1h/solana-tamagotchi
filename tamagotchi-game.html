@@ -3054,6 +3054,11 @@
                     <div class="game-card-name">Dice Roll</div>
                     <div class="game-card-cost">Bet: 50-500 TAMA | Win: up to 15x!</div>
                 </div>
+                <div class="game-card" data-game="platformer" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                    <div class="game-card-icon">🍄</div>
+                    <div class="game-card-name">TAMA Jump</div>
+                    <div class="game-card-cost">100 TAMA | Win: up to 500 TAMA!</div>
+                </div>
             </div>
             
             <!-- Game Arenas (will be shown when game is selected) -->
@@ -3140,6 +3145,55 @@
                 
                 <div style="text-align: center; margin-top: 15px;">
                     <button id="dice-roll-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🎲 ROLL!</button>
+                    <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
+                </div>
+            </div>
+
+            <!-- 🍄 TAMA JUMP PLATFORMER -->
+            <div class="game-arena" id="platformer-arena" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 15px;">🍄 TAMA Jump - Retro Platformer</h3>
+                
+                <!-- Game Info -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; opacity: 0.8;">Coins</div>
+                        <div style="font-size: 18px; font-weight: bold;" id="platformer-coins">0</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; opacity: 0.8;">Lives</div>
+                        <div style="font-size: 18px; font-weight: bold;" id="platformer-lives">3</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; opacity: 0.8;">Time</div>
+                        <div style="font-size: 18px; font-weight: bold;" id="platformer-time">60</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; opacity: 0.8;">Score</div>
+                        <div style="font-size: 18px; font-weight: bold;" id="platformer-score">0</div>
+                    </div>
+                </div>
+                
+                <!-- Canvas Game Area -->
+                <canvas id="platformer-canvas" width="400" height="300" style="width: 100%; max-width: 400px; height: auto; display: block; margin: 0 auto; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border: 3px solid #333; border-radius: 10px; image-rendering: pixelated;"></canvas>
+                
+                <!-- Controls Info -->
+                <div style="text-align: center; margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    <div style="font-size: 14px; margin-bottom: 8px;">
+                        <strong>Controls:</strong>
+                    </div>
+                    <div style="font-size: 12px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                        <span>⬅️ ➡️ Move</span>
+                        <span>🔼 Jump</span>
+                        <span>SPACE Jump</span>
+                    </div>
+                </div>
+                
+                <!-- Result -->
+                <div style="text-align: center; font-size: 16px; margin: 15px 0; min-height: 60px;" id="platformer-result"></div>
+                
+                <!-- Buttons -->
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="platformer-start-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🍄 START (100 TAMA)</button>
                     <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
                 </div>
             </div>
@@ -5631,6 +5685,419 @@
                 }
             }, 100);
         });
+
+        // 🍄 TAMA JUMP PLATFORMER GAME
+        const platformerGame = {
+            canvas: null,
+            ctx: null,
+            player: null,
+            platforms: [],
+            coins: [],
+            enemies: [],
+            score: 0,
+            coinsCollected: 0,
+            lives: 3,
+            gameTime: 60,
+            gameActive: false,
+            keys: {},
+            animFrame: null,
+            timer: null,
+            
+            init() {
+                this.canvas = document.getElementById('platformer-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Start button
+                document.getElementById('platformer-start-btn')?.addEventListener('click', () => {
+                    if (gameState.tama < 100) {
+                        showMessage('❌ Not enough TAMA! Need 100 TAMA');
+                        return;
+                    }
+                    
+                    // Deduct bet
+                    gameState.tama -= 100;
+                    updateUI();
+                    if (typeof TransactionLogger !== 'undefined') {
+                        TransactionLogger.logSpend(
+                            window.TELEGRAM_USER_ID,
+                            window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                            'platformer_bet',
+                            100,
+                            gameState.tama + 100,
+                            gameState.tama,
+                            { game: 'platformer' }
+                        );
+                    }
+                    
+                    this.start();
+                });
+                
+                // Keyboard controls
+                window.addEventListener('keydown', (e) => {
+                    if (this.gameActive) {
+                        this.keys[e.key] = true;
+                        if (e.key === ' ' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            this.player.jump();
+                        }
+                    }
+                });
+                
+                window.addEventListener('keyup', (e) => {
+                    this.keys[e.key] = false;
+                });
+            },
+            
+            start() {
+                this.gameActive = true;
+                this.score = 0;
+                this.coinsCollected = 0;
+                this.lives = 3;
+                this.gameTime = 60;
+                
+                // Initialize player
+                this.player = {
+                    x: 50,
+                    y: 200,
+                    width: 24,
+                    height: 24,
+                    vx: 0,
+                    vy: 0,
+                    jumping: false,
+                    onGround: false,
+                    jump() {
+                        if (this.onGround) {
+                            this.vy = -8;
+                            this.jumping = true;
+                            this.onGround = false;
+                        }
+                    }
+                };
+                
+                // Generate level
+                this.generateLevel();
+                
+                // Update UI
+                document.getElementById('platformer-coins').textContent = '0';
+                document.getElementById('platformer-lives').textContent = '3';
+                document.getElementById('platformer-time').textContent = '60';
+                document.getElementById('platformer-score').textContent = '0';
+                document.getElementById('platformer-result').innerHTML = '';
+                
+                // Start timer
+                this.timer = setInterval(() => {
+                    if (this.gameActive) {
+                        this.gameTime--;
+                        document.getElementById('platformer-time').textContent = this.gameTime;
+                        
+                        if (this.gameTime <= 0) {
+                            this.endGame();
+                        }
+                    }
+                }, 1000);
+                
+                // Start game loop
+                this.gameLoop();
+            },
+            
+            generateLevel() {
+                this.platforms = [];
+                this.coins = [];
+                this.enemies = [];
+                
+                // Ground platform
+                this.platforms.push({ x: 0, y: 270, width: 400, height: 30, type: 'ground' });
+                
+                // Floating platforms (procedurally generated)
+                for (let i = 0; i < 8; i++) {
+                    const x = 80 + i * 60 + Math.random() * 20;
+                    const y = 220 - Math.random() * 100;
+                    const width = 60 + Math.random() * 20;
+                    this.platforms.push({ x, y, width, height: 15, type: 'platform' });
+                    
+                    // Add coins on platforms
+                    if (Math.random() > 0.3) {
+                        this.coins.push({
+                            x: x + width / 2 - 6,
+                            y: y - 20,
+                            width: 12,
+                            height: 12,
+                            collected: false
+                        });
+                    }
+                }
+                
+                // Add floating coins
+                for (let i = 0; i < 15; i++) {
+                    this.coins.push({
+                        x: 50 + Math.random() * 320,
+                        y: 80 + Math.random() * 140,
+                        width: 12,
+                        height: 12,
+                        collected: false
+                    });
+                }
+                
+                // Add enemies
+                for (let i = 0; i < 4; i++) {
+                    this.enemies.push({
+                        x: 100 + i * 80,
+                        y: 250,
+                        width: 20,
+                        height: 20,
+                        vx: 1 + Math.random(),
+                        direction: 1
+                    });
+                }
+            },
+            
+            gameLoop() {
+                if (!this.gameActive) return;
+                
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Sky gradient
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                gradient.addColorStop(0, '#87CEEB');
+                gradient.addColorStop(1, '#E0F6FF');
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Update player physics
+                this.updatePlayer();
+                
+                // Update enemies
+                this.updateEnemies();
+                
+                // Check collisions
+                this.checkCollisions();
+                
+                // Draw everything
+                this.draw();
+                
+                // Continue loop
+                this.animFrame = requestAnimationFrame(() => this.gameLoop());
+            },
+            
+            updatePlayer() {
+                // Horizontal movement
+                if (this.keys['ArrowLeft'] || this.keys['a']) {
+                    this.player.vx = -3;
+                } else if (this.keys['ArrowRight'] || this.keys['d']) {
+                    this.player.vx = 3;
+                } else {
+                    this.player.vx *= 0.8;
+                }
+                
+                // Apply gravity
+                this.player.vy += 0.4;
+                
+                // Apply velocity
+                this.player.x += this.player.vx;
+                this.player.y += this.player.vy;
+                
+                // Limit falling speed
+                if (this.player.vy > 10) this.player.vy = 10;
+                
+                // Keep player in bounds horizontally
+                if (this.player.x < 0) this.player.x = 0;
+                if (this.player.x > this.canvas.width - this.player.width) {
+                    this.player.x = this.canvas.width - this.player.width;
+                }
+                
+                // Check if fell off
+                if (this.player.y > this.canvas.height) {
+                    this.loseLife();
+                }
+            },
+            
+            updateEnemies() {
+                this.enemies.forEach(enemy => {
+                    enemy.x += enemy.vx * enemy.direction;
+                    
+                    // Bounce off edges
+                    if (enemy.x < 0 || enemy.x > this.canvas.width - enemy.width) {
+                        enemy.direction *= -1;
+                    }
+                });
+            },
+            
+            checkCollisions() {
+                // Reset ground detection
+                this.player.onGround = false;
+                
+                // Platform collision
+                this.platforms.forEach(platform => {
+                    if (this.player.x < platform.x + platform.width &&
+                        this.player.x + this.player.width > platform.x &&
+                        this.player.y + this.player.height > platform.y &&
+                        this.player.y + this.player.height < platform.y + 10 &&
+                        this.player.vy >= 0) {
+                        
+                        this.player.y = platform.y - this.player.height;
+                        this.player.vy = 0;
+                        this.player.onGround = true;
+                        this.player.jumping = false;
+                    }
+                });
+                
+                // Coin collision
+                this.coins.forEach(coin => {
+                    if (!coin.collected &&
+                        this.player.x < coin.x + coin.width &&
+                        this.player.x + this.player.width > coin.x &&
+                        this.player.y < coin.y + coin.height &&
+                        this.player.y + this.player.height > coin.y) {
+                        
+                        coin.collected = true;
+                        this.coinsCollected++;
+                        this.score += 5;
+                        document.getElementById('platformer-coins').textContent = this.coinsCollected;
+                        document.getElementById('platformer-score').textContent = this.score;
+                    }
+                });
+                
+                // Enemy collision
+                this.enemies.forEach(enemy => {
+                    if (this.player.x < enemy.x + enemy.width &&
+                        this.player.x + this.player.width > enemy.x &&
+                        this.player.y < enemy.y + enemy.height &&
+                        this.player.y + this.player.height > enemy.y) {
+                        
+                        // Jump on enemy (kill it)
+                        if (this.player.vy > 0 && this.player.y + this.player.height - 5 < enemy.y) {
+                            enemy.x = -100; // Remove enemy
+                            this.player.vy = -6;
+                            this.score += 10;
+                            document.getElementById('platformer-score').textContent = this.score;
+                        } else {
+                            this.loseLife();
+                        }
+                    }
+                });
+            },
+            
+            loseLife() {
+                this.lives--;
+                document.getElementById('platformer-lives').textContent = this.lives;
+                
+                if (this.lives <= 0) {
+                    this.endGame();
+                } else {
+                    // Reset player position
+                    this.player.x = 50;
+                    this.player.y = 200;
+                    this.player.vx = 0;
+                    this.player.vy = 0;
+                }
+            },
+            
+            draw() {
+                // Draw platforms
+                this.platforms.forEach(platform => {
+                    if (platform.type === 'ground') {
+                        // Ground - grass style
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+                        this.ctx.fillStyle = '#228B22';
+                        this.ctx.fillRect(platform.x, platform.y, platform.width, 5);
+                    } else {
+                        // Floating platform
+                        this.ctx.fillStyle = '#D2691E';
+                        this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+                        this.ctx.strokeStyle = '#8B4513';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+                    }
+                });
+                
+                // Draw coins
+                this.coins.forEach(coin => {
+                    if (!coin.collected) {
+                        this.ctx.fillStyle = '#FFD700';
+                        this.ctx.beginPath();
+                        this.ctx.arc(coin.x + coin.width/2, coin.y + coin.height/2, coin.width/2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        this.ctx.strokeStyle = '#FFA500';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.stroke();
+                    }
+                });
+                
+                // Draw enemies
+                this.enemies.forEach(enemy => {
+                    if (enemy.x > -50) {
+                        this.ctx.fillStyle = '#FF0000';
+                        this.ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+                        // Eyes
+                        this.ctx.fillStyle = '#FFF';
+                        this.ctx.fillRect(enemy.x + 4, enemy.y + 5, 4, 4);
+                        this.ctx.fillRect(enemy.x + 12, enemy.y + 5, 4, 4);
+                    }
+                });
+                
+                // Draw player (use current pet emoji or blob)
+                this.ctx.fillStyle = '#FF69B4';
+                this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
+                this.ctx.fillStyle = '#FFF';
+                this.ctx.fillRect(this.player.x + 6, this.player.y + 6, 4, 4);
+                this.ctx.fillRect(this.player.x + 14, this.player.y + 6, 4, 4);
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(this.player.x + 8, this.player.y + 15, 8, 2);
+            },
+            
+            endGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                cancelAnimationFrame(this.animFrame);
+                
+                // Calculate reward
+                let reward = 0;
+                let message = '';
+                
+                if (this.coinsCollected >= 40) {
+                    reward = 500;
+                    message = '🏆 AMAZING! +500 TAMA!';
+                } else if (this.coinsCollected >= 30) {
+                    reward = 300;
+                    message = '🎉 GREAT! +300 TAMA!';
+                } else if (this.coinsCollected >= 20) {
+                    reward = 150;
+                    message = '👍 GOOD! +150 TAMA!';
+                } else if (this.coinsCollected >= 10) {
+                    reward = 50;
+                    message = '😊 Not bad! +50 TAMA';
+                } else {
+                    message = '😢 Try again! 0 TAMA';
+                }
+                
+                gameState.tama += reward;
+                updateUI();
+                
+                if (typeof TransactionLogger !== 'undefined' && reward > 0) {
+                    TransactionLogger.logEarn(
+                        window.TELEGRAM_USER_ID,
+                        window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                        'platformer_win',
+                        reward,
+                        gameState.tama - reward,
+                        gameState.tama,
+                        { coins: this.coinsCollected, score: this.score }
+                    );
+                }
+                
+                document.getElementById('platformer-result').innerHTML = 
+                    `<strong>${message}</strong><br>` +
+                    `Coins: ${this.coinsCollected} | Score: ${this.score}<br>` +
+                    `Net: ${reward - 100 >= 0 ? '+' : ''}${reward - 100} TAMA`;
+                
+                triggerAutoSave();
+            }
+        };
+        
+        // Initialize platformer when page loads
+        platformerGame.init();
         
         // 🏃 PET RACE
         function startRace() {
