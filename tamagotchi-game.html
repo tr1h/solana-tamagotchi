@@ -5730,36 +5730,16 @@
             animationFrame: 0,
             
             init() {
-                this.canvas = document.getElementById('platformer-canvas');
+                // Используем fullscreen canvas сразу (маленький canvas удален)
+                this.canvas = document.getElementById('platformer-canvas-fullscreen');
+                if (!this.canvas) {
+                    console.warn('Platformer canvas not found, will initialize on game start');
+                    return;
+                }
                 this.ctx = this.canvas.getContext('2d');
                 
                 // Mobile touch controls setup
                 this.setupMobileControls();
-                
-                // Start button
-                document.getElementById('platformer-start-btn')?.addEventListener('click', () => {
-                    if (gameState.tama < 100) {
-                        showMessage('❌ Not enough TAMA! Need 100 TAMA');
-                        return;
-                    }
-                    
-                    // Deduct bet
-                    gameState.tama -= 100;
-                    updateUI();
-                    if (typeof TransactionLogger !== 'undefined') {
-                        TransactionLogger.logSpend(
-                            window.TELEGRAM_USER_ID,
-                            window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
-                            'platformer_bet',
-                            100,
-                            gameState.tama + 100,
-                            gameState.tama,
-                            { game: 'platformer' }
-                        );
-                    }
-                    
-                    this.start();
-                });
                 
                 // Keyboard controls
                 window.addEventListener('keydown', (e) => {
@@ -5778,52 +5758,8 @@
             },
             
             setupMobileControls() {
-                const btnLeft = document.getElementById('btn-left');
-                const btnRight = document.getElementById('btn-right');
-                const btnJump = document.getElementById('btn-jump');
-                const mobileControls = document.getElementById('mobile-controls');
-                
-                // Show mobile controls on touch devices
-                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                
-                if (!btnLeft || !btnRight || !btnJump) return;
-                
-                // Left button
-                btnLeft.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.keys['ArrowLeft'] = true;
-                    btnLeft.style.background = 'rgba(0,0,0,0.8)';
-                });
-                btnLeft.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    this.keys['ArrowLeft'] = false;
-                    btnLeft.style.background = 'rgba(0,0,0,0.5)';
-                });
-                
-                // Right button
-                btnRight.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.keys['ArrowRight'] = true;
-                    btnRight.style.background = 'rgba(0,0,0,0.8)';
-                });
-                btnRight.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    this.keys['ArrowRight'] = false;
-                    btnRight.style.background = 'rgba(0,0,0,0.5)';
-                });
-                
-                // Jump button
-                btnJump.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    if (this.gameActive && this.player) {
-                        this.player.jump();
-                    }
-                    btnJump.style.background = 'rgba(255,69,0,0.9)';
-                });
-                btnJump.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    btnJump.style.background = 'rgba(255,69,0,0.7)';
-                });
+                // Старые кнопки удалены, используем только fullscreen версию
+                console.log('Mobile controls will be set up when fullscreen opens');
             },
             
             requestFullscreen() {
