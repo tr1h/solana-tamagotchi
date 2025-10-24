@@ -3180,22 +3180,6 @@
                     </div>
                     <button class="buy-btn" onclick="buyItem('auto_feed', 2000)">Buy</button>
                 </div>
-                <div class="shop-item">
-                    <div class="shop-item-info">
-                        <div class="shop-item-name">🎨 Pet Skin</div>
-                        <div class="shop-item-desc">Random rare pet skin</div>
-                        <div class="shop-item-price">5,000 TAMA</div>
-                    </div>
-                    <button class="buy-btn" onclick="buyItem('skin', 5000)">Buy</button>
-                </div>
-                <div class="shop-item">
-                    <div class="shop-item-info">
-                        <div class="shop-item-name">🐾 Change Pet</div>
-                        <div class="shop-item-desc">Buy & switch to different pet types</div>
-                        <div class="shop-item-price">Free - 2,500 TAMA</div>
-                    </div>
-                    <button class="buy-btn" onclick="openPetSelector()">Select</button>
-                </div>
             </div>
             
             <!-- Pet Selector (inside shop) -->
@@ -4241,8 +4225,21 @@
         });
 
         function buyItem(itemType, price) {
+            // Check if player has enough TAMA
             if (gameState.tama < price) {
                 showMessage('❌ Not enough TAMA!');
+                return;
+            }
+
+            // Check if item is already owned (for permanent items)
+            if (itemType === 'auto_feed' && gameState.hasAutoFeeder) {
+                showMessage('❌ You already own Auto-Feeder!');
+                return;
+            }
+
+            // Check if booster is already active
+            if (itemType === 'booster' && gameState.boosterActive && Date.now() < gameState.boosterEndTime) {
+                showMessage('❌ Booster is already active!');
                 return;
             }
 
@@ -4251,7 +4248,54 @@
             gameState.tama -= price;
             const balanceAfter = gameState.tama;
             
-            // Log shop transaction
+            // Apply item effect
+            let itemEffect = '';
+            switch(itemType) {
+                case 'energy':
+                    gameState.food = Math.min(gameState.maxFood, gameState.food + 50);
+                    gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 50);
+                    itemEffect = 'Energy Drink consumed! +50 Food & Happy';
+                    showMessage('⚡ ' + itemEffect);
+                    break;
+                
+                case 'potion':
+                    gameState.hp = gameState.maxHp;
+                    itemEffect = 'Super Potion used! HP fully restored!';
+                    showMessage('💊 ' + itemEffect);
+                    break;
+                
+                case 'booster':
+                    gameState.boosterActive = true;
+                    gameState.boosterEndTime = Date.now() + (60 * 60 * 1000); // 1 hour
+                    itemEffect = 'Click Booster activated! 2x clicks for 1 hour!';
+                    showMessage('🔥 ' + itemEffect);
+                    break;
+                
+                case 'auto_feed':
+                    gameState.hasAutoFeeder = true;
+                    itemEffect = 'Auto-Feeder purchased! Your pet will auto-feed when hungry!';
+                    showMessage('💎 ' + itemEffect);
+                    break;
+                
+                case 'skin':
+                    const skins = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲', '🦖'];
+                    const randomSkin = skins[Math.floor(Math.random() * skins.length)];
+                    const petSprite = document.getElementById('pet-sprite');
+                    if (petSprite) {
+                        petSprite.textContent = randomSkin;
+                    }
+                    gameState.petType = randomSkin;
+                    itemEffect = `New pet skin! You got ${randomSkin}!`;
+                    showMessage('🎨 ' + itemEffect);
+                    break;
+                
+                default:
+                    showMessage('❌ Unknown item!');
+                    gameState.tama = balanceBefore; // Refund if unknown item
+                    return;
+            }
+            
+            // Log shop transaction with item effect
             if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
                 TransactionLogger.logSpend(
                     window.TELEGRAM_USER_ID,
@@ -4260,40 +4304,12 @@
                     price,
                     balanceBefore,
                     balanceAfter,
-                    { item_type: itemType, shop_item: true }
+                    { 
+                        item_type: itemType, 
+                        shop_item: true,
+                        effect: itemEffect
+                    }
                 );
-            }
-
-            switch(itemType) {
-                case 'energy':
-                    gameState.food = Math.min(gameState.maxFood, gameState.food + 50);
-                    gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 50);
-                    showMessage('⚡ Energy Drink consumed! +50 Food & Happy');
-                    break;
-                
-                case 'potion':
-                    gameState.hp = gameState.maxHp;
-                    showMessage('💊 Super Potion used! HP fully restored!');
-                    break;
-                
-                case 'booster':
-                    gameState.boosterActive = true;
-                    gameState.boosterEndTime = Date.now() + (60 * 60 * 1000); // 1 hour
-                    showMessage('🔥 Click Booster activated! 2x clicks for 1 hour!');
-                    break;
-                
-                case 'auto_feed':
-                    gameState.hasAutoFeeder = true;
-                    showMessage('💎 Auto-Feeder purchased! Your pet will auto-feed when hungry!');
-                    break;
-                
-                case 'skin':
-                    const skins = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲', '🦖'];
-                    const randomSkin = skins[Math.floor(Math.random() * skins.length)];
-                    petSprite.textContent = randomSkin;
-                    gameState.petType = randomSkin;
-                    showMessage(`🎨 New pet skin! You got ${randomSkin}!`);
-                    break;
             }
 
             updateUI();
