@@ -5819,8 +5819,12 @@
                 // Generate level
                 this.generateLevel();
                 
-                // Clear result
-                document.getElementById('platformer-result').innerHTML = '';
+                // Clear result (только для fullscreen)
+                const resultElement = platformerFullscreenMode ? 
+                    document.getElementById('platformer-result-fs') : null;
+                if (resultElement) {
+                    resultElement.innerHTML = '';
+                }
                 
                 // Start timer
                 this.timer = setInterval(() => {
@@ -6625,9 +6629,8 @@
                     cancelAnimationFrame(platformerGame.animFrame);
                 }
                 
-                // Switch back to normal canvas
-                platformerGame.canvas = document.getElementById('platformer-canvas');
-                platformerGame.ctx = platformerGame.canvas.getContext('2d');
+                // Нет "normal canvas", остаемся на fullscreen
+                platformerFullscreenMode = false;
             }
         }
         
