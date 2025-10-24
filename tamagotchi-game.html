@@ -4420,11 +4420,17 @@
         }
 
         // Auto-feeder logic
+        let lastAutoFeed = 0; // Track last auto-feed time
         setInterval(() => {
             if (gameState.hasAutoFeeder && gameState.food < 30) {
-                gameState.food = Math.min(gameState.maxFood, gameState.food + 20);
-                showMessage('💎 Auto-Feeder activated! +20 Food');
-                updateUI();
+                const now = Date.now();
+                // Cooldown: only auto-feed once per minute
+                if (now - lastAutoFeed > 60000) {
+                    gameState.food = Math.min(gameState.maxFood, gameState.food + 20);
+                    showMessage('💎 Auto-Feeder activated! +20 Food');
+                    lastAutoFeed = now;
+                    updateUI();
+                }
             }
         }, 10000); // Check every 10 seconds
 
