@@ -3834,12 +3834,17 @@
             if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
             if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
             
-            // NEW: Low stats reduce happy on click (pet gets tired)
+            // ⚡ ENERGY COST - Every click consumes resources!
+            gameState.hp = Math.max(0, gameState.hp - 0.5);    // -0.5 HP per click
+            gameState.food = Math.max(0, gameState.food - 0.3); // -0.3 Food per click
+            gameState.happy = Math.max(0, gameState.happy - 0.2); // -0.2 Happy per click
+            
+            // Extra penalty if stats are low (pet gets tired faster)
             if (gameState.hp < 50) {
-                gameState.happy = Math.max(0, gameState.happy - 1);
+                gameState.happy = Math.max(0, gameState.happy - 0.5);
             }
             if (gameState.food < 50) {
-                gameState.happy = Math.max(0, gameState.happy - 0.5);
+                gameState.happy = Math.max(0, gameState.happy - 0.3);
             }
             
             // Combo system
