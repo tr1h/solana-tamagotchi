@@ -1717,6 +1717,28 @@
             }
         }
 
+        /* Fullscreen mode for platformer */
+        :fullscreen #platformer-canvas,
+        :-webkit-full-screen #platformer-canvas,
+        :-moz-full-screen #platformer-canvas {
+            max-width: 100vw;
+            max-height: 75vh;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Mobile touch button styles */
+        #mobile-controls button {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #mobile-controls button:active {
+            transform: scale(0.95);
+        }
+
         /* Mini Games Modal */
         .minigames-modal {
             display: none;
@@ -3174,7 +3196,23 @@
                 </div>
                 
                 <!-- Canvas Game Area -->
-                <canvas id="platformer-canvas" width="400" height="300" style="width: 100%; max-width: 400px; height: auto; display: block; margin: 0 auto; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border: 3px solid #333; border-radius: 10px; image-rendering: pixelated;"></canvas>
+                <div style="position: relative; width: 100%; max-width: 400px; margin: 0 auto;">
+                    <canvas id="platformer-canvas" width="400" height="300" style="width: 100%; height: auto; display: block; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border: 3px solid #333; border-radius: 10px; image-rendering: pixelated;"></canvas>
+                    
+                    <!-- Mobile Touch Controls -->
+                    <div id="mobile-controls" style="display: none; position: absolute; bottom: 10px; left: 0; right: 0; padding: 0 20px; pointer-events: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                            <!-- Left/Right Buttons -->
+                            <div style="display: flex; gap: 10px; pointer-events: auto;">
+                                <button id="btn-left" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 24px; cursor: pointer; touch-action: none;">⬅️</button>
+                                <button id="btn-right" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 24px; cursor: pointer; touch-action: none;">➡️</button>
+                            </div>
+                            
+                            <!-- Jump Button -->
+                            <button id="btn-jump" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(255,69,0,0.7); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 28px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Controls Info -->
                 <div style="text-align: center; margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -3182,9 +3220,8 @@
                         <strong>Controls:</strong>
                     </div>
                     <div style="font-size: 12px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                        <span>⬅️ ➡️ Move</span>
-                        <span>🔼 Jump</span>
-                        <span>SPACE Jump</span>
+                        <span>💻 Desktop: ⬅️ ➡️ Move | 🔼 SPACE Jump</span>
+                        <span>📱 Mobile: Touch buttons appear in game</span>
                     </div>
                 </div>
                 
@@ -5707,6 +5744,9 @@
                 this.canvas = document.getElementById('platformer-canvas');
                 this.ctx = this.canvas.getContext('2d');
                 
+                // Mobile touch controls setup
+                this.setupMobileControls();
+                
                 // Start button
                 document.getElementById('platformer-start-btn')?.addEventListener('click', () => {
                     if (gameState.tama < 100) {
@@ -5748,12 +5788,86 @@
                 });
             },
             
+            setupMobileControls() {
+                const btnLeft = document.getElementById('btn-left');
+                const btnRight = document.getElementById('btn-right');
+                const btnJump = document.getElementById('btn-jump');
+                const mobileControls = document.getElementById('mobile-controls');
+                
+                // Show mobile controls on touch devices
+                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                
+                if (!btnLeft || !btnRight || !btnJump) return;
+                
+                // Left button
+                btnLeft.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.keys['ArrowLeft'] = true;
+                    btnLeft.style.background = 'rgba(0,0,0,0.8)';
+                });
+                btnLeft.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.keys['ArrowLeft'] = false;
+                    btnLeft.style.background = 'rgba(0,0,0,0.5)';
+                });
+                
+                // Right button
+                btnRight.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.keys['ArrowRight'] = true;
+                    btnRight.style.background = 'rgba(0,0,0,0.8)';
+                });
+                btnRight.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.keys['ArrowRight'] = false;
+                    btnRight.style.background = 'rgba(0,0,0,0.5)';
+                });
+                
+                // Jump button
+                btnJump.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (this.gameActive && this.player) {
+                        this.player.jump();
+                    }
+                    btnJump.style.background = 'rgba(255,69,0,0.9)';
+                });
+                btnJump.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    btnJump.style.background = 'rgba(255,69,0,0.7)';
+                });
+            },
+            
+            requestFullscreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            },
+            
             start() {
                 this.gameActive = true;
                 this.score = 0;
                 this.coinsCollected = 0;
                 this.lives = 3;
                 this.gameTime = 60;
+                
+                // Show mobile controls on touch devices
+                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                const mobileControls = document.getElementById('mobile-controls');
+                if (mobileControls && isTouchDevice) {
+                    mobileControls.style.display = 'block';
+                }
+                
+                // Request fullscreen on mobile for better experience
+                if (isTouchDevice && window.innerWidth < 768) {
+                    setTimeout(() => {
+                        this.requestFullscreen();
+                    }, 100);
+                }
                 
                 // Initialize player
                 this.player = {
@@ -6051,6 +6165,12 @@
                 this.gameActive = false;
                 clearInterval(this.timer);
                 cancelAnimationFrame(this.animFrame);
+                
+                // Hide mobile controls
+                const mobileControls = document.getElementById('mobile-controls');
+                if (mobileControls) {
+                    mobileControls.style.display = 'none';
+                }
                 
                 // Calculate reward
                 let reward = 0;
