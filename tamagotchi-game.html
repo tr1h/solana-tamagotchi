@@ -1582,6 +1582,32 @@
             transform: translateY(0);
         }
 
+        /* Help Button */
+        .help-btn {
+            width: calc(100% - 40px);
+            margin: 10px 20px 20px 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: 3px solid #5b21b6;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .help-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .help-btn:active {
+            transform: translateY(0);
+        }
+
         /* Mini Games Modal */
         .minigames-modal {
             display: none;
@@ -1743,6 +1769,111 @@
             width: 90%;
             max-height: 70vh;
             overflow-y: auto;
+        }
+
+        /* Help Modal */
+        .help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .help-modal.show {
+            display: flex;
+        }
+
+        .help-content {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border: 3px solid #8b5cf6;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #8b5cf6;
+        }
+
+        .help-header h2 {
+            margin: 0;
+            color: #8b5cf6;
+        }
+
+        .help-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .help-tab {
+            padding: 10px 15px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            color: #8b5cf6;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .help-tab:hover {
+            background: rgba(139, 92, 246, 0.3);
+        }
+
+        .help-tab.active {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .help-content-area {
+            min-height: 400px;
+        }
+
+        .help-tab-content {
+            display: none;
+        }
+
+        .help-tab-content.active {
+            display: block;
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .help-section h4 {
+            color: #8b5cf6;
+            margin-bottom: 10px;
+        }
+
+        .help-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .help-section li {
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
 
         .leaderboard-header {
@@ -2784,6 +2915,9 @@
         <!-- Leaderboard Button -->
         <button class="leaderboard-btn" id="leaderboard-btn">🏆 Leaderboard</button>
 
+        <!-- Help Button -->
+        <button class="help-btn" id="help-btn">📚 Help & Guide</button>
+
         <!-- Auto-save indicator removed - using silent save -->
     </div>
 
@@ -3130,6 +3264,144 @@
             </div>
             <div id="leaderboard-list" class="leaderboard-list">
                 <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="help-modal" id="help-modal">
+        <div class="help-content">
+            <div class="help-header">
+                <h2>📚 Help & Guide</h2>
+                <button class="close-btn" id="close-help">✕</button>
+            </div>
+            <div class="help-tabs">
+                <button class="help-tab active" data-tab="quickstart">🚀 Quick Start</button>
+                <button class="help-tab" data-tab="earn">💰 How to Earn</button>
+                <button class="help-tab" data-tab="shop">🛒 Shop Guide</button>
+                <button class="help-tab" data-tab="faq">❓ FAQ</button>
+            </div>
+            <div class="help-content-area">
+                <div class="help-tab-content active" id="quickstart-content">
+                    <h3>🚀 Quick Start Guide</h3>
+                    <div class="help-section">
+                        <h4>🎮 How to Play</h4>
+                        <ul>
+                            <li><strong>Click your pet</strong> - Earn TAMA tokens and XP</li>
+                            <li><strong>Watch indicators</strong> - HP, Food, Happy decrease with clicks</li>
+                            <li><strong>Feed & heal</strong> - Use buttons to restore pet's health</li>
+                            <li><strong>Level up</strong> - Gain bonuses and TAMA rewards</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>💰 Earning TAMA</h4>
+                        <ul>
+                            <li><strong>Clicking:</strong> 1 TAMA per click + combo bonuses</li>
+                            <li><strong>Quests:</strong> Complete daily tasks for 1,500 TAMA</li>
+                            <li><strong>Achievements:</strong> Unlock rewards automatically</li>
+                            <li><strong>Mini-games:</strong> Risk TAMA for bigger rewards</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🎯 Tips for Beginners</h4>
+                        <ul>
+                            <li>Click actively - it's your main income source</li>
+                            <li>Complete quests first - easy 1,500 TAMA</li>
+                            <li>Don't spend TAMA immediately - save for Auto-Feeder</li>
+                            <li>Invite friends - get referral bonuses</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="help-tab-content" id="earn-content">
+                    <h3>💰 How to Earn TAMA</h3>
+                    <div class="help-section">
+                        <h4>🎯 Main Methods</h4>
+                        <ul>
+                            <li><strong>Pet Clicks:</strong> 1 TAMA per click + combo bonuses</li>
+                            <li><strong>Combo System:</strong> 5+ clicks = +1 TAMA, 10+ = +2 TAMA</li>
+                            <li><strong>Daily Quests:</strong> Click Master (500 TAMA) + Level Up (1,000 TAMA)</li>
+                            <li><strong>Achievements:</strong> 1,735 TAMA total from all rewards</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🎮 Mini-Games</h4>
+                        <ul>
+                            <li><strong>🎲 Dice Roll:</strong> 50 TAMA bet, up to 15x win (low risk)</li>
+                            <li><strong>🎰 Slots:</strong> 100-1000 TAMA bet, up to 10x win (medium risk)</li>
+                            <li><strong>🎡 Lucky Wheel:</strong> 100-1000 TAMA bet, up to 10x win (medium risk)</li>
+                            <li><strong>⚔️ Battle Arena:</strong> 200-1000 TAMA bet, up to 5x win (high risk)</li>
+                            <li><strong>🏁 Pet Racing:</strong> 150-750 TAMA bet, up to 5x win (high risk)</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>👥 Referrals</h4>
+                        <ul>
+                            <li>Get referral code from Telegram bot</li>
+                            <li>Share with friends</li>
+                            <li>Earn 100 TAMA for first referral, 50 TAMA for each next</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="help-tab-content" id="shop-content">
+                    <h3>🛒 Shop Guide</h3>
+                    <div class="help-section">
+                        <h4>🛍️ Available Items</h4>
+                        <ul>
+                            <li><strong>⚡ Energy Drink (200 TAMA):</strong> +50 Food & Happy instantly</li>
+                            <li><strong>💊 Super Potion (300 TAMA):</strong> Full HP restore</li>
+                            <li><strong>🔥 Click Booster (500 TAMA):</strong> 2x clicks for 1 hour</li>
+                            <li><strong>💎 Auto-Feeder (2,000 TAMA):</strong> Auto-feed forever (ONE TIME)</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>💡 Buying Strategy</h4>
+                        <ul>
+                            <li><strong>Priority 1:</strong> Auto-Feeder - best investment</li>
+                            <li><strong>Priority 2:</strong> Click Booster - for active players</li>
+                            <li><strong>Priority 3:</strong> Energy Drink - for quick restore</li>
+                            <li><strong>Priority 4:</strong> Super Potion - for emergencies</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>📊 ROI Analysis</h4>
+                        <ul>
+                            <li><strong>Auto-Feeder:</strong> Pays back in 1 hour, works forever</li>
+                            <li><strong>Click Booster:</strong> Pays back in 2.5 hours of active play</li>
+                            <li><strong>Energy Drink:</strong> Pays back in 2.5 uses</li>
+                            <li><strong>Super Potion:</strong> Equal to 3x Heal, convenience factor</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="help-tab-content" id="faq-content">
+                    <h3>❓ Frequently Asked Questions</h3>
+                    <div class="help-section">
+                        <h4>🎮 Game Basics</h4>
+                        <ul>
+                            <li><strong>Q: How do I start?</strong><br>A: Click your pet to earn TAMA, complete quests, buy items</li>
+                            <li><strong>Q: Why is my pet not responding?</strong><br>A: Check HP, Food, Happy - pet might be dead, hungry, or sad</li>
+                            <li><strong>Q: How do I restore pet's health?</strong><br>A: Use Feed (50 TAMA), Play (30 TAMA), Heal (100 TAMA) buttons</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>💰 TAMA & Economy</h4>
+                        <ul>
+                            <li><strong>Q: How much TAMA can I earn daily?</strong><br>A: 2,000-5,000 TAMA for active players</li>
+                            <li><strong>Q: What should I buy first?</strong><br>A: Save for Auto-Feeder (2,000 TAMA) - best investment</li>
+                            <li><strong>Q: Are mini-games worth it?</strong><br>A: Only if you have extra TAMA - they're risky</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🔧 Technical Issues</h4>
+                        <ul>
+                            <li><strong>Q: Game not loading?</strong><br>A: Clear browser cache, try different browser</li>
+                            <li><strong>Q: Progress not saving?</strong><br>A: Make sure you're connected to Telegram</li>
+                            <li><strong>Q: Shop not working?</strong><br>A: Check TAMA balance, refresh page</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -5889,6 +6161,13 @@
         const leaderboardModal = document.getElementById('leaderboard-modal');
         const closeLeaderboard = document.getElementById('close-leaderboard');
         const leaderboardList = document.getElementById('leaderboard-list');
+
+        // Help Modal Elements
+        const helpBtn = document.getElementById('help-btn');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelp = document.getElementById('close-help');
+        const helpTabs = document.querySelectorAll('.help-tab');
+        const helpTabContents = document.querySelectorAll('.help-tab-content');
         
         console.log('Leaderboard elements:', { leaderboardBtn, leaderboardModal, closeLeaderboard, leaderboardList });
         
@@ -5918,6 +6197,48 @@
                 }
             });
         }
+
+        // Help Modal Event Listeners
+        if (helpBtn && helpModal) {
+            helpBtn.addEventListener('click', () => {
+                helpModal.classList.add('show');
+            });
+        }
+
+        if (closeHelp && helpModal) {
+            closeHelp.addEventListener('click', () => {
+                helpModal.classList.remove('show');
+            });
+        }
+
+        // Close help on background click
+        if (helpModal) {
+            helpModal.addEventListener('click', (e) => {
+                if (e.target.id === 'help-modal') {
+                    helpModal.classList.remove('show');
+                }
+            });
+        }
+
+        // Help Tab Switching
+        helpTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                helpTabs.forEach(t => t.classList.remove('active'));
+                helpTabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const targetContent = document.getElementById(targetTab + '-content');
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
 
         // Supabase Configuration
         const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
