@@ -3173,37 +3173,7 @@
 
             <!-- 🍄 TAMA JUMP PLATFORMER -->
             <div class="game-arena" id="platformer-arena" style="display: none;">
-                <button onclick="openPlatformerFullscreen()" style="width: 100%; padding: 25px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 15px; color: white; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);">
-                    🍄 START MARIO GAME (100 TAMA)
-                </button>
-                
-                <!-- Canvas Game Area (FULL SIZE) -->
-                <div style="position: relative; width: 100%; height: 500px;">
-                    <canvas id="platformer-canvas" width="480" height="500" style="width: 100%; height: 100%; display: block; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border: none; image-rendering: pixelated;"></canvas>
-                    
-                    <!-- Mobile Touch Controls -->
-                    <div id="mobile-controls" style="display: none; position: absolute; bottom: 10px; left: 0; right: 0; padding: 0 20px; pointer-events: none;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                            <!-- Left/Right Buttons -->
-                            <div style="display: flex; gap: 10px; pointer-events: auto;">
-                                <button id="btn-left" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 24px; cursor: pointer; touch-action: none;">⬅️</button>
-                                <button id="btn-right" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 3px solid rgba(255,255,255,0.8); color: white; font-size: 24px; cursor: pointer; touch-action: none;">➡️</button>
-                            </div>
-                            
-                            <!-- Jump Button -->
-                            <button id="btn-jump" style="width: 70px; height: 70px; border-radius: 50%; background: rgba(255,69,0,0.7); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 28px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Result (compact) -->
-                <div style="text-align: center; font-size: 14px; margin: 10px 0; min-height: 40px;" id="platformer-result"></div>
-                
-                <!-- Buttons -->
-                <div style="text-align: center; margin-top: 15px;">
-                    <button id="platformer-start-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🍄 START (100 TAMA)</button>
-                    <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
-                </div>
+                <!-- СРАЗУ открываем fullscreen при выборе игры -->
             </div>
             
         </div>
@@ -5327,6 +5297,13 @@
         document.querySelectorAll('.game-card').forEach(card => {
             card.addEventListener('click', () => {
                 const gameName = card.dataset.game;
+                
+                // Для platformer - сразу открываем fullscreen!
+                if (gameName === 'platformer') {
+                    openPlatformerFullscreen();
+                    return;
+                }
+                
                 gameSelection.style.display = 'none';
                 document.getElementById(`${gameName}-arena`).classList.add('active');
             });
@@ -7839,6 +7816,12 @@
         
         // Game selection function
         function selectGame(game) {
+            // Для platformer - сразу открываем fullscreen!
+            if (game === 'platformer') {
+                openPlatformerFullscreen();
+                return;
+            }
+            
             // Hide game selection
             document.getElementById('game-selection').style.display = 'none';
             
