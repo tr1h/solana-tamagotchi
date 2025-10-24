@@ -3173,8 +3173,8 @@
 
             <!-- 🍄 TAMA JUMP PLATFORMER -->
             <div class="game-arena" id="platformer-arena" style="display: none;">
-                <button onclick="openPlatformerFullscreen()" style="width: 100%; padding: 20px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-size: 20px; font-weight: bold; cursor: pointer; margin-bottom: 15px;">
-                    🍄 OPEN GAME IN FULL WINDOW
+                <button onclick="openPlatformerFullscreen()" style="width: 100%; padding: 25px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 15px; color: white; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);">
+                    🍄 START MARIO GAME (100 TAMA)
                 </button>
                 
                 <!-- Canvas Game Area (FULL SIZE) -->
@@ -3213,14 +3213,14 @@
     <div id="platformer-fullscreen-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #1a1a2e; z-index: 9999; overflow: hidden;">
         <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
             <!-- Header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(0,0,0,0.5);">
-                <h2 style="margin: 0; color: white;">🍄 TAMA JUMP</h2>
-                <button onclick="closePlatformerFullscreen()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 16px;">✕ Close</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.7); border-bottom: 3px solid #ef4444;">
+                <h2 style="margin: 0; color: white; font-size: 28px;">🍄 SUPER TAMA BROS</h2>
+                <button onclick="closePlatformerFullscreen()" style="padding: 12px 24px; background: #ef4444; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);">✕ EXIT</button>
             </div>
             
             <!-- Game Canvas -->
-            <div style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative;">
-                <canvas id="platformer-canvas-fullscreen" width="800" height="600" style="max-width: 100%; max-height: 100%; display: block; background: linear-gradient(180deg, #5C94FC 0%, #87CEEB 100%); image-rendering: pixelated; box-shadow: 0 0 50px rgba(0,0,0,0.5);"></canvas>
+            <div style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative; background: #000;">
+                <canvas id="platformer-canvas-fullscreen" width="960" height="540" style="max-width: 100%; max-height: 100%; display: block; background: linear-gradient(180deg, #5C94FC 0%, #87CEEB 100%); image-rendering: crisp-edges; box-shadow: 0 0 80px rgba(255,0,0,0.3);"></canvas>
                 
                 <!-- Mobile Controls for Fullscreen -->
                 <div id="mobile-controls-fullscreen" style="display: none; position: absolute; bottom: 20px; left: 0; right: 0; padding: 0 30px; pointer-events: none;">
@@ -3235,9 +3235,9 @@
             </div>
             
             <!-- Start Button -->
-            <div style="padding: 20px; text-align: center; background: rgba(0,0,0,0.3);">
-                <div id="platformer-result-fs" style="margin-bottom: 15px; font-size: 16px; color: white; min-height: 50px;"></div>
-                <button id="platformer-start-btn-fs" style="padding: 15px 50px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; font-size: 20px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">🍄 START GAME (100 TAMA)</button>
+            <div style="padding: 25px; text-align: center; background: rgba(0,0,0,0.5);">
+                <div id="platformer-result-fs" style="margin-bottom: 20px; font-size: 20px; color: white; min-height: 60px; font-weight: bold;"></div>
+                <button id="platformer-start-btn-fs" style="padding: 20px 60px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 15px; color: white; font-weight: bold; cursor: pointer; font-size: 24px; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6); transition: all 0.2s;">🍄 START GAME (100 TAMA)</button>
             </div>
         </div>
     </div>
@@ -6131,43 +6131,45 @@
             
             drawUI() {
                 // Game info panel at top (fixed position, not affected by camera)
-                const panelHeight = 35;
+                const panelHeight = 45;
                 
                 // Semi-transparent background
-                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
                 this.ctx.fillRect(0, 0, this.canvas.width, panelHeight);
                 
-                // Stats text
+                // Stats text - BIGGER!
                 this.ctx.fillStyle = '#FFF';
                 this.ctx.strokeStyle = '#000';
-                this.ctx.lineWidth = 2;
-                this.ctx.font = 'bold 14px "Courier New"';
+                this.ctx.lineWidth = 3;
+                this.ctx.font = 'bold 18px "Courier New"';
                 
                 // Coins
-                this.ctx.strokeText(`💰 ${this.coinsCollected}`, 10, 22);
-                this.ctx.fillText(`💰 ${this.coinsCollected}`, 10, 22);
+                this.ctx.strokeText(`💰 ${this.coinsCollected}`, 15, 28);
+                this.ctx.fillText(`💰 ${this.coinsCollected}`, 15, 28);
                 
                 // Lives
-                this.ctx.strokeText(`❤️ ${this.lives}`, 100, 22);
-                this.ctx.fillText(`❤️ ${this.lives}`, 100, 22);
+                this.ctx.strokeText(`❤️ ${this.lives}`, 120, 28);
+                this.ctx.fillText(`❤️ ${this.lives}`, 120, 28);
                 
                 // Time
-                this.ctx.strokeText(`⏱️ ${this.gameTime}s`, 180, 22);
-                this.ctx.fillText(`⏱️ ${this.gameTime}s`, 180, 22);
+                this.ctx.strokeText(`⏱️ ${this.gameTime}s`, 220, 28);
+                this.ctx.fillText(`⏱️ ${this.gameTime}s`, 220, 28);
                 
                 // Score
-                this.ctx.strokeText(`★ ${this.score}`, 280, 22);
-                this.ctx.fillText(`★ ${this.score}`, 280, 22);
+                this.ctx.strokeText(`★ ${this.score}`, 350, 28);
+                this.ctx.fillText(`★ ${this.score}`, 350, 28);
                 
-                // Progress bar (how far in level)
+                // Progress bar (how far in level) - BIGGER!
                 const progress = (this.player.x / this.levelWidth) * 100;
+                const barWidth = this.canvas.width - 520;
+                const barX = this.canvas.width - barWidth - 20;
                 this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                this.ctx.fillRect(380, 10, 90, 15);
+                this.ctx.fillRect(barX, 15, barWidth, 20);
                 this.ctx.fillStyle = '#10B981';
-                this.ctx.fillRect(380, 10, (90 * progress) / 100, 15);
+                this.ctx.fillRect(barX, 15, (barWidth * progress) / 100, 20);
                 this.ctx.strokeStyle = '#FFF';
-                this.ctx.lineWidth = 1;
-                this.ctx.strokeRect(380, 10, 90, 15);
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(barX, 15, barWidth, 20);
             },
             
             updatePlayer() {
@@ -6217,13 +6219,13 @@
                 // Reset ground detection
                 this.player.onGround = false;
                 
-                // Platform collision (ground and floating) - только сверху!
+                // Platform collision (ground and floating) - ТОЛЬКО сверху, БЕЗ боков!
                 [...this.platforms, ...this.pipes].forEach(platform => {
-                    // Landing on top
-                    if (this.player.x + 4 < platform.x + platform.width &&
-                        this.player.x + this.player.width - 4 > platform.x &&
-                        this.player.y + this.player.height > platform.y &&
-                        this.player.y + this.player.height < platform.y + 10 &&
+                    // Landing on top - с большим margin чтобы НЕ блокировать сбоку
+                    if (this.player.x + 8 < platform.x + platform.width &&
+                        this.player.x + this.player.width - 8 > platform.x &&
+                        this.player.y + this.player.height >= platform.y &&
+                        this.player.y + this.player.height <= platform.y + 12 &&
                         this.player.vy >= 0) {
                         
                         this.player.y = platform.y - this.player.height;
@@ -6235,12 +6237,12 @@
                 
                 // Question block collision from below
                 this.questionBlocks.forEach(block => {
-                    // Hit from below (with margin to avoid side collision)
+                    // Hit from below (with BIG margin - НЕ блокируем сбоку!)
                     if (!block.hit && 
-                        this.player.x + 4 < block.x + block.width &&
-                        this.player.x + this.player.width - 4 > block.x &&
-                        this.player.y < block.y + block.height &&
-                        this.player.y + 5 > block.y &&
+                        this.player.x + 8 < block.x + block.width &&
+                        this.player.x + this.player.width - 8 > block.x &&
+                        this.player.y <= block.y + block.height &&
+                        this.player.y + 8 >= block.y &&
                         this.player.vy < 0) {
                         
                         block.hit = true;
@@ -6262,11 +6264,11 @@
                         this.player.vy = 1; // Bounce back down
                     }
                     
-                    // Stand on question block (with margin to avoid side collision)
-                    if (this.player.x + 4 < block.x + block.width &&
-                        this.player.x + this.player.width - 4 > block.x &&
-                        this.player.y + this.player.height > block.y &&
-                        this.player.y + this.player.height < block.y + 10 &&
+                    // Stand on question block (with BIG margin - НЕ блокируем сбоку!)
+                    if (this.player.x + 8 < block.x + block.width &&
+                        this.player.x + this.player.width - 8 > block.x &&
+                        this.player.y + this.player.height >= block.y &&
+                        this.player.y + this.player.height <= block.y + 12 &&
                         this.player.vy >= 0) {
                         
                         this.player.y = block.y - this.player.height;
@@ -6279,11 +6281,11 @@
                 // Brick collision
                 this.bricks.forEach(brick => {
                     if (!brick.broken) {
-                        // Hit from below (with margin to avoid side collision)
-                        if (this.player.x + 4 < brick.x + brick.width &&
-                            this.player.x + this.player.width - 4 > brick.x &&
-                            this.player.y < brick.y + brick.height &&
-                            this.player.y + 5 > brick.y &&
+                        // Hit from below (with BIG margin - НЕ блокируем сбоку!)
+                        if (this.player.x + 8 < brick.x + brick.width &&
+                            this.player.x + this.player.width - 8 > brick.x &&
+                            this.player.y <= brick.y + brick.height &&
+                            this.player.y + 8 >= brick.y &&
                             this.player.vy < 0) {
                             
                             brick.broken = true;
@@ -6304,11 +6306,11 @@
                             this.player.vy = 1;
                         }
                         
-                        // Stand on brick (with margin to avoid side collision)
-                        if (this.player.x + 4 < brick.x + brick.width &&
-                            this.player.x + this.player.width - 4 > brick.x &&
-                            this.player.y + this.player.height > brick.y &&
-                            this.player.y + this.player.height < brick.y + 10 &&
+                        // Stand on brick (with BIG margin - НЕ блокируем сбоку!)
+                        if (this.player.x + 8 < brick.x + brick.width &&
+                            this.player.x + this.player.width - 8 > brick.x &&
+                            this.player.y + this.player.height >= brick.y &&
+                            this.player.y + this.player.height <= brick.y + 12 &&
                             this.player.vy >= 0) {
                             
                             this.player.y = brick.y - this.player.height;
