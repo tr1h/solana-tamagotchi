@@ -5001,9 +5001,10 @@
                     if (userData.pet_data) {
                         try {
                             const petData = JSON.parse(userData.pet_data);
-                            gameState.hp = petData.hp || 100;
-                            gameState.food = petData.food || 100;
-                            gameState.happy = petData.happy || 100;
+                            // НЕ сбрасываем! Загружаем сохраненные значения
+                            if (petData.hp !== undefined) gameState.hp = petData.hp;
+                            if (petData.food !== undefined) gameState.food = petData.food;
+                            if (petData.happy !== undefined) gameState.happy = petData.happy;
                             gameState.totalClicks = petData.totalClicks || 0;
                             gameState.achievements = petData.achievements || [];
                             
@@ -5219,12 +5220,13 @@
                         gameState.xp = data.xp || 0;
                         gameState.xpToLevel = data.xpToLevel || 100;
                         gameState.tama = data.tama || 0;
-                        gameState.hp = data.hp || 100;
-                        gameState.maxHp = data.maxHp || 100;
-                        gameState.food = data.food || 100;
-                        gameState.maxFood = data.maxFood || 100;
-                        gameState.happy = data.happy || 100;
-                        gameState.maxHappy = data.maxHappy || 100;
+                        // НЕ сбрасываем показатели! Загружаем сохраненные значения
+                        if (data.hp !== undefined) gameState.hp = data.hp;
+                        if (data.maxHp !== undefined) gameState.maxHp = data.maxHp;
+                        if (data.food !== undefined) gameState.food = data.food;
+                        if (data.maxFood !== undefined) gameState.maxFood = data.maxFood;
+                        if (data.happy !== undefined) gameState.happy = data.happy;
+                        if (data.maxHappy !== undefined) gameState.maxHappy = data.maxHappy;
                         gameState.clickPower = data.clickPower || 1;
                         gameState.petType = data.petType || '🐾';
                         gameState.totalClicks = data.totalClicks || 0;
@@ -6631,6 +6633,14 @@
         let platformerFullscreenMode = false;
         
         function openPlatformerFullscreen() {
+            console.log('Opening platformer fullscreen...');
+            
+            // Закрываем mini-games модал
+            const minigamesModal = document.getElementById('minigames-modal');
+            if (minigamesModal) {
+                minigamesModal.classList.remove('show');
+            }
+            
             const modal = document.getElementById('platformer-fullscreen-modal');
             if (modal) {
                 modal.style.display = 'block';
