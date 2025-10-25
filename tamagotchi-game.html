@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- VERSION: 1.6.2 | BUILD: 2025-10-24 22:45 | CRITICAL: Fix player stuck at canvas edge - use levelWidth instead of canvas.width -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solana Tamagotchi</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Solana Tamagotchi v1.6.2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Transaction Logger -->
-    <script src="js/transaction-logger.js"></script>
+    <script src="js/transaction-logger.js?v=1.6.2"></script>
     <style>
         /* CSS Variables for Themes 🎨 */
         :root {
@@ -68,7 +72,7 @@
 
         .game-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 480px;
             background: #2d3748;
             border-radius: 20px;
             border: 4px solid #4a5568;
@@ -517,16 +521,52 @@
             50% { transform: translate(-4px, -3px) rotate(45deg); opacity: 1; }
         }
 
-        /* Pet Selector Styles 🐾 */
-        .pet-selector {
-            position: absolute;
-            top: 60px;
-            right: 10px;
+        /* Pet Selector Top Row 🐾 */
+        .pet-selector-top {
             display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            max-width: 80px;
-            z-index: 100;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pet-btn-top {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+
+        .pet-btn-top:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.6);
+            transform: scale(1.1);
+        }
+
+        .pet-btn-top.active {
+            background: rgba(255,255,255,0.3);
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .pet-btn-top span {
+            display: block;
+            line-height: 1;
+        }
+
+        /* Old Pet Selector (hidden) */
+        .pet-selector {
+            display: none;
         }
 
         .pet-btn {
@@ -1582,6 +1622,127 @@
             transform: translateY(0);
         }
 
+        /* Help Button */
+        .help-btn {
+            width: calc(100% - 40px);
+            margin: 10px 20px 20px 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: 3px solid #5b21b6;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .help-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .help-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Navigation Buttons Container */
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 20px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            min-width: 0;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Individual nav button styles */
+        .nav-btn.help-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: 2px solid #5b21b6;
+        }
+
+        .nav-btn.minigames-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 2px solid #065f46;
+        }
+
+        .nav-btn.leaderboard-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border: 2px solid #78350f;
+        }
+
+        /* Mobile responsiveness for nav buttons */
+        @media (max-width: 480px) {
+            .nav-buttons {
+                margin: 10px 15px;
+                gap: 8px;
+            }
+            
+            .nav-btn {
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+
+            /* Pet selector mobile */
+            .pet-selector-top {
+                padding: 8px 15px;
+                gap: 6px;
+            }
+            
+            .pet-btn-top {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+        }
+
+        /* Fullscreen mode for platformer */
+        :fullscreen #platformer-canvas,
+        :-webkit-full-screen #platformer-canvas,
+        :-moz-full-screen #platformer-canvas {
+            max-width: 100vw;
+            max-height: 75vh;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Mobile touch button styles */
+        #mobile-controls button {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #mobile-controls button:active {
+            transform: scale(0.95);
+        }
+
         /* Mini Games Modal */
         .minigames-modal {
             display: none;
@@ -1743,6 +1904,111 @@
             width: 90%;
             max-height: 70vh;
             overflow-y: auto;
+        }
+
+        /* Help Modal */
+        .help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .help-modal.show {
+            display: flex;
+        }
+
+        .help-content {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border: 3px solid #8b5cf6;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #8b5cf6;
+        }
+
+        .help-header h2 {
+            margin: 0;
+            color: #8b5cf6;
+        }
+
+        .help-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .help-tab {
+            padding: 10px 15px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            color: #8b5cf6;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .help-tab:hover {
+            background: rgba(139, 92, 246, 0.3);
+        }
+
+        .help-tab.active {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .help-content-area {
+            min-height: 400px;
+        }
+
+        .help-tab-content {
+            display: none;
+        }
+
+        .help-tab-content.active {
+            display: block;
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .help-section h4 {
+            color: #8b5cf6;
+            margin-bottom: 10px;
+        }
+
+        .help-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .help-section li {
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
 
         .leaderboard-header {
@@ -2034,10 +2300,47 @@
         .racing-finish {
             animation: racingFinish 1s ease-in-out infinite;
         }
+        
+        /* 🌄 LANDSCAPE MODE для platformer - максимум места для игры! */
+        @media (orientation: landscape) and (max-height: 600px) {
+            #platformer-header {
+                display: none !important;
+            }
+            #platformer-footer {
+                display: none !important;
+            }
+            #mobile-controls-fullscreen {
+                bottom: 10px !important;
+                padding: 0 20px !important;
+            }
+            #btn-left-fs, #btn-right-fs {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 20px !important;
+            }
+            #btn-jump-fs {
+                width: 55px !important;
+                height: 55px !important;
+                font-size: 22px !important;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <!-- Pet Selector 🐾 - Top Row -->
+        <div class="pet-selector-top">
+            <button class="pet-btn-top active" data-pet="kawai" title="🌸 Kawai Blob">
+                <span>🌸</span>
+            </button>
+            <button class="pet-btn-top" data-pet="retro" title="🕹️ Retro Robot">
+                <span>🕹️</span>
+            </button>
+            <button class="pet-btn-top" data-pet="cyber" title="🤖 Cyber Dog">
+                <span>🤖</span>
+            </button>
+        </div>
+
         <!-- Header with Level and TAMA -->
         <div class="game-header">
             <h2 style="font-size: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">🐾 SOLANA TAMAGOTCHI</h2>
@@ -2054,20 +2357,14 @@
                     <div class="header-stat-value" id="rank-display">#---</div>
                     <div class="header-stat-label">Rank</div>
                 </div>
+                </div>
             </div>
             
-        <!-- Pet Selector 🐾 -->
-        <div class="pet-selector">
-            <button class="pet-btn active" data-pet="kawai" title="🌸 Kawai Blob">
-                <span>🌸</span>
-            </button>
-            <button class="pet-btn" data-pet="retro" title="🕹️ Retro Robot">
-                <span>🕹️</span>
-            </button>
-            <button class="pet-btn" data-pet="cyber" title="🤖 Cyber Dog">
-                <span>🤖</span>
-            </button>
-        </div>
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <button class="nav-btn help-btn" id="help-btn">📚 Help</button>
+            <button class="nav-btn minigames-btn" id="minigames-btn">🎮 Games</button>
+            <button class="nav-btn leaderboard-btn" id="leaderboard-btn">🏆 Top</button>
         </div>
 
         <!-- Pet Area -->
@@ -2778,11 +3075,6 @@
             </div>
         </div>
 
-        <!-- Mini Games Button -->
-        <button class="minigames-btn" id="minigames-btn">🎮 Mini Games</button>
-
-        <!-- Leaderboard Button -->
-        <button class="leaderboard-btn" id="leaderboard-btn">🏆 Leaderboard</button>
 
         <!-- Auto-save indicator removed - using silent save -->
     </div>
@@ -2811,6 +3103,11 @@
                     <div class="game-card-icon">🎲</div>
                     <div class="game-card-name">Dice Roll</div>
                     <div class="game-card-cost">Bet: 50-500 TAMA | Win: up to 15x!</div>
+                </div>
+                <div class="game-card" data-game="platformer" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                    <div class="game-card-icon">🍄</div>
+                    <div class="game-card-name">TAMA Jump</div>
+                    <div class="game-card-cost">100 TAMA | Win: up to 500 TAMA!</div>
                 </div>
             </div>
             
@@ -2902,27 +3199,48 @@
                 </div>
             </div>
             
+            <!-- 🍄 TAMA JUMP PLATFORMER -->
+            <div class="game-arena" id="platformer-arena" style="display: none;">
+                <!-- СРАЗУ открываем fullscreen при выборе игры -->
+            </div>
+            
         </div>
     </div>
 
-    <!-- Leaderboard Modal -->
-                        <div>
-                            <div style="font-size: 12px; opacity: 0.7;">Mined</div>
-                            <div id="mining-score" style="font-size: 24px; font-weight: bold; color: #10b981;">0 💎</div>
+    <!-- Platformer Fullscreen Modal -->
+    <div id="platformer-fullscreen-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #1a1a2e; z-index: 9999; overflow: hidden;">
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+            <!-- Header (скрывается в landscape для больше места) -->
+            <div id="platformer-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(0,0,0,0.7); border-bottom: 3px solid #ef4444;">
+                <h2 style="margin: 0; color: white; font-size: 20px;">🍄 SUPER TAMA BROS</h2>
+                <button onclick="closePlatformerFullscreen()" style="padding: 8px 16px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);">✕ EXIT</button>
                         </div>
-
+            
+            <!-- Game Canvas -->
+            <div style="flex: 1; display: flex; justify-content: center; align-items: center; position: relative; background: #000;">
+                <canvas id="platformer-canvas-fullscreen" width="960" height="540" style="max-width: 100%; max-height: 100%; display: block; background: linear-gradient(180deg, #5C94FC 0%, #87CEEB 100%); image-rendering: crisp-edges; box-shadow: 0 0 80px rgba(255,0,0,0.3);"></canvas>
+                
+                <!-- Mobile Controls for Fullscreen -->
+                <div id="mobile-controls-fullscreen" style="display: none; position: absolute; bottom: 20px; left: 0; right: 0; padding: 0 30px; pointer-events: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                        <div style="display: flex; gap: 10px; pointer-events: auto;">
+                            <button id="btn-left-fs" style="width: 55px; height: 55px; border-radius: 50%; background: rgba(0,0,0,0.65); border: 2px solid rgba(255,255,255,0.8); color: white; font-size: 22px; cursor: pointer; touch-action: none;">⬅️</button>
+                            <button id="btn-right-fs" style="width: 55px; height: 55px; border-radius: 50%; background: rgba(0,0,0,0.65); border: 2px solid rgba(255,255,255,0.8); color: white; font-size: 22px; cursor: pointer; touch-action: none;">➡️</button>
                     </div>
-
+                        <button id="btn-jump-fs" style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,69,0,0.8); border: 3px solid rgba(255,255,255,0.9); color: white; font-size: 24px; font-weight: bold; cursor: pointer; touch-action: none; pointer-events: auto;">🔼</button>
                 </div>
-                <div id="mining-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0;">
-                    <!-- Blocks will be generated here -->
-                </div>
-                <div style="text-align: center; font-size: 16px; margin: 15px 0; min-height: 40px;" id="mining-result"></div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="startMiningGame()" id="mining-start-btn" style="padding: 10px 20px; background: #10b981; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Start Mining (150 TAMA)</button>
-                    <button onclick="backToGames()" style="padding: 10px 20px; background: #ef4444; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px;">Back</button>
                 </div>
             </div>
+            
+            <!-- Start Button (скрывается в landscape) -->
+            <div id="platformer-footer" style="padding: 15px; text-align: center; background: rgba(0,0,0,0.5);">
+                <div id="platformer-result-fs" style="margin-bottom: 10px; font-size: 16px; color: white; min-height: 40px; font-weight: bold;"></div>
+                <button id="platformer-start-btn-fs" style="padding: 12px 30px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5); transition: all 0.2s;">🍄 START GAME (100 TAMA)</button>
+            </div>
+                </div>
+            </div>
+
+    <!-- Leaderboard Modal -->
             
             <!-- ⚔️ BATTLE ARENA -->
             <div class="game-arena" id="battle-arena" style="display: none;">
@@ -3151,6 +3469,144 @@
         </div>
     </div>
 
+    <!-- Help Modal -->
+    <div class="help-modal" id="help-modal">
+        <div class="help-content">
+            <div class="help-header">
+                <h2>📚 Help & Guide</h2>
+                <button class="close-btn" id="close-help">✕</button>
+            </div>
+            <div class="help-tabs">
+                <button class="help-tab active" data-tab="quickstart">🚀 Quick Start</button>
+                <button class="help-tab" data-tab="earn">💰 How to Earn</button>
+                <button class="help-tab" data-tab="shop">🛒 Shop Guide</button>
+                <button class="help-tab" data-tab="faq">❓ FAQ</button>
+            </div>
+            <div class="help-content-area">
+                <div class="help-tab-content active" id="quickstart-content">
+                    <h3>🚀 Quick Start Guide</h3>
+                    <div class="help-section">
+                        <h4>🎮 How to Play</h4>
+                        <ul>
+                            <li><strong>Click your pet</strong> - Earn TAMA tokens and XP</li>
+                            <li><strong>Watch indicators</strong> - HP, Food, Happy decrease with clicks</li>
+                            <li><strong>Feed & heal</strong> - Use buttons to restore pet's health</li>
+                            <li><strong>Level up</strong> - Gain bonuses and TAMA rewards</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>💰 Earning TAMA</h4>
+                        <ul>
+                            <li><strong>Clicking:</strong> 1 TAMA per click + combo bonuses</li>
+                            <li><strong>Quests:</strong> Complete daily tasks for 1,500 TAMA</li>
+                            <li><strong>Achievements:</strong> Unlock rewards automatically</li>
+                            <li><strong>Mini-games:</strong> Risk TAMA for bigger rewards</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🎯 Tips for Beginners</h4>
+                        <ul>
+                            <li>Click actively - it's your main income source</li>
+                            <li>Complete quests first - easy 1,500 TAMA</li>
+                            <li>Don't spend TAMA immediately - save for Auto-Feeder</li>
+                            <li>Invite friends - get referral bonuses</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="help-tab-content" id="earn-content">
+                    <h3>💰 How to Earn TAMA</h3>
+                    <div class="help-section">
+                        <h4>🎯 Main Methods</h4>
+                        <ul>
+                            <li><strong>Pet Clicks:</strong> 1 TAMA per click + combo bonuses</li>
+                            <li><strong>Combo System:</strong> 5+ clicks = +1 TAMA, 10+ = +2 TAMA</li>
+                            <li><strong>Daily Quests:</strong> Click Master (500 TAMA) + Level Up (1,000 TAMA)</li>
+                            <li><strong>Achievements:</strong> 1,735 TAMA total from all rewards</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🎮 Mini-Games</h4>
+                        <ul>
+                            <li><strong>🎲 Dice Roll:</strong> 50 TAMA bet, up to 15x win (low risk)</li>
+                            <li><strong>🎰 Slots:</strong> 100-1000 TAMA bet, up to 10x win (medium risk)</li>
+                            <li><strong>🎡 Lucky Wheel:</strong> 100-1000 TAMA bet, up to 10x win (medium risk)</li>
+                            <li><strong>⚔️ Battle Arena:</strong> 200-1000 TAMA bet, up to 5x win (high risk)</li>
+                            <li><strong>🏁 Pet Racing:</strong> 150-750 TAMA bet, up to 5x win (high risk)</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>👥 Referrals</h4>
+                        <ul>
+                            <li>Get referral code from Telegram bot</li>
+                            <li>Share with friends</li>
+                            <li>Earn 100 TAMA for first referral, 50 TAMA for each next</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="help-tab-content" id="shop-content">
+                    <h3>🛒 Shop Guide</h3>
+                    <div class="help-section">
+                        <h4>🛍️ Available Items</h4>
+                        <ul>
+                            <li><strong>⚡ Energy Drink (200 TAMA):</strong> +50 Food & Happy instantly</li>
+                            <li><strong>💊 Super Potion (300 TAMA):</strong> Full HP restore</li>
+                            <li><strong>🔥 Click Booster (500 TAMA):</strong> 2x clicks for 1 hour</li>
+                            <li><strong>💎 Auto-Feeder (2,000 TAMA):</strong> Auto-feed forever (ONE TIME)</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>💡 Buying Strategy</h4>
+                        <ul>
+                            <li><strong>Priority 1:</strong> Auto-Feeder - best investment</li>
+                            <li><strong>Priority 2:</strong> Click Booster - for active players</li>
+                            <li><strong>Priority 3:</strong> Energy Drink - for quick restore</li>
+                            <li><strong>Priority 4:</strong> Super Potion - for emergencies</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>📊 ROI Analysis</h4>
+                        <ul>
+                            <li><strong>Auto-Feeder:</strong> Pays back in 1 hour, works forever</li>
+                            <li><strong>Click Booster:</strong> Pays back in 2.5 hours of active play</li>
+                            <li><strong>Energy Drink:</strong> Pays back in 2.5 uses</li>
+                            <li><strong>Super Potion:</strong> Equal to 3x Heal, convenience factor</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="help-tab-content" id="faq-content">
+                    <h3>❓ Frequently Asked Questions</h3>
+                    <div class="help-section">
+                        <h4>🎮 Game Basics</h4>
+                        <ul>
+                            <li><strong>Q: How do I start?</strong><br>A: Click your pet to earn TAMA, complete quests, buy items</li>
+                            <li><strong>Q: Why is my pet not responding?</strong><br>A: Check HP, Food, Happy - pet might be dead, hungry, or sad</li>
+                            <li><strong>Q: How do I restore pet's health?</strong><br>A: Use Feed (50 TAMA), Play (30 TAMA), Heal (100 TAMA) buttons</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>💰 TAMA & Economy</h4>
+                        <ul>
+                            <li><strong>Q: How much TAMA can I earn daily?</strong><br>A: 2,000-5,000 TAMA for active players</li>
+                            <li><strong>Q: What should I buy first?</strong><br>A: Save for Auto-Feeder (2,000 TAMA) - best investment</li>
+                            <li><strong>Q: Are mini-games worth it?</strong><br>A: Only if you have extra TAMA - they're risky</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🔧 Technical Issues</h4>
+                        <ul>
+                            <li><strong>Q: Game not loading?</strong><br>A: Clear browser cache, try different browser</li>
+                            <li><strong>Q: Progress not saving?</strong><br>A: Make sure you're connected to Telegram</li>
+                            <li><strong>Q: Shop not working?</strong><br>A: Check TAMA balance, refresh page</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Achievement Popup -->
     <div class="achievement-popup" id="achievement-popup">
         <div class="achievement-title">🏆 Achievement Unlocked!</div>
@@ -3196,22 +3652,6 @@
                         <div class="shop-item-price">2,000 TAMA</div>
                     </div>
                     <button class="buy-btn" onclick="buyItem('auto_feed', 2000)">Buy</button>
-                </div>
-                <div class="shop-item">
-                    <div class="shop-item-info">
-                        <div class="shop-item-name">🎨 Pet Skin</div>
-                        <div class="shop-item-desc">Random rare pet skin</div>
-                        <div class="shop-item-price">5,000 TAMA</div>
-                    </div>
-                    <button class="buy-btn" onclick="buyItem('skin', 5000)">Buy</button>
-                </div>
-                <div class="shop-item">
-                    <div class="shop-item-info">
-                        <div class="shop-item-name">🐾 Change Pet</div>
-                        <div class="shop-item-desc">Buy & switch to different pet types</div>
-                        <div class="shop-item-price">Free - 2,500 TAMA</div>
-                    </div>
-                    <button class="buy-btn" onclick="openPetSelector()">Select</button>
                 </div>
             </div>
             
@@ -3851,12 +4291,17 @@
             if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
             if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
             
-            // NEW: Low stats reduce happy on click (pet gets tired)
+            // ⚡ ENERGY COST - Every click consumes resources!
+            gameState.hp = Math.max(0, gameState.hp - 0.5);    // -0.5 HP per click
+            gameState.food = Math.max(0, gameState.food - 0.3); // -0.3 Food per click
+            gameState.happy = Math.max(0, gameState.happy - 0.2); // -0.2 Happy per click
+            
+            // Extra penalty if stats are low (pet gets tired faster)
             if (gameState.hp < 50) {
-                gameState.happy = Math.max(0, gameState.happy - 1);
+                gameState.happy = Math.max(0, gameState.happy - 0.5);
             }
             if (gameState.food < 50) {
-                gameState.happy = Math.max(0, gameState.happy - 0.5);
+                gameState.happy = Math.max(0, gameState.happy - 0.3);
             }
             
             // Combo system
@@ -3999,13 +4444,13 @@
                 gameState.xpToLevel = Math.floor(gameState.xpToLevel * 1.5);
                 gameState.clickPower = gameState.level;
                 
-                // Level up bonuses
+                // Level up bonuses - увеличиваем максимумы и даем частичное восстановление
                 gameState.maxHp += 10;
-                gameState.hp = gameState.maxHp;
+                gameState.hp = Math.min(gameState.maxHp, gameState.hp + 20); // +20 HP, но не больше максимума
                 gameState.maxFood += 5;
-                gameState.food = gameState.maxFood;
+                gameState.food = Math.min(gameState.maxFood, gameState.food + 15); // +15 Food, но не больше максимума
                 gameState.maxHappy += 5;
-                gameState.happy = gameState.maxHappy;
+                gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 15); // +15 Happy, но не больше максимума
 
                 // Log level up transaction
                 const levelBonus = gameState.level * 100;
@@ -4253,8 +4698,21 @@
         });
 
         function buyItem(itemType, price) {
+            // Check if player has enough TAMA
             if (gameState.tama < price) {
                 showMessage('❌ Not enough TAMA!');
+                return;
+            }
+
+            // Check if item is already owned (for permanent items)
+            if (itemType === 'auto_feed' && gameState.hasAutoFeeder) {
+                showMessage('❌ You already own Auto-Feeder!');
+                return;
+            }
+
+            // Check if booster is already active
+            if (itemType === 'booster' && gameState.boosterActive && Date.now() < gameState.boosterEndTime) {
+                showMessage('❌ Booster is already active!');
                 return;
             }
 
@@ -4263,7 +4721,54 @@
             gameState.tama -= price;
             const balanceAfter = gameState.tama;
             
-            // Log shop transaction
+            // Apply item effect
+            let itemEffect = '';
+            switch(itemType) {
+                case 'energy':
+                    gameState.food = Math.min(gameState.maxFood, gameState.food + 50);
+                    gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 50);
+                    itemEffect = 'Energy Drink consumed! +50 Food & Happy';
+                    showMessage('⚡ ' + itemEffect);
+                    break;
+                
+                case 'potion':
+                    gameState.hp = gameState.maxHp;
+                    itemEffect = 'Super Potion used! HP fully restored!';
+                    showMessage('💊 ' + itemEffect);
+                    break;
+                
+                case 'booster':
+                    gameState.boosterActive = true;
+                    gameState.boosterEndTime = Date.now() + (60 * 60 * 1000); // 1 hour
+                    itemEffect = 'Click Booster activated! 2x clicks for 1 hour!';
+                    showMessage('🔥 ' + itemEffect);
+                    break;
+                
+                case 'auto_feed':
+                    gameState.hasAutoFeeder = true;
+                    itemEffect = 'Auto-Feeder purchased! Your pet will auto-feed when hungry!';
+                    showMessage('💎 ' + itemEffect);
+                    break;
+                
+                case 'skin':
+                    const skins = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲', '🦖'];
+                    const randomSkin = skins[Math.floor(Math.random() * skins.length)];
+                    const petSprite = document.getElementById('pet-sprite');
+                    if (petSprite) {
+                    petSprite.textContent = randomSkin;
+                    }
+                    gameState.petType = randomSkin;
+                    itemEffect = `New pet skin! You got ${randomSkin}!`;
+                    showMessage('🎨 ' + itemEffect);
+                    break;
+                
+                default:
+                    showMessage('❌ Unknown item!');
+                    gameState.tama = balanceBefore; // Refund if unknown item
+                    return;
+            }
+            
+            // Log shop transaction with item effect
             if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
                 TransactionLogger.logSpend(
                     window.TELEGRAM_USER_ID,
@@ -4272,40 +4777,12 @@
                     price,
                     balanceBefore,
                     balanceAfter,
-                    { item_type: itemType, shop_item: true }
+                    { 
+                        item_type: itemType, 
+                        shop_item: true,
+                        effect: itemEffect
+                    }
                 );
-            }
-
-            switch(itemType) {
-                case 'energy':
-                    gameState.food = Math.min(gameState.maxFood, gameState.food + 50);
-                    gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 50);
-                    showMessage('⚡ Energy Drink consumed! +50 Food & Happy');
-                    break;
-                
-                case 'potion':
-                    gameState.hp = gameState.maxHp;
-                    showMessage('💊 Super Potion used! HP fully restored!');
-                    break;
-                
-                case 'booster':
-                    gameState.boosterActive = true;
-                    gameState.boosterEndTime = Date.now() + (60 * 60 * 1000); // 1 hour
-                    showMessage('🔥 Click Booster activated! 2x clicks for 1 hour!');
-                    break;
-                
-                case 'auto_feed':
-                    gameState.hasAutoFeeder = true;
-                    showMessage('💎 Auto-Feeder purchased! Your pet will auto-feed when hungry!');
-                    break;
-                
-                case 'skin':
-                    const skins = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦄', '🐲', '🦖'];
-                    const randomSkin = skins[Math.floor(Math.random() * skins.length)];
-                    petSprite.textContent = randomSkin;
-                    gameState.petType = randomSkin;
-                    showMessage(`🎨 New pet skin! You got ${randomSkin}!`);
-                    break;
             }
 
             updateUI();
@@ -4416,11 +4893,17 @@
         }
 
         // Auto-feeder logic
+        let lastAutoFeed = 0; // Track last auto-feed time
         setInterval(() => {
             if (gameState.hasAutoFeeder && gameState.food < 30) {
+                const now = Date.now();
+                // Cooldown: only auto-feed once per minute
+                if (now - lastAutoFeed > 60000) {
                 gameState.food = Math.min(gameState.maxFood, gameState.food + 20);
                 showMessage('💎 Auto-Feeder activated! +20 Food');
+                    lastAutoFeed = now;
                 updateUI();
+                }
             }
         }, 10000); // Check every 10 seconds
 
@@ -4842,6 +5325,13 @@
         document.querySelectorAll('.game-card').forEach(card => {
             card.addEventListener('click', () => {
                 const gameName = card.dataset.game;
+                
+                // Для platformer - сразу открываем fullscreen!
+                if (gameName === 'platformer') {
+                    openPlatformerFullscreen();
+                    return;
+                }
+                
                 gameSelection.style.display = 'none';
                 document.getElementById(`${gameName}-arena`).classList.add('active');
             });
@@ -5242,6 +5732,994 @@
             }, 100);
         });
         
+        // 🍄 TAMA JUMP PLATFORMER GAME - REAL MARIO STYLE
+        const platformerGame = {
+            canvas: null,
+            ctx: null,
+            player: null,
+            platforms: [],
+            coins: [],
+            enemies: [],
+            questionBlocks: [],
+            bricks: [],
+            pipes: [],
+            powerups: [],
+            particles: [],
+            score: 0,
+            coinsCollected: 0,
+            lives: 3,
+            gameTime: 90,
+            gameActive: false,
+            keys: {},
+            animFrame: null,
+            timer: null,
+            camera: { x: 0 },
+            levelWidth: 3000,
+            animationFrame: 0,
+            
+            init() {
+                // Используем fullscreen canvas сразу (маленький canvas удален)
+                this.canvas = document.getElementById('platformer-canvas-fullscreen');
+                if (!this.canvas) {
+                    console.warn('Platformer canvas not found, will initialize on game start');
+                return;
+            }
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Mobile touch controls setup
+                this.setupMobileControls();
+                
+                // Keyboard controls
+                window.addEventListener('keydown', (e) => {
+                    if (this.gameActive) {
+                        this.keys[e.key] = true;
+                        if (e.key === ' ' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            this.player.jump();
+                        }
+                    }
+                });
+                
+                window.addEventListener('keyup', (e) => {
+                    this.keys[e.key] = false;
+                });
+            },
+            
+            setupMobileControls() {
+                // Старые кнопки удалены, используем только fullscreen версию
+                console.log('Mobile controls will be set up when fullscreen opens');
+            },
+            
+            requestFullscreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            },
+            
+            start() {
+                this.gameActive = true;
+                this.score = 0;
+                this.coinsCollected = 0;
+                this.lives = 3;
+                this.gameTime = 60;
+                
+                // Show mobile controls on touch devices (для обоих режимов!)
+                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                const mobileControls = platformerFullscreenMode ? 
+                    document.getElementById('mobile-controls-fullscreen') : 
+                    document.getElementById('mobile-controls');
+                if (mobileControls && isTouchDevice) {
+                    mobileControls.style.display = 'block';
+                }
+                
+                // Request fullscreen on mobile for better experience
+                if (isTouchDevice && window.innerWidth < 768) {
+                    setTimeout(() => {
+                        this.requestFullscreen();
+                    }, 100);
+                }
+                
+                // Initialize player (УВЕЛИЧЕН ДЛЯ ВИДИМОСТИ!)
+                this.player = {
+                    x: 50,
+                    y: 360,
+                    width: 40,  // Было 24, стало 40!
+                    height: 40, // Было 24, стало 40!
+                    vx: 0,
+                    vy: 0,
+                    jumping: false,
+                    onGround: false,
+                    jump() {
+                        if (this.onGround) {
+                            this.vy = -12; // Увеличен прыжок для большего игрока
+                            this.jumping = true;
+                            this.onGround = false;
+                        }
+                    }
+                };
+                
+                // Generate level
+                this.generateLevel();
+                
+                // Clear result (только для fullscreen)
+                const resultElement = platformerFullscreenMode ? 
+                    document.getElementById('platformer-result-fs') : null;
+                if (resultElement) {
+                    resultElement.innerHTML = '';
+                }
+                
+                // Start timer
+                this.timer = setInterval(() => {
+                    if (this.gameActive) {
+                        this.gameTime--;
+                        
+                        if (this.gameTime <= 0) {
+                            this.endGame();
+                        }
+                    }
+                }, 1000);
+                
+                // Start game loop
+                this.gameLoop();
+            },
+            
+            generateLevel() {
+                this.platforms = [];
+                this.coins = [];
+                this.enemies = [];
+                this.questionBlocks = [];
+                this.bricks = [];
+                this.pipes = [];
+                this.powerups = [];
+                this.particles = [];
+                
+                // Ground - длинная земля как в Марио (ниже из-за большего canvas)
+                for (let i = 0; i < this.levelWidth / 30; i++) {
+                    this.platforms.push({ 
+                        x: i * 30, 
+                        y: 450, 
+                        width: 30, 
+                        height: 50, 
+                        type: 'ground' 
+                    });
+                }
+                
+                // Question blocks (? блоки с монетами) - НИЖЕ, чтобы можно было допрыгнуть
+                const questionPositions = [
+                    { x: 150, y: 350 },
+                    { x: 180, y: 350 },
+                    { x: 210, y: 350 },
+                    { x: 400, y: 330 },
+                    { x: 600, y: 350 },
+                    { x: 800, y: 330 },
+                    { x: 1000, y: 350 },
+                    { x: 1200, y: 330 },
+                    { x: 1400, y: 350 },
+                    { x: 1600, y: 330 },
+                    { x: 1800, y: 350 },
+                    { x: 2000, y: 330 },
+                    { x: 2200, y: 350 },
+                    { x: 2400, y: 330 },
+                ];
+                
+                questionPositions.forEach(pos => {
+                    this.questionBlocks.push({
+                        x: pos.x,
+                        y: pos.y,
+                        width: 24,
+                        height: 24,
+                        hit: false,
+                        coins: Math.floor(Math.random() * 3) + 1
+                    });
+                });
+                
+                // Brick blocks (разбиваемые блоки) - НИЖЕ и меньше
+                const brickPatterns = [
+                    { x: 300, y: 370, count: 3 },
+                    { x: 500, y: 350, count: 2 },
+                    { x: 700, y: 370, count: 3 },
+                    { x: 900, y: 350, count: 4 },
+                    { x: 1100, y: 370, count: 2 },
+                    { x: 1300, y: 350, count: 3 },
+                    { x: 1500, y: 370, count: 2 },
+                    { x: 1700, y: 350, count: 3 },
+                    { x: 1900, y: 370, count: 2 },
+                    { x: 2100, y: 350, count: 2 },
+                ];
+                
+                brickPatterns.forEach(pattern => {
+                    for (let i = 0; i < pattern.count; i++) {
+                        this.bricks.push({
+                            x: pattern.x + i * 24,
+                            y: pattern.y,
+                            width: 24,
+                            height: 24,
+                            broken: false
+                        });
+                    }
+                });
+                
+                // Pipes (трубы как в Марио)
+                const pipePositions = [
+                    { x: 450, height: 40 },
+                    { x: 750, height: 50 },
+                    { x: 1050, height: 40 },
+                    { x: 1350, height: 60 },
+                    { x: 1650, height: 40 },
+                    { x: 1950, height: 50 },
+                    { x: 2250, height: 40 },
+                ];
+                
+                pipePositions.forEach(pipe => {
+                    this.pipes.push({
+                        x: pipe.x,
+                        y: 450 - pipe.height,
+                        width: 40,
+                        height: pipe.height,
+                        type: 'pipe'
+                    });
+                });
+                
+                // Floating platforms (парящие платформы) - на разных высотах
+                const platformData = [
+                    { x: 550, y: 380, width: 60 },
+                    { x: 650, y: 350, width: 50 },
+                    { x: 750, y: 320, width: 45 },
+                    { x: 850, y: 360, width: 60 },
+                    { x: 1150, y: 370, width: 55 },
+                    { x: 1250, y: 340, width: 50 },
+                    { x: 1450, y: 360, width: 60 },
+                    { x: 1750, y: 350, width: 50 },
+                    { x: 2050, y: 370, width: 60 },
+                    { x: 2350, y: 360, width: 55 },
+                ];
+                
+                platformData.forEach(plat => {
+                    this.platforms.push({
+                        x: plat.x,
+                        y: plat.y,
+                        width: plat.width,
+                        height: 12,
+                        type: 'platform'
+                    });
+                });
+                
+                // Enemies (враги-грибы)
+                for (let i = 0; i < 15; i++) {
+                    this.enemies.push({
+                        x: 300 + i * 200,
+                        y: 426,
+                        width: 24,
+                        height: 24,
+                        vx: 1.5,
+                        direction: 1,
+                        type: 'goomba',
+                        dead: false
+                    });
+                }
+                
+                // Finish flag (флаг в конце)
+                this.finishFlag = {
+                    x: this.levelWidth - 100,
+                    y: 330,
+                    width: 10,
+                    height: 120,
+                    reached: false
+                };
+            },
+            
+            gameLoop() {
+                if (!this.gameActive) return;
+                
+                this.animationFrame++;
+                
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Sky gradient
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                gradient.addColorStop(0, '#5C94FC');
+                gradient.addColorStop(1, '#87CEEB');
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Update camera to follow player
+                this.updateCamera();
+                
+                // Save context and apply camera offset
+                this.ctx.save();
+                this.ctx.translate(-this.camera.x, 0);
+                
+                // Update player physics
+                this.updatePlayer();
+                
+                // Update enemies
+                this.updateEnemies();
+                
+                // Update particles
+                this.updateParticles();
+                
+                // Check collisions
+                this.checkCollisions();
+                
+                // Draw everything
+                this.draw();
+                
+                // Restore context
+                this.ctx.restore();
+                
+                // Draw UI on top (not affected by camera)
+                this.drawUI();
+                
+                // Continue loop
+                this.animFrame = requestAnimationFrame(() => this.gameLoop());
+            },
+            
+            updateCamera() {
+                // Camera follows player (Mario style)
+                const targetX = this.player.x - this.canvas.width / 3;
+                this.camera.x = Math.max(0, Math.min(targetX, this.levelWidth - this.canvas.width));
+            },
+            
+            updateParticles() {
+                this.particles = this.particles.filter(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.3; // gravity
+                    p.life--;
+                    return p.life > 0;
+                });
+            },
+            
+            drawUI() {
+                // Game info panel at top (fixed position, not affected by camera)
+                const panelHeight = 60; // УВЕЛИЧЕНА высота панели!
+                
+                // Semi-transparent background
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+                this.ctx.fillRect(0, 0, this.canvas.width, panelHeight);
+                
+                // Stats text - ОГРОМНЫЙ ТЕКСТ!
+                this.ctx.fillStyle = '#FFF';
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 4;
+                this.ctx.font = 'bold 28px "Courier New"'; // Было 18px, стало 28px!
+                
+                // Coins
+                this.ctx.strokeText(`💰 ${this.coinsCollected}`, 20, 40);
+                this.ctx.fillText(`💰 ${this.coinsCollected}`, 20, 40);
+                
+                // Lives
+                this.ctx.strokeText(`❤️ ${this.lives}`, 160, 40);
+                this.ctx.fillText(`❤️ ${this.lives}`, 160, 40);
+                
+                // Time
+                this.ctx.strokeText(`⏱️ ${this.gameTime}s`, 300, 40);
+                this.ctx.fillText(`⏱️ ${this.gameTime}s`, 300, 40);
+                
+                // Score
+                this.ctx.strokeText(`★ ${this.score}`, 480, 40);
+                this.ctx.fillText(`★ ${this.score}`, 480, 40);
+                
+                // Progress bar (how far in level) - БОЛЬШЕ!
+                const progress = (this.player.x / this.levelWidth) * 100;
+                const barWidth = 300; // Фиксированная ширина
+                const barX = this.canvas.width - barWidth - 30;
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                this.ctx.fillRect(barX, 20, barWidth, 25);
+                this.ctx.fillStyle = '#10B981';
+                this.ctx.fillRect(barX, 20, (barWidth * progress) / 100, 25);
+                this.ctx.strokeStyle = '#FFF';
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeRect(barX, 20, barWidth, 25);
+            },
+            
+            updatePlayer() {
+                // Horizontal movement
+                if (this.keys['ArrowLeft'] || this.keys['a']) {
+                    this.player.vx = -3;
+                } else if (this.keys['ArrowRight'] || this.keys['d']) {
+                    this.player.vx = 3;
+                    } else {
+                    this.player.vx *= 0.8;
+                }
+                
+                // Apply gravity
+                this.player.vy += 0.4;
+                
+                // Apply velocity
+                this.player.x += this.player.vx;
+                this.player.y += this.player.vy;
+                
+                // Limit falling speed
+                if (this.player.vy > 10) this.player.vy = 10;
+                
+                // Keep player in bounds horizontally - НЕ canvas.width, а levelWidth!
+                if (this.player.x < 0) this.player.x = 0;
+                if (this.player.x > this.levelWidth - this.player.width) {
+                    this.player.x = this.levelWidth - this.player.width;
+                }
+                
+                // Check if fell off
+                if (this.player.y > this.canvas.height) {
+                    this.loseLife();
+                }
+            },
+            
+            updateEnemies() {
+                this.enemies.forEach(enemy => {
+                    enemy.x += enemy.vx * enemy.direction;
+                    
+                    // Bounce off edges
+                    if (enemy.x < 0 || enemy.x > this.canvas.width - enemy.width) {
+                        enemy.direction *= -1;
+                    }
+                });
+            },
+            
+            checkCollisions() {
+                // Reset ground detection
+                this.player.onGround = false;
+                
+                // Platform collision (ground and floating) - ТОЛЬКО сверху, БЕЗ боков!
+                [...this.platforms, ...this.pipes].forEach(platform => {
+                    // Landing on top - с большим margin чтобы НЕ блокировать сбоку
+                    if (this.player.x + 8 < platform.x + platform.width &&
+                        this.player.x + this.player.width - 8 > platform.x &&
+                        this.player.y + this.player.height >= platform.y &&
+                        this.player.y + this.player.height <= platform.y + 12 &&
+                        this.player.vy >= 0) {
+                        
+                        this.player.y = platform.y - this.player.height;
+                        this.player.vy = 0;
+                        this.player.onGround = true;
+                        this.player.jumping = false;
+                    }
+                });
+                
+                // Question block collision from below
+                this.questionBlocks.forEach(block => {
+                    // Hit from below (with BIG margin - НЕ блокируем сбоку!)
+                    if (!block.hit && 
+                        this.player.x + 8 < block.x + block.width &&
+                        this.player.x + this.player.width - 8 > block.x &&
+                        this.player.y <= block.y + block.height &&
+                        this.player.y + 8 >= block.y &&
+                        this.player.vy < 0) {
+                        
+                        block.hit = true;
+                        this.coinsCollected += block.coins;
+                        this.score += block.coins * 10;
+                        
+                        // Spawn coin particles
+                        for (let i = 0; i < block.coins; i++) {
+                            this.particles.push({
+                                x: block.x + 12,
+                                y: block.y,
+                                vx: (Math.random() - 0.5) * 4,
+                                vy: -4,
+                                life: 30,
+                                type: 'coin'
+                            });
+                        }
+                        
+                        this.player.vy = 1; // Bounce back down
+                    }
+                    
+                    // Stand on question block (with BIG margin - НЕ блокируем сбоку!)
+                    if (this.player.x + 8 < block.x + block.width &&
+                        this.player.x + this.player.width - 8 > block.x &&
+                        this.player.y + this.player.height >= block.y &&
+                        this.player.y + this.player.height <= block.y + 12 &&
+                        this.player.vy >= 0) {
+                        
+                        this.player.y = block.y - this.player.height;
+                        this.player.vy = 0;
+                        this.player.onGround = true;
+                        this.player.jumping = false;
+                    }
+                });
+                
+                // Brick collision
+                this.bricks.forEach(brick => {
+                    if (!brick.broken) {
+                        // Hit from below (with BIG margin - НЕ блокируем сбоку!)
+                        if (this.player.x + 8 < brick.x + brick.width &&
+                            this.player.x + this.player.width - 8 > brick.x &&
+                            this.player.y <= brick.y + brick.height &&
+                            this.player.y + 8 >= brick.y &&
+                            this.player.vy < 0) {
+                            
+                            brick.broken = true;
+                            this.score += 5;
+                            
+                            // Spawn brick particles
+                            for (let i = 0; i < 4; i++) {
+                                this.particles.push({
+                                    x: brick.x + 12,
+                                    y: brick.y + 12,
+                                    vx: (Math.random() - 0.5) * 5,
+                                    vy: -3 - Math.random() * 3,
+                                    life: 40,
+                                    type: 'brick'
+                                });
+                            }
+                            
+                            this.player.vy = 1;
+                        }
+                        
+                        // Stand on brick (with BIG margin - НЕ блокируем сбоку!)
+                        if (this.player.x + 8 < brick.x + brick.width &&
+                            this.player.x + this.player.width - 8 > brick.x &&
+                            this.player.y + this.player.height >= brick.y &&
+                            this.player.y + this.player.height <= brick.y + 12 &&
+                            this.player.vy >= 0) {
+                            
+                            this.player.y = brick.y - this.player.height;
+                            this.player.vy = 0;
+                            this.player.onGround = true;
+                            this.player.jumping = false;
+                        }
+                    }
+                });
+                
+                // Enemy collision - враги НЕ физические препятствия, только урон!
+                this.enemies.forEach(enemy => {
+                    if (!enemy.dead && !enemy.justHit &&
+                        this.player.x < enemy.x + enemy.width - 5 &&
+                        this.player.x + this.player.width > enemy.x + 5 &&
+                        this.player.y < enemy.y + enemy.height &&
+                        this.player.y + this.player.height > enemy.y) {
+                        
+                        // Jump on enemy from TOP (kill it) - прыжок сверху
+                        if (this.player.vy > 0 && this.player.y + this.player.height - 15 < enemy.y + 8) {
+                            enemy.dead = true;
+                            this.player.vy = -8; // Отскок после убийства
+                            this.score += 20;
+                            
+                            setTimeout(() => {
+                                const index = this.enemies.indexOf(enemy);
+                                if (index > -1) this.enemies.splice(index, 1);
+                            }, 500);
+                        } 
+                        // Касание сбоку/снизу - урон (но ПРОХОДИМ сквозь!)
+                        else {
+                            enemy.justHit = true; // Cooldown чтобы не умереть 100 раз подряд
+                            this.loseLife();
+                            setTimeout(() => {
+                                enemy.justHit = false;
+                            }, 1000);
+                        }
+                    }
+                });
+                
+                // Finish flag
+                if (this.finishFlag && !this.finishFlag.reached &&
+                    this.player.x + this.player.width > this.finishFlag.x) {
+                    this.finishFlag.reached = true;
+                    this.winGame();
+                }
+            },
+            
+            winGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                cancelAnimationFrame(this.animFrame);
+                
+                // Huge bonus for finishing!
+                const timeBonus = this.gameTime * 5;
+                const totalReward = this.coinsCollected * 10 + timeBonus + 200;
+                
+                gameState.tama += totalReward;
+                updateUI();
+                
+                if (typeof TransactionLogger !== 'undefined') {
+                    TransactionLogger.logEarn(
+                        window.TELEGRAM_USER_ID,
+                        window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                        'platformer_complete',
+                        totalReward,
+                        gameState.tama - totalReward,
+                        gameState.tama,
+                        { coins: this.coinsCollected, timeBonus, finished: true }
+                    );
+                }
+                
+                const mobileControls = document.getElementById('mobile-controls');
+                if (mobileControls) mobileControls.style.display = 'none';
+                
+                const mobileControlsFs = document.getElementById('mobile-controls-fullscreen');
+                if (mobileControlsFs) mobileControlsFs.style.display = 'none';
+                
+                const resultElement = platformerFullscreenMode ? 
+                    document.getElementById('platformer-result-fs') : 
+                    document.getElementById('platformer-result');
+                    
+                if (resultElement) {
+                    resultElement.innerHTML = 
+                        `<strong>🏆 LEVEL COMPLETE!</strong><br>` +
+                        `Coins: ${this.coinsCollected} (+${this.coinsCollected * 10} TAMA)<br>` +
+                        `Time Bonus: ${timeBonus} TAMA<br>` +
+                        `Finish Bonus: +200 TAMA<br>` +
+                        `<strong>Total: +${totalReward} TAMA!</strong><br>` +
+                        `Net: +${totalReward - 100} TAMA 🎉`;
+                }
+                
+                triggerAutoSave();
+            },
+            
+            loseLife() {
+                this.lives--;
+                
+                if (this.lives <= 0) {
+                    this.endGame();
+                } else {
+                    // Reset player position
+                    this.player.x = 50;
+                    this.player.y = 380;
+                    this.player.vx = 0;
+                    this.player.vy = 0;
+                }
+            },
+            
+            draw() {
+                // Draw ground blocks (Mario style)
+                this.platforms.forEach(platform => {
+                    if (platform.type === 'ground') {
+                        this.ctx.fillStyle = '#C84C09';
+                        this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+                        // Grid pattern
+                        this.ctx.strokeStyle = '#8B3A0E';
+                        this.ctx.lineWidth = 1;
+                        this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+                    } else {
+                        // Floating platform - green like Mario
+                        this.ctx.fillStyle = '#10B981';
+                        this.ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+                        this.ctx.strokeStyle = '#059669';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+                    }
+                });
+                
+                // Draw pipes (green Mario pipes)
+                this.pipes.forEach(pipe => {
+                    // Pipe body
+                    this.ctx.fillStyle = '#10B981';
+                    this.ctx.fillRect(pipe.x, pipe.y, pipe.width, pipe.height);
+                    // Pipe rim (top)
+                    this.ctx.fillStyle = '#059669';
+                    this.ctx.fillRect(pipe.x - 4, pipe.y, pipe.width + 8, 8);
+                    // Pipe outline
+                    this.ctx.strokeStyle = '#047857';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.strokeRect(pipe.x, pipe.y, pipe.width, pipe.height);
+                    this.ctx.strokeRect(pipe.x - 4, pipe.y, pipe.width + 8, 8);
+                });
+                
+                // Draw question blocks (animated)
+                this.questionBlocks.forEach(block => {
+                    if (!block.hit) {
+                        const bounce = Math.sin(this.animationFrame * 0.1) * 2;
+                        // Yellow block with question mark
+                        this.ctx.fillStyle = '#F59E0B';
+                        this.ctx.fillRect(block.x, block.y + bounce, block.width, block.height);
+                        // Border
+                        this.ctx.strokeStyle = '#D97706';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(block.x, block.y + bounce, block.width, block.height);
+                        // Question mark
+                        this.ctx.fillStyle = '#FFF';
+                        this.ctx.font = 'bold 18px Arial';
+                        this.ctx.fillText('?', block.x + 7, block.y + bounce + 18);
+                    } else {
+                        // Used block (brown)
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillRect(block.x, block.y, block.width, block.height);
+                        this.ctx.strokeStyle = '#654321';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(block.x, block.y, block.width, block.height);
+                    }
+                });
+                
+                // Draw bricks
+                this.bricks.forEach(brick => {
+                    if (!brick.broken) {
+                        this.ctx.fillStyle = '#DC2626';
+                        this.ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+                        // Brick pattern
+                        this.ctx.strokeStyle = '#991B1B';
+                        this.ctx.lineWidth = 1;
+                        this.ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(brick.x + 12, brick.y);
+                        this.ctx.lineTo(brick.x + 12, brick.y + brick.height);
+                        this.ctx.stroke();
+                    }
+                });
+                
+                // Draw particles
+                this.particles.forEach(p => {
+                    if (p.type === 'coin') {
+                        this.ctx.fillStyle = '#FFD700';
+                        this.ctx.font = 'bold 12px Arial';
+                        this.ctx.fillText('$', p.x, p.y);
+                    } else if (p.type === 'brick') {
+                        this.ctx.fillStyle = '#DC2626';
+                        this.ctx.fillRect(p.x, p.y, 4, 4);
+                    }
+                });
+                
+                // Draw enemies (Goomba style)
+                this.enemies.forEach(enemy => {
+                    if (!enemy.dead) {
+                        // Brown mushroom enemy
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.beginPath();
+                        this.ctx.arc(enemy.x + 12, enemy.y + 10, 12, Math.PI, 0);
+                        this.ctx.fill();
+                        // Body
+                        this.ctx.fillStyle = '#A0522D';
+                        this.ctx.fillRect(enemy.x + 4, enemy.y + 10, 16, 14);
+                        // Eyes
+                        this.ctx.fillStyle = '#FFF';
+                        this.ctx.fillRect(enemy.x + 6, enemy.y + 6, 5, 5);
+                        this.ctx.fillRect(enemy.x + 13, enemy.y + 6, 5, 5);
+                        this.ctx.fillStyle = '#000';
+                        this.ctx.fillRect(enemy.x + 8, enemy.y + 8, 2, 2);
+                        this.ctx.fillRect(enemy.x + 15, enemy.y + 8, 2, 2);
+                        // Angry eyebrows
+                        this.ctx.strokeStyle = '#000';
+                        this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(enemy.x + 6, enemy.y + 5);
+                        this.ctx.lineTo(enemy.x + 11, enemy.y + 7);
+                        this.ctx.moveTo(enemy.x + 13, enemy.y + 7);
+                        this.ctx.lineTo(enemy.x + 18, enemy.y + 5);
+                        this.ctx.stroke();
+            } else {
+                        // Squashed enemy
+                        this.ctx.fillStyle = '#8B4513';
+                        this.ctx.fillRect(enemy.x, enemy.y + 18, enemy.width, 6);
+                    }
+                });
+                
+                // Draw finish flag
+                if (this.finishFlag) {
+                    // Flag pole
+                    this.ctx.fillStyle = '#4B5563';
+                    this.ctx.fillRect(this.finishFlag.x, this.finishFlag.y, this.finishFlag.width, this.finishFlag.height);
+                    // Flag
+                    this.ctx.fillStyle = this.finishFlag.reached ? '#10B981' : '#EF4444';
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.finishFlag.x + 10, this.finishFlag.y);
+                    this.ctx.lineTo(this.finishFlag.x + 50, this.finishFlag.y + 15);
+                    this.ctx.lineTo(this.finishFlag.x + 10, this.finishFlag.y + 30);
+                    this.ctx.fill();
+                }
+                
+                // Draw player (БОЛЬШОЙ Mario-style!)
+                const playerColor = '#FF0000'; // Red like Mario
+                const overallsColor = '#0000FF'; // Blue overalls
+                const scale = 1.67; // 40/24 = 1.67
+                
+                // Body (overalls) - увеличено!
+                this.ctx.fillStyle = overallsColor;
+                this.ctx.fillRect(this.player.x + 10, this.player.y + 16, 20, 22);
+                
+                // Head - увеличена!
+                this.ctx.fillStyle = '#FFDBAC';
+                this.ctx.fillRect(this.player.x + 10, this.player.y + 6, 20, 16);
+                
+                // Hat - увеличена!
+                this.ctx.fillStyle = playerColor;
+                this.ctx.fillRect(this.player.x + 6, this.player.y, 28, 10);
+                
+                // Eyes - увеличены!
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(this.player.x + 13, this.player.y + 12, 4, 4);
+                this.ctx.fillRect(this.player.x + 23, this.player.y + 12, 4, 4);
+                
+                // Mustache - увеличены!
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(this.player.x + 13, this.player.y + 18, 14, 3);
+                
+                // Shoes - увеличены!
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(this.player.x + 6, this.player.y + 36, 10, 4);
+                this.ctx.fillRect(this.player.x + 24, this.player.y + 36, 10, 4);
+            },
+            
+            endGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                cancelAnimationFrame(this.animFrame);
+                
+                // Hide mobile controls
+                const mobileControls = document.getElementById('mobile-controls');
+                if (mobileControls) {
+                    mobileControls.style.display = 'none';
+                }
+                
+                const mobileControlsFs = document.getElementById('mobile-controls-fullscreen');
+                if (mobileControlsFs) {
+                    mobileControlsFs.style.display = 'none';
+                }
+                
+                // Calculate reward
+                let reward = 0;
+                let message = '';
+                
+                if (this.coinsCollected >= 40) {
+                    reward = 500;
+                    message = '🏆 AMAZING! +500 TAMA!';
+                } else if (this.coinsCollected >= 30) {
+                    reward = 300;
+                    message = '🎉 GREAT! +300 TAMA!';
+                } else if (this.coinsCollected >= 20) {
+                    reward = 150;
+                    message = '👍 GOOD! +150 TAMA!';
+                } else if (this.coinsCollected >= 10) {
+                    reward = 50;
+                    message = '😊 Not bad! +50 TAMA';
+                } else {
+                    message = '😢 Try again! 0 TAMA';
+                }
+                
+                gameState.tama += reward;
+            updateUI();
+                
+                if (typeof TransactionLogger !== 'undefined' && reward > 0) {
+                    TransactionLogger.logEarn(
+                        window.TELEGRAM_USER_ID,
+                        window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                        'platformer_win',
+                        reward,
+                        gameState.tama - reward,
+                        gameState.tama,
+                        { coins: this.coinsCollected, score: this.score }
+                    );
+                }
+                
+                const resultElement = platformerFullscreenMode ? 
+                    document.getElementById('platformer-result-fs') : 
+                    document.getElementById('platformer-result');
+                    
+                if (resultElement) {
+                    resultElement.innerHTML = 
+                        `<strong>${message}</strong><br>` +
+                        `Coins: ${this.coinsCollected} | Score: ${this.score}<br>` +
+                        `Net: ${reward - 100 >= 0 ? '+' : ''}${reward - 100} TAMA`;
+                }
+                
+            triggerAutoSave();
+        }
+        };
+        
+        // Initialize platformer when page loads
+        platformerGame.init();
+        
+        // Fullscreen Platformer Functions
+        let platformerFullscreenMode = false;
+        
+        function openPlatformerFullscreen() {
+            const modal = document.getElementById('platformer-fullscreen-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                platformerFullscreenMode = true;
+                
+                // Switch game to fullscreen canvas
+                platformerGame.canvas = document.getElementById('platformer-canvas-fullscreen');
+                platformerGame.ctx = platformerGame.canvas.getContext('2d');
+                
+                // Setup fullscreen mobile controls
+                setupFullscreenMobileControls();
+                
+                // Re-attach start button
+                const startBtn = document.getElementById('platformer-start-btn-fs');
+                if (startBtn) {
+                    startBtn.replaceWith(startBtn.cloneNode(true));
+                    document.getElementById('platformer-start-btn-fs').addEventListener('click', () => {
+                        if (gameState.tama < 100) {
+                            showMessage('❌ Not enough TAMA! Need 100 TAMA');
+                            return;
+                        }
+                        
+                        gameState.tama -= 100;
+                        updateUI();
+                        if (typeof TransactionLogger !== 'undefined') {
+                            TransactionLogger.logSpend(
+                                window.TELEGRAM_USER_ID,
+                                window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user',
+                                'platformer_bet',
+                                100,
+                                gameState.tama + 100,
+                                gameState.tama,
+                                { game: 'platformer_fullscreen' }
+                            );
+                        }
+                        
+                        platformerGame.start();
+                    });
+                }
+            }
+        }
+        
+        function closePlatformerFullscreen() {
+            const modal = document.getElementById('platformer-fullscreen-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                platformerFullscreenMode = false;
+                
+                // Stop game if running
+                if (platformerGame.gameActive) {
+                    platformerGame.gameActive = false;
+                    clearInterval(platformerGame.timer);
+                    cancelAnimationFrame(platformerGame.animFrame);
+                }
+                
+                // Нет "normal canvas", остаемся на fullscreen
+                platformerFullscreenMode = false;
+            }
+        }
+        
+        function setupFullscreenMobileControls() {
+            const btnLeft = document.getElementById('btn-left-fs');
+            const btnRight = document.getElementById('btn-right-fs');
+            const btnJump = document.getElementById('btn-jump-fs');
+            const mobileControls = document.getElementById('mobile-controls-fullscreen');
+            
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (!btnLeft || !btnRight || !btnJump) return;
+            
+            if (isTouchDevice && mobileControls) {
+                mobileControls.style.display = 'block';
+            }
+            
+            // Left
+            btnLeft.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowLeft'] = true;
+                btnLeft.style.background = 'rgba(0,0,0,0.9)';
+            });
+            btnLeft.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowLeft'] = false;
+                btnLeft.style.background = 'rgba(0,0,0,0.6)';
+            });
+            
+            // Right
+            btnRight.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowRight'] = true;
+                btnRight.style.background = 'rgba(0,0,0,0.9)';
+            });
+            btnRight.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                platformerGame.keys['ArrowRight'] = false;
+                btnRight.style.background = 'rgba(0,0,0,0.6)';
+            });
+            
+            // Jump
+            btnJump.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (platformerGame.gameActive && platformerGame.player) {
+                    platformerGame.player.jump();
+                }
+                btnJump.style.background = 'rgba(255,69,0,1)';
+            });
+            btnJump.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                btnJump.style.background = 'rgba(255,69,0,0.8)';
+            });
+        }
+        
         // 🏃 PET RACE
         function startRace() {
             if (gameState.tama < 75) {
@@ -5297,222 +6775,6 @@
                 }
             }, 50);
         }
-        
-        // ⛏️ CRYPTO MINING GAME
-        let miningGameActive = false;
-        let miningTimer = null;
-        let miningCombo = 1;
-        let miningScore = 0;
-        let miningTimeLeft = 30;
-        let lastBlockTime = 0;
-        
-        function startMiningGame() {
-            if (gameState.tama < 150) {
-                showMessage('❌ Not enough TAMA! Need 150 TAMA');
-                return;
-            }
-            
-            if (miningGameActive) return;
-            
-            gameState.tama -= 150;
-            
-            // Log transaction for spending TAMA on mining
-            if (typeof logTransaction === 'function') {
-                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'spend_mining', -150, 'Spent 150 TAMA to start Crypto Mining', gameState);
-            }
-            
-            updateUI();
-            
-            miningGameActive = true;
-            miningCombo = 1;
-            miningScore = 0;
-            miningTimeLeft = 30;
-            lastBlockTime = Date.now();
-            
-            document.getElementById('mining-start-btn').disabled = true;
-            document.getElementById('mining-result').textContent = '⛏️ Mine the blocks quickly to increase your combo!';
-            
-            generateMiningBlocks();
-            startMiningTimer();
-        }
-        
-        function generateMiningBlocks() {
-            const grid = document.getElementById('mining-grid');
-            grid.innerHTML = '';
-            
-            const blockTypes = [
-                { emoji: '🟫', value: 1, color: '#8b4513' },
-                { emoji: '⬜', value: 2, color: '#c0c0c0' },
-                { emoji: '🟨', value: 5, color: '#ffd700' },
-                { emoji: '💎', value: 10, color: '#4169e1' }
-            ];
-            
-            for (let i = 0; i < 16; i++) {
-                const block = document.createElement('div');
-                const rand = Math.random();
-                let blockType;
-                
-                if (rand < 0.4) blockType = blockTypes[0]; // 40% common
-                else if (rand < 0.7) blockType = blockTypes[1]; // 30% silver
-                else if (rand < 0.9) blockType = blockTypes[2]; // 20% gold
-                else blockType = blockTypes[3]; // 10% diamond
-                
-                block.style.cssText = `
-                    background: ${blockType.color};
-                    border: 2px solid rgba(255,255,255,0.3);
-                    border-radius: 10px;
-                    padding: 20px;
-                    font-size: 32px;
-                    text-align: center;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    user-select: none;
-                `;
-                block.textContent = blockType.emoji;
-                block.dataset.value = blockType.value;
-                
-                block.addEventListener('click', () => mineBlock(block, blockType));
-                grid.appendChild(block);
-            }
-        }
-        
-        function mineBlock(block, blockType) {
-            if (!miningGameActive) return;
-            
-            const now = Date.now();
-            const timeSinceLastBlock = now - lastBlockTime;
-            
-            // Combo system: click within 1 second to maintain combo
-            if (timeSinceLastBlock < 1000) {
-                miningCombo = Math.min(miningCombo + 0.5, 5); // Max combo x5
-            } else {
-                miningCombo = Math.max(1, miningCombo - 0.5);
-            }
-            
-            lastBlockTime = now;
-            
-            const earnedPoints = Math.floor(blockType.value * miningCombo);
-            miningScore += earnedPoints;
-            
-            // Visual feedback
-            block.style.transform = 'scale(0.8) rotate(10deg)';
-            block.style.opacity = '0.5';
-            setTimeout(() => {
-                block.style.transform = 'scale(1.2)';
-                block.style.opacity = '0';
-            }, 100);
-            
-            // Show floating text
-            const floatingText = document.createElement('div');
-            floatingText.textContent = `+${earnedPoints} 💎`;
-            floatingText.style.cssText = `
-                position: fixed;
-                left: ${block.getBoundingClientRect().left}px;
-                top: ${block.getBoundingClientRect().top}px;
-                color: #10b981;
-                font-weight: bold;
-                font-size: 20px;
-                pointer-events: none;
-                animation: floatUp 1s ease-out;
-                z-index: 10000;
-            `;
-            document.body.appendChild(floatingText);
-            setTimeout(() => floatingText.remove(), 1000);
-            
-            // Update UI
-            document.getElementById('mining-combo').textContent = `x${miningCombo.toFixed(1)}`;
-            document.getElementById('mining-score').textContent = `${miningScore} 💎`;
-            
-            // Regenerate block
-            setTimeout(() => {
-                if (miningGameActive) {
-                    const blockTypes = [
-                        { emoji: '🟫', value: 1, color: '#8b4513' },
-                        { emoji: '⬜', value: 2, color: '#c0c0c0' },
-                        { emoji: '🟨', value: 5, color: '#ffd700' },
-                        { emoji: '💎', value: 10, color: '#4169e1' }
-                    ];
-                    
-                    const rand = Math.random();
-                    let newBlockType;
-                    if (rand < 0.4) newBlockType = blockTypes[0];
-                    else if (rand < 0.7) newBlockType = blockTypes[1];
-                    else if (rand < 0.9) newBlockType = blockTypes[2];
-                    else newBlockType = blockTypes[3];
-                    
-                    block.style.cssText = `
-                        background: ${newBlockType.color};
-                        border: 2px solid rgba(255,255,255,0.3);
-                        border-radius: 10px;
-                        padding: 20px;
-                        font-size: 32px;
-                        text-align: center;
-                        cursor: pointer;
-                        transition: all 0.2s;
-                        user-select: none;
-                    `;
-                    block.textContent = newBlockType.emoji;
-                    block.dataset.value = newBlockType.value;
-                    block.onclick = () => mineBlock(block, newBlockType);
-                }
-            }, 200);
-        }
-        
-        function startMiningTimer() {
-            const timerDisplay = document.getElementById('mining-timer');
-            
-            miningTimer = setInterval(() => {
-                miningTimeLeft--;
-                timerDisplay.textContent = `${miningTimeLeft}s`;
-                
-                if (miningTimeLeft <= 0) {
-                    endMiningGame();
-                }
-            }, 1000);
-        }
-        
-        function endMiningGame() {
-            miningGameActive = false;
-            clearInterval(miningTimer);
-            
-            // Calculate reward: 1 💎 = 10 TAMA, max 2000 TAMA
-            const reward = Math.min(miningScore * 10, 2000);
-            gameState.tama += reward;
-            
-            // Log transaction for winning TAMA from mining
-            if (typeof logTransaction === 'function' && reward > 0) {
-                logTransaction(window.TELEGRAM_USER_ID || 'unknown', 'earn_mining', reward, `Mined ${miningScore} 💎 and earned ${reward} TAMA from Crypto Mining`, gameState);
-            }
-            
-            const resultEl = document.getElementById('mining-result');
-            if (reward > 1500) {
-                resultEl.textContent = `🎉 LEGENDARY MINING! You earned ${reward} TAMA! Amazing combo!`;
-            } else if (reward > 1000) {
-                resultEl.textContent = `💎 EPIC MINING! You earned ${reward} TAMA! Great job!`;
-            } else if (reward > 500) {
-                resultEl.textContent = `⭐ GOOD MINING! You earned ${reward} TAMA!`;
-            } else {
-                resultEl.textContent = `⛏️ Mining complete! You earned ${reward} TAMA. Try for more combo next time!`;
-            }
-            
-            document.getElementById('mining-start-btn').disabled = false;
-            document.getElementById('mining-timer').textContent = '30s';
-            document.getElementById('mining-combo').textContent = 'x1';
-            document.getElementById('mining-score').textContent = '0 💎';
-            
-            updateUI();
-            triggerAutoSave();
-        }
-        
-        // Add floating animation for mining text
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes floatUp {
-                0% { transform: translateY(0); opacity: 1; }
-                100% { transform: translateY(-100px); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
         
         // ⚔️ BATTLE ARENA - PVP SYSTEM
         // Note: SUPABASE_URL and SUPABASE_ANON_KEY are already declared earlier in the script
@@ -6095,6 +7357,13 @@
         const leaderboardModal = document.getElementById('leaderboard-modal');
         const closeLeaderboard = document.getElementById('close-leaderboard');
         const leaderboardList = document.getElementById('leaderboard-list');
+
+        // Help Modal Elements
+        const helpBtn = document.getElementById('help-btn');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelp = document.getElementById('close-help');
+        const helpTabs = document.querySelectorAll('.help-tab');
+        const helpTabContents = document.querySelectorAll('.help-tab-content');
         
         console.log('Leaderboard elements:', { leaderboardBtn, leaderboardModal, closeLeaderboard, leaderboardList });
         
@@ -6124,6 +7393,48 @@
                 }
             });
         }
+
+        // Help Modal Event Listeners
+        if (helpBtn && helpModal) {
+            helpBtn.addEventListener('click', () => {
+                helpModal.classList.add('show');
+            });
+        }
+
+        if (closeHelp && helpModal) {
+            closeHelp.addEventListener('click', () => {
+                helpModal.classList.remove('show');
+            });
+        }
+
+        // Close help on background click
+        if (helpModal) {
+            helpModal.addEventListener('click', (e) => {
+                if (e.target.id === 'help-modal') {
+                    helpModal.classList.remove('show');
+                }
+            });
+        }
+
+        // Help Tab Switching
+        helpTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                helpTabs.forEach(t => t.classList.remove('active'));
+                helpTabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const targetContent = document.getElementById(targetTab + '-content');
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
 
         // Supabase Configuration
         const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
@@ -6168,7 +7479,7 @@
                 const leaderboardData = data.map((player, index) => ({
                     rank: index + 1,
                     name: player.telegram_username || player.pet_name || `Player #${player.telegram_id}`,
-                    level: player.level || 1, // ИСПОЛЬЗУЕМ РЕАЛЬНЫЙ LEVEL из базы!
+                    level: Math.floor((player.tama || 0) / 1000) + 1, // Approximate level
                     tama: player.tama || 0,
                     telegram_id: player.telegram_id
                 }));
@@ -6231,6 +7542,8 @@
         
         // Initialize everything when DOM is ready
         document.addEventListener('DOMContentLoaded', async function() {
+            console.log('%c🎮 GAME VERSION: 1.6.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-24 22:45 | CRITICAL: Player can walk past canvas edge!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Wait for Telegram WebApp to initialize
@@ -6300,8 +7613,8 @@
             const savedPet = localStorage.getItem('tamagotchi-pet') || 'kawai';
             switchPet(savedPet);
             
-            // Add click listeners to pet buttons
-            document.querySelectorAll('.pet-btn').forEach(btn => {
+            // Add click listeners to pet buttons (both old and new)
+            document.querySelectorAll('.pet-btn, .pet-btn-top').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const pet = btn.dataset.pet;
                     switchPet(pet);
@@ -6323,8 +7636,8 @@
             const theme = petThemeMap[pet] || 'kawai';
             document.body.setAttribute('data-theme', theme);
             
-            // Update active button
-            document.querySelectorAll('.pet-btn').forEach(btn => {
+            // Update active button (both old and new)
+            document.querySelectorAll('.pet-btn, .pet-btn-top').forEach(btn => {
                 btn.classList.remove('active');
             });
             const activeBtn = document.querySelector(`[data-pet="${pet}"]`);
@@ -6481,6 +7794,12 @@
         
         // Game selection function
         function selectGame(game) {
+            // Для platformer - сразу открываем fullscreen!
+            if (game === 'platformer') {
+                openPlatformerFullscreen();
+                return;
+            }
+            
             // Hide game selection
             document.getElementById('game-selection').style.display = 'none';
             
