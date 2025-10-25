@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economy Admin Panel - Solana Tamagotchi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .setting {
+            margin-bottom: 20px;
+        }
+
+        .setting label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .setting input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .setting input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .setting .value-display {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .simulator {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .simulator h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .sim-result {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .sim-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .sim-item .label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .sim-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .presets {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            flex: 1;
+            padding: 10px;
+            background: #edf2f7;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: #e2e8f0;
+            border-color: #667eea;
+        }
+
+        .preset-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .status.success {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .status.error {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Economy Admin Panel</h1>
+            <p class="subtitle">Adjust game economy parameters in real-time</p>
+        </div>
+
+        <div class="presets">
+            <button class="preset-btn" onclick="loadPreset('current')">📊 Current</button>
+            <button class="preset-btn active" onclick="loadPreset('balanced')">⚖️ Balanced</button>
+            <button class="preset-btn" onclick="loadPreset('generous')">💎 Generous</button>
+            <button class="preset-btn" onclick="loadPreset('strict')">🔒 Strict</button>
+        </div>
+
+        <div class="grid">
+            <!-- Rewards Settings -->
+            <div class="card">
+                <h2>🎁 Reward Settings</h2>
+                
+                <div class="setting">
+                    <label>
+                        Base Click Reward
+                        <span class="value-display" id="base-reward-display">1.0</span>
+                    </label>
+                    <input type="range" id="base-reward" min="0.1" max="5" step="0.1" value="1.0" oninput="updateDisplay()">
+                </div>
+
+                <div class="setting">
+                    <label>
+                        Minimum Reward
+                        <span class="value-display" id="min-reward-display">0.5</span>
+                    </label>
+                    <input type="range" id="min-reward" min="0.1" max="2" step="0.1" value="0.5" oninput="updateDisplay()">
+                </div>
+
+                <div class="setting">
+                    <label>
+                        Max Combo Bonus
+                        <span class="value-display" id="max-combo-display">10</span>
+                    </label>
+                    <input type="range" id="max-combo" min="1" max="30" step="1" value="10" oninput="updateDisplay()">
+                </div>
+            </div>
+
+            <!-- Combo Settings -->
+            <div class="card">
+                <h2>🔥 Combo Settings</h2>
+                
+                <div class="setting">
+                    <label>
+                        Combo Window (seconds)
+                        <span class="value-display" id="combo-window-display">2.5</span>
+                    </label>
+                    <input type="range" id="combo-window" min="1" max="5" step="0.1" value="2.5" oninput="updateDisplay()">
+                </div>
+
+                <div class="setting">
+                    <label>
+                        Combo Cooldown (seconds)
+                        <span class="value-display" id="combo-cooldown-display">0.8</span>
+                    </label>
+                    <input type="range" id="combo-cooldown" min="0.3" max="2" step="0.1" value="0.8" oninput="updateDisplay()">
+                </div>
+
+                <div class="setting">
+                    <label>
+                        Combo Bonus Divider
+                        <span class="value-display" id="combo-divider-display">5</span>
+                    </label>
+                    <input type="range" id="combo-divider" min="1" max="20" step="1" value="5" oninput="updateDisplay()">
+                </div>
+            </div>
+
+            <!-- Penalty Settings -->
+            <div class="card">
+                <h2>⚠️ Spam Penalty</h2>
+                
+                <div class="setting">
+                    <label>
+                        Spam Penalty (%)
+                        <span class="value-display" id="spam-penalty-display">50%</span>
+                    </label>
+                    <input type="range" id="spam-penalty" min="0" max="90" step="5" value="50" oninput="updateDisplay()">
+                </div>
+
+                <div class="simulator">
+                    <h3>🧪 Reward Simulator</h3>
+                    <div class="sim-result">
+                        <div class="sim-item">
+                            <div class="label">Normal Click</div>
+                            <div class="value" id="sim-normal">1.0</div>
+                        </div>
+                        <div class="sim-item">
+                            <div class="label">Spam Click</div>
+                            <div class="value" id="sim-spam">0.5</div>
+                        </div>
+                        <div class="sim-item">
+                            <div class="label">Combo x10</div>
+                            <div class="value" id="sim-combo10">3.0</div>
+                        </div>
+                        <div class="sim-item">
+                            <div class="label">Combo x50</div>
+                            <div class="value" id="sim-combo50">11.0</div>
+                        </div>
+                        <div class="sim-item">
+                            <div class="label">TAMA/Hour</div>
+                            <div class="value" id="sim-hour">5,000</div>
+                        </div>
+                        <div class="sim-item">
+                            <div class="label">Level/Hour</div>
+                            <div class="value" id="sim-level">50</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💾 Actions</h2>
+            <div class="button-group">
+                <button class="btn-primary" onclick="applySettings()">✅ Apply Settings</button>
+                <button class="btn-secondary" onclick="exportConfig()">📥 Export Config</button>
+                <button class="btn-danger" onclick="resetToDefault()">🔄 Reset to Default</button>
+            </div>
+            <div id="status" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        const presets = {
+            current: {
+                baseReward: 0.1,
+                minReward: 0.1,
+                maxCombo: 5,
+                comboWindow: 2.0,
+                comboCooldown: 1.0,
+                comboDivider: 10,
+                spamPenalty: 70
+            },
+            balanced: {
+                baseReward: 1.0,
+                minReward: 0.5,
+                maxCombo: 10,
+                comboWindow: 2.5,
+                comboCooldown: 0.8,
+                comboDivider: 5,
+                spamPenalty: 50
+            },
+            generous: {
+                baseReward: 2.0,
+                minReward: 1.0,
+                maxCombo: 20,
+                comboWindow: 3.0,
+                comboCooldown: 0.6,
+                comboDivider: 3,
+                spamPenalty: 40
+            },
+            strict: {
+                baseReward: 0.8,
+                minReward: 0.3,
+                maxCombo: 8,
+                comboWindow: 2.0,
+                comboCooldown: 1.0,
+                comboDivider: 8,
+                spamPenalty: 60
+            }
+        };
+
+        function loadPreset(preset) {
+            const config = presets[preset];
+            document.getElementById('base-reward').value = config.baseReward;
+            document.getElementById('min-reward').value = config.minReward;
+            document.getElementById('max-combo').value = config.maxCombo;
+            document.getElementById('combo-window').value = config.comboWindow;
+            document.getElementById('combo-cooldown').value = config.comboCooldown;
+            document.getElementById('combo-divider').value = config.comboDivider;
+            document.getElementById('spam-penalty').value = config.spamPenalty;
+            
+            // Update active button
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const baseReward = parseFloat(document.getElementById('base-reward').value);
+            const minReward = parseFloat(document.getElementById('min-reward').value);
+            const maxCombo = parseInt(document.getElementById('max-combo').value);
+            const comboWindow = parseFloat(document.getElementById('combo-window').value);
+            const comboCooldown = parseFloat(document.getElementById('combo-cooldown').value);
+            const comboDivider = parseInt(document.getElementById('combo-divider').value);
+            const spamPenalty = parseInt(document.getElementById('spam-penalty').value);
+
+            // Update displays
+            document.getElementById('base-reward-display').textContent = baseReward.toFixed(1);
+            document.getElementById('min-reward-display').textContent = minReward.toFixed(1);
+            document.getElementById('max-combo-display').textContent = maxCombo;
+            document.getElementById('combo-window-display').textContent = comboWindow.toFixed(1);
+            document.getElementById('combo-cooldown-display').textContent = comboCooldown.toFixed(1);
+            document.getElementById('combo-divider-display').textContent = comboDivider;
+            document.getElementById('spam-penalty-display').textContent = spamPenalty + '%';
+
+            // Calculate simulator values
+            const normalClick = baseReward;
+            const spamClick = Math.max(minReward, baseReward * (1 - spamPenalty / 100));
+            const combo10 = baseReward + Math.min(Math.floor(10 / comboDivider), maxCombo);
+            const combo50 = baseReward + Math.min(Math.floor(50 / comboDivider), maxCombo);
+            
+            // Calculate TAMA per hour (assuming 1.2 clicks/sec with average combo)
+            const clicksPerSecond = 1.2;
+            const avgComboBonus = Math.min(Math.floor(20 / comboDivider), maxCombo) / 2;
+            const tamaPerHour = Math.floor((baseReward + avgComboBonus) * clicksPerSecond * 3600);
+            const levelPerHour = Math.floor(tamaPerHour / 100);
+
+            document.getElementById('sim-normal').textContent = normalClick.toFixed(1);
+            document.getElementById('sim-spam').textContent = spamClick.toFixed(1);
+            document.getElementById('sim-combo10').textContent = combo10.toFixed(1);
+            document.getElementById('sim-combo50').textContent = combo50.toFixed(1);
+            document.getElementById('sim-hour').textContent = tamaPerHour.toLocaleString();
+            document.getElementById('sim-level').textContent = levelPerHour;
+        }
+
+        function applySettings() {
+            const config = {
+                BASE_CLICK_REWARD: parseFloat(document.getElementById('base-reward').value),
+                MIN_REWARD: parseFloat(document.getElementById('min-reward').value),
+                MAX_COMBO_BONUS: parseInt(document.getElementById('max-combo').value),
+                COMBO_WINDOW: parseFloat(document.getElementById('combo-window').value) * 1000,
+                COMBO_COOLDOWN: parseFloat(document.getElementById('combo-cooldown').value) * 1000,
+                COMBO_BONUS_DIVIDER: parseInt(document.getElementById('combo-divider').value),
+                SPAM_PENALTY: 1 - (parseInt(document.getElementById('spam-penalty').value) / 100)
+            };
+
+            // Save to localStorage
+            localStorage.setItem('economyConfig', JSON.stringify(config));
+            
+            showStatus('✅ Settings applied! Refresh the game to see changes.', 'success');
+        }
+
+        function exportConfig() {
+            const config = {
+                BASE_CLICK_REWARD: parseFloat(document.getElementById('base-reward').value),
+                MIN_REWARD: parseFloat(document.getElementById('min-reward').value),
+                MAX_COMBO_BONUS: parseInt(document.getElementById('max-combo').value),
+                COMBO_WINDOW: parseFloat(document.getElementById('combo-window').value) * 1000,
+                COMBO_COOLDOWN: parseFloat(document.getElementById('combo-cooldown').value) * 1000,
+                COMBO_BONUS_DIVIDER: parseInt(document.getElementById('combo-divider').value),
+                SPAM_PENALTY: 1 - (parseInt(document.getElementById('spam-penalty').value) / 100)
+            };
+
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'economy-config.json';
+            a.click();
+            
+            showStatus('📥 Config exported!', 'success');
+        }
+
+        function resetToDefault() {
+            loadPreset('balanced');
+            showStatus('🔄 Reset to balanced settings', 'success');
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>
+
