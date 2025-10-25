@@ -468,7 +468,15 @@
             // Save to localStorage
             localStorage.setItem('economyConfig', JSON.stringify(config));
             
-            showStatus('✅ Settings applied! Refresh the game to see changes.', 'success');
+            // Broadcast to game tabs (auto-apply!)
+            try {
+                const channel = new BroadcastChannel('economy-updates');
+                channel.postMessage({ type: 'config-update', config: config });
+                channel.close();
+                showStatus('✅ Settings applied and sent to game! Changes active immediately.', 'success');
+            } catch (e) {
+                showStatus('✅ Settings applied! Refresh the game to see changes.', 'success');
+            }
         }
 
         function exportConfig() {

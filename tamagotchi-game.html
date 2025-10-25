@@ -7568,6 +7568,20 @@
         }
         
         // Initialize everything when DOM is ready
+        // Listen for economy config updates from admin panel
+        try {
+            const economyChannel = new BroadcastChannel('economy-updates');
+            economyChannel.onmessage = (event) => {
+                if (event.data.type === 'config-update') {
+                    localStorage.setItem('economyConfig', JSON.stringify(event.data.config));
+                    console.log('✅ Economy config updated from admin panel!', event.data.config);
+                    showMessage('⚙️ Economy settings updated!');
+                }
+            };
+        } catch (e) {
+            console.log('BroadcastChannel not supported, using localStorage only');
+        }
+
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('%c🎮 GAME VERSION: 1.6.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
             console.log('%c📅 BUILD: 2025-10-24 22:45 | CRITICAL: Player can walk past canvas edge!', 'font-size: 14px; color: #ffff00;');
