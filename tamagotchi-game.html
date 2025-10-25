@@ -4304,16 +4304,18 @@
                 gameState.happy = Math.max(0, gameState.happy - 0.3);
             }
             
-            // BALANCED Combo system - Optimized for fun gameplay!
-            const COMBO_WINDOW = 2500; // 2.5 seconds for combo window
-            const COMBO_COOLDOWN = 800; // 0.8 second cooldown between clicks
+            // BALANCED Combo system - Load from admin panel or use defaults
+            const economyConfig = JSON.parse(localStorage.getItem('economyConfig') || '{}');
+            const COMBO_WINDOW = economyConfig.COMBO_WINDOW || 2500; // 2.5 seconds for combo window
+            const COMBO_COOLDOWN = economyConfig.COMBO_COOLDOWN || 800; // 0.8 second cooldown between clicks
             const COMBO_DECAY_TIME = 5000; // 5 seconds for combo decay
             
             // Check if enough time passed since last click
+            const SPAM_PENALTY = economyConfig.SPAM_PENALTY || 0.5;
             if (now - gameState.lastClickTime < COMBO_COOLDOWN) {
                 // Too fast clicking - no combo, reduced rewards
                 gameState.combo = 1;
-                clickEfficiency *= 0.5; // 50% penalty for spam clicking (was 70%)
+                clickEfficiency *= SPAM_PENALTY; // Penalty for spam clicking (from admin panel)
             } else if (now - gameState.lastClickTime < COMBO_WINDOW) {
                 // Within combo window - increase combo
                 gameState.combo++;
@@ -4349,11 +4351,11 @@
             // Apply efficiency penalty
             clickPower *= clickEfficiency;
             
-            // BALANCED Combo bonus - Optimized for fun!
-            const BASE_CLICK_REWARD = 1.0; // Base reward per click
-            const COMBO_BONUS_DIVIDER = 5; // Bonus every 5 clicks (was 10)
-            const MAX_COMBO_BONUS = 10; // Cap combo bonus at 10 TAMA (was 5)
-            const MIN_REWARD = 0.5; // Minimum reward (was 0.1)
+            // BALANCED Combo bonus - Load from admin panel or use defaults
+            const BASE_CLICK_REWARD = economyConfig.BASE_CLICK_REWARD || 1.0; // Base reward per click
+            const COMBO_BONUS_DIVIDER = economyConfig.COMBO_BONUS_DIVIDER || 5; // Bonus every 5 clicks
+            const MAX_COMBO_BONUS = economyConfig.MAX_COMBO_BONUS || 10; // Cap combo bonus at 10 TAMA
+            const MIN_REWARD = economyConfig.MIN_REWARD || 0.5; // Minimum reward
             
             const comboBonus = Math.floor(gameState.combo / COMBO_BONUS_DIVIDER);
             const cappedComboBonus = Math.min(comboBonus, MAX_COMBO_BONUS);
@@ -4369,15 +4371,8 @@
             gameState.totalClicks++;
             gameState.questClicks++;
             
-            // AUTO-UPDATE LEVEL FROM TAMA (Level = TAMA / 100)
-            const calculatedLevel = Math.max(1, Math.floor(gameState.tama / 100));
-            if (calculatedLevel !== gameState.level) {
-                const oldLevel = gameState.level;
-                gameState.level = calculatedLevel;
-                if (calculatedLevel > oldLevel) {
-                    showMessage(`🎊 LEVEL UP! You are now Level ${gameState.level}!`);
-                }
-            }
+            // Check for level up based on XP (original system)
+            checkLevelUp();
             
             // Log transaction to Supabase
             if (window.TELEGRAM_USER_ID && typeof TransactionLogger !== 'undefined') {
