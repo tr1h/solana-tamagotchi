@@ -4371,9 +4371,12 @@
             
             // AUTO-UPDATE LEVEL FROM TAMA (Level = TAMA / 100)
             const calculatedLevel = Math.max(1, Math.floor(gameState.tama / 100));
-            if (calculatedLevel > gameState.level) {
+            if (calculatedLevel !== gameState.level) {
+                const oldLevel = gameState.level;
                 gameState.level = calculatedLevel;
-                showMessage(`🎊 LEVEL UP! You are now Level ${gameState.level}!`);
+                if (calculatedLevel > oldLevel) {
+                    showMessage(`🎊 LEVEL UP! You are now Level ${gameState.level}!`);
+                }
             }
             
             // Log transaction to Supabase
