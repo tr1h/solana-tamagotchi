@@ -6343,8 +6343,8 @@
                 const totalReward = this.coinsCollected * 10 + timeBonus + 200;
                 
                 gameState.tama += totalReward;
-                updateUI();
-                
+            updateUI();
+            
                 if (typeof TransactionLogger !== 'undefined') {
                     TransactionLogger.logEarn(
                         window.TELEGRAM_USER_ID,
@@ -6594,7 +6594,7 @@
                 } else if (this.coinsCollected >= 10) {
                     reward = 50;
                     message = '😊 Not bad! +50 TAMA';
-                } else {
+            } else {
                     message = '😢 Try again! 0 TAMA';
                 }
                 
@@ -7568,6 +7568,37 @@
         }
         
         // Initialize everything when DOM is ready
+        // Load economy config from Supabase on game start
+        async function loadEconomyConfig() {
+            try {
+                const { data, error } = await supabase
+                    .from('economy_config')
+                    .select('*')
+                    .eq('is_active', true)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    const config = {
+                        BASE_CLICK_REWARD: data.base_click_reward,
+                        MIN_REWARD: data.min_reward,
+                        MAX_COMBO_BONUS: data.max_combo_bonus,
+                        COMBO_WINDOW: data.combo_window,
+                        COMBO_COOLDOWN: data.combo_cooldown,
+                        COMBO_BONUS_DIVIDER: data.combo_bonus_divider,
+                        SPAM_PENALTY: data.spam_penalty
+                    };
+                    
+                    localStorage.setItem('economyConfig', JSON.stringify(config));
+                    console.log('✅ Economy config loaded from database:', data.config_name, config);
+                }
+            } catch (error) {
+                console.log('⚠️ Could not load economy config from database:', error);
+                console.log('Using default or cached config');
+            }
+        }
+
         // Listen for economy config updates from admin panel
         try {
             const economyChannel = new BroadcastChannel('economy-updates');
@@ -7583,9 +7614,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-24 22:45 | CRITICAL: Player can walk past canvas edge!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.3 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | NEW: Economy config from database!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
+            
+            // Load economy config from database
+            await loadEconomyConfig();
             
             // Wait for Telegram WebApp to initialize
             if (window.Telegram && window.Telegram.WebApp) {
