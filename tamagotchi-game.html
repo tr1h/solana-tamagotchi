@@ -5185,7 +5185,7 @@
                 
                 // Prepare data to send
                 const dataToSend = {
-                    tama: gameState.tama,
+                    tama: Math.floor(gameState.tama),  // Round to integer for database
                     level: gameState.level,
                     pet_data: pet_data,  // Send as object for JSONB
                     last_activity: new Date().toISOString()
@@ -7642,8 +7642,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.7 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | DEBUG: Added detailed error logging!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.8 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: Round TAMA to integer for database!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
