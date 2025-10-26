@@ -437,6 +437,13 @@
             </table>
         </div>
 
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px;">
+            <button onclick="changePage(-1)" style="padding: 10px 20px; background: #667eea; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 16px;">← Previous</button>
+            <div id="page-info" style="font-size: 18px; font-weight: bold;">Page 1</div>
+            <button onclick="changePage(1)" style="padding: 10px 20px; background: #667eea; border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 16px;">Next →</button>
+        </div>
+
         <div class="update-time" id="update-time">Last updated: Never</div>
     </div>
 
@@ -460,10 +467,32 @@
         let allTransactions = [];
         let allUsers = {};
         let autoUpdateInterval;
+        let currentPage = 1;
+        const PAGE_SIZE = 10000; // 10,000 transactions per page
+        let totalCount = 0;
 
         async function loadTransactions() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=*&order=created_at.desc&limit=1000`, {
+                // First, get total count
+                const countResponse = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'count=exact'
+                    }
+                });
+                
+                if (countResponse.ok) {
+                    const countHeader = countResponse.headers.get('content-range');
+                    if (countHeader) {
+                        totalCount = parseInt(countHeader.split('/')[1]);
+                        console.log('📊 Total transactions in database:', totalCount);
+                    }
+                }
+
+                // Then load current page
+                const offset = (currentPage - 1) * PAGE_SIZE;
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/transactions?select=*&order=created_at.desc&limit=${PAGE_SIZE}&offset=${offset}`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -475,7 +504,7 @@
                 }
 
                 allTransactions = await response.json();
-                console.log('✅ Loaded transactions:', allTransactions.length);
+                console.log(`✅ Loaded page ${currentPage}: ${allTransactions.length} transactions (Total: ${totalCount})`);
                 
                 // Load users data
                 await loadUsersData();
@@ -526,11 +555,15 @@
 
             const uniqueUsers = new Set(allTransactions.map(t => t.user_id)).size;
 
-            document.getElementById('total-transactions').textContent = allTransactions.length.toLocaleString();
+            // Show total count from database, not just current page
+            document.getElementById('total-transactions').textContent = totalCount.toLocaleString();
             document.getElementById('total-earned').textContent = Math.round(totalEarned).toLocaleString() + ' TAMA';
             document.getElementById('total-spent').textContent = Math.round(totalSpent).toLocaleString() + ' TAMA';
             document.getElementById('net-flow').textContent = Math.round(totalEarned - totalSpent).toLocaleString() + ' TAMA';
             document.getElementById('active-users').textContent = uniqueUsers;
+            
+            // Update pagination info
+            updatePaginationInfo();
         }
 
         function renderTransactions(transactions) {
@@ -728,6 +761,29 @@
             if (autoUpdateInterval) {
                 clearInterval(autoUpdateInterval);
             }
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+            currentPage += direction;
+            
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            loadTransactions();
+        }
+
+        function updatePaginationInfo() {
+            const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+            const start = (currentPage - 1) * PAGE_SIZE + 1;
+            const end = Math.min(currentPage * PAGE_SIZE, totalCount);
+            
+            document.getElementById('page-info').innerHTML = `
+                Page ${currentPage} of ${totalPages}<br>
+                <span style="font-size: 14px; opacity: 0.8;">
+                    Showing ${start.toLocaleString()} - ${end.toLocaleString()} of ${totalCount.toLocaleString()}
+                </span>
+            `;
         }
 
         // Add filter listeners
