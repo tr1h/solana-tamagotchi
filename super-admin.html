@@ -1017,7 +1017,10 @@
             players.forEach((player, index) => {
                 const row = document.createElement('tr');
                 const lastActive = player.last_activity ? new Date(player.last_activity).toLocaleString() : 'Never';
-                const username = player.telegram_username || 'N/A';
+                // Show username or pet_name or "User #ID"
+                const username = player.telegram_username 
+                    || player.pet_name 
+                    || `User #${String(player.telegram_id).slice(-4)}`;
                 const status = player.last_activity && new Date(player.last_activity) > new Date(Date.now() - 24 * 60 * 60 * 1000) 
                     ? '<span class="badge success">Active</span>' 
                     : '<span class="badge">Inactive</span>';
@@ -1047,7 +1050,10 @@
                 const row = document.createElement('tr');
                 const created = player.created_at ? new Date(player.created_at).toLocaleDateString() : 'N/A';
                 const lastActive = player.last_activity ? new Date(player.last_activity).toLocaleString() : 'Never';
-                const username = player.telegram_username || 'N/A';
+                // Show username or pet_name or "User #ID"
+                const username = player.telegram_username 
+                    || player.pet_name 
+                    || `User #${String(player.telegram_id).slice(-4)}`;
                 const petType = player.pet_type || 'N/A';
 
                 row.innerHTML = `
