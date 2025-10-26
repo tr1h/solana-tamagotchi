@@ -3826,10 +3826,10 @@
             // 💰 Update progressive prices
             updateActionPrices();
 
-            // Button states (updated with progressive prices)
-            const feedCost = getProgressivePrice(50);
-            const playCost = getProgressivePrice(30);
-            const healCost = getProgressivePrice(100);
+            // Button states (using fixed prices to match actual functions)
+            const feedCost = 50;  // Fixed price - matches feedPet() function
+            const playCost = 30;  // Fixed price - matches playPet() function
+            const healCost = 100; // Fixed price - matches healPet() function
             
             feedBtn.disabled = gameState.tama < feedCost;
             playBtn.disabled = gameState.tama < playCost;
@@ -4517,16 +4517,18 @@
         }
 
         function updateActionPrices() {
-            const feedCost = getProgressivePrice(50);
-            const playCost = getProgressivePrice(30);
-            const healCost = getProgressivePrice(100);
+            // Use fixed prices to match actual function costs
+            const feedCost = 50;  // Fixed price - matches feedPet() function
+            const playCost = 30;  // Fixed price - matches playPet() function  
+            const healCost = 100; // Fixed price - matches healPet() function
             
             feedBtn.innerHTML = `🍔<br>Feed<br><small>-${feedCost} TAMA</small>`;
             playBtn.innerHTML = `🎮<br>Play<br><small>-${playCost} TAMA</small>`;
             healBtn.innerHTML = `💊<br>Heal<br><small>-${healCost} TAMA</small>`;
         }
 
-        // Actions
+        // Actions - OLD HANDLERS (COMMENTED OUT - USING NEW feedPet() FUNCTION)
+        /*
         feedBtn.addEventListener('click', () => {
             const cost = getProgressivePrice(50);
             if (gameState.tama >= cost) {
@@ -4541,6 +4543,7 @@
                 showMessage('❌ Not enough TAMA!');
             }
         });
+        */
 
         playBtn.addEventListener('click', () => {
             const cost = getProgressivePrice(30);
@@ -7619,8 +7622,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.4 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: pet_data JSONB format for Supabase!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.5 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: Action button prices match actual costs!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
