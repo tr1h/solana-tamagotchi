@@ -528,6 +528,7 @@
         <div class="tabs-nav">
             <button class="tab-btn active" data-tab="overview">📊 Overview</button>
             <button class="tab-btn" data-tab="players">👥 Players</button>
+            <button class="tab-btn" data-tab="referrals">🔗 Referrals</button>
             <button class="tab-btn" data-tab="analytics">📈 Analytics</button>
             <button class="tab-btn" data-tab="database">🗄️ Database</button>
             <button class="tab-btn" data-tab="admin">⚙️ Admin Actions</button>
@@ -562,7 +563,7 @@
                     <div class="stat-value" id="nft-count">0</div>
                     <div class="stat-change info" id="nft-change">Coming soon</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" style="cursor: pointer;" onclick="showReferralsTab()">
                     <div class="stat-icon">🔗</div>
                     <div class="stat-label">Referrals</div>
                     <div class="stat-value" id="referral-count">0</div>
@@ -574,6 +575,22 @@
                     <div class="stat-value" id="active-today">0</div>
                     <div class="stat-change" id="active-change">Last hour: 0</div>
                 </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="stats-grid" style="margin-top: 20px;">
+                <a href="transactions-admin.html" target="_blank" class="stat-card" style="text-decoration: none; color: inherit; transition: all 0.3s;">
+                    <div class="stat-icon">💳</div>
+                    <div class="stat-label">Transactions Monitor</div>
+                    <div class="stat-value" style="font-size: 16px;">Open →</div>
+                    <div class="stat-change info">Live TAMA tracking</div>
+                </a>
+                <a href="economy-admin.html" target="_blank" class="stat-card" style="text-decoration: none; color: inherit; transition: all 0.3s;">
+                    <div class="stat-icon">⚙️</div>
+                    <div class="stat-label">Economy Config</div>
+                    <div class="stat-value" style="font-size: 16px;">Open →</div>
+                    <div class="stat-change info">Game balance settings</div>
+                </a>
             </div>
 
             <!-- Top Players Table -->
@@ -636,6 +653,90 @@
                         <tr>
                             <td colspan="9" style="text-align: center; padding: 40px;">
                                 <div class="loading"></div> Loading all players...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab: Referrals -->
+        <div class="tab-content" id="tab-referrals">
+            <div class="stats-grid" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="stat-icon">🔗</div>
+                    <div class="stat-label">Total Referrals</div>
+                    <div class="stat-value" id="total-referrals">0</div>
+                    <div class="stat-change positive">All time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-label">Active Referrers</div>
+                    <div class="stat-value" id="active-referrers">0</div>
+                    <div class="stat-change">Users with refs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">TAMA from Refs</div>
+                    <div class="stat-value" id="tama-from-refs">0</div>
+                    <div class="stat-change">1,000 per ref</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-label">Top Referrer</div>
+                    <div class="stat-value" id="top-referrer">-</div>
+                    <div class="stat-change" id="top-referrer-count">0 refs</div>
+                </div>
+            </div>
+
+            <div class="data-table">
+                <div class="table-header">
+                    <h3>🔗 Referral Leaderboard</h3>
+                    <div class="table-actions">
+                        <input type="text" class="search-box" placeholder="Search by username..." id="search-referrals">
+                        <button class="refresh-btn" onclick="loadReferrals()">🔄 Refresh</button>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Referrer</th>
+                            <th>Telegram ID</th>
+                            <th>Total Refs</th>
+                            <th>TAMA Earned</th>
+                            <th>Referral Code</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="referrals-tbody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px;">
+                                <div class="loading"></div> Loading referrals...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="data-table" style="margin-top: 30px;">
+                <div class="table-header">
+                    <h3>📋 All Referrals (Detailed)</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Referrer</th>
+                            <th>Referred User</th>
+                            <th>Status</th>
+                            <th>Reward</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-referrals-tbody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 40px;">
+                                <div class="loading"></div> Loading detailed referrals...
                             </td>
                         </tr>
                     </tbody>
@@ -1111,11 +1212,203 @@
             alert('Webhook setup feature coming soon!');
         }
 
+        // Referrals Functions
+        async function loadReferrals() {
+            try {
+                // Load referrals table
+                const { data: referrals, error: refError } = await fetch(`${SUPABASE_URL}/rest/v1/referrals?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }).then(r => r.json());
+
+                // Load pending referrals
+                const { data: pendingRefs, error: pendError } = await fetch(`${SUPABASE_URL}/rest/v1/pending_referrals?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }).then(r => r.json());
+
+                // Load leaderboard for usernames and referral codes
+                const { data: players, error: playersError } = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=telegram_id,telegram_username,referral_code,tama`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                }).then(r => r.json());
+
+                if (refError || pendError || playersError) {
+                    console.error('Error loading referrals:', refError || pendError || playersError);
+                    return;
+                }
+
+                // Calculate stats
+                const allRefs = [...(referrals || []), ...(pendingRefs || [])];
+                const totalReferrals = allRefs.length;
+                
+                // Group by referrer
+                const referrerStats = {};
+                allRefs.forEach(ref => {
+                    const referrerId = ref.referrer_telegram_id;
+                    if (!referrerStats[referrerId]) {
+                        referrerStats[referrerId] = {
+                            count: 0,
+                            username: ref.referrer_username || 'Unknown',
+                            refs: []
+                        };
+                    }
+                    referrerStats[referrerId].count++;
+                    referrerStats[referrerId].refs.push(ref);
+                });
+
+                const activeReferrers = Object.keys(referrerStats).length;
+                const tamaFromRefs = totalReferrals * 1000;
+
+                // Find top referrer
+                let topReferrer = { username: '-', count: 0 };
+                Object.entries(referrerStats).forEach(([id, stats]) => {
+                    if (stats.count > topReferrer.count) {
+                        topReferrer = { username: stats.username, count: stats.count };
+                    }
+                });
+
+                // Update stats
+                document.getElementById('total-referrals').textContent = totalReferrals;
+                document.getElementById('active-referrers').textContent = activeReferrers;
+                document.getElementById('tama-from-refs').textContent = tamaFromRefs.toLocaleString();
+                document.getElementById('top-referrer').textContent = topReferrer.username;
+                document.getElementById('top-referrer-count').textContent = `${topReferrer.count} refs`;
+
+                // Update referral count in overview
+                document.getElementById('referral-count').textContent = totalReferrals;
+                document.getElementById('referral-change').textContent = `+${allRefs.filter(r => {
+                    const created = new Date(r.created_at || r.timestamp);
+                    return created > new Date(Date.now() - 24 * 60 * 60 * 1000);
+                }).length} today`;
+
+                // Update referral leaderboard table
+                updateReferralLeaderboard(referrerStats, players);
+
+                // Update detailed referrals table
+                updateDetailedReferrals(allRefs, players);
+
+            } catch (error) {
+                console.error('Error loading referrals:', error);
+            }
+        }
+
+        function updateReferralLeaderboard(referrerStats, players) {
+            const tbody = document.getElementById('referrals-tbody');
+            tbody.innerHTML = '';
+
+            // Convert to array and sort by count
+            const sorted = Object.entries(referrerStats)
+                .map(([id, stats]) => ({
+                    id,
+                    ...stats,
+                    player: players?.find(p => p.telegram_id === id)
+                }))
+                .sort((a, b) => b.count - a.count);
+
+            sorted.forEach((referrer, index) => {
+                const row = document.createElement('tr');
+                const tamaEarned = referrer.count * 1000;
+                const refCode = referrer.player?.referral_code || 'N/A';
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${referrer.username}</td>
+                    <td>${referrer.id}</td>
+                    <td><strong>${referrer.count}</strong></td>
+                    <td>${tamaEarned.toLocaleString()} TAMA</td>
+                    <td><code>${refCode}</code></td>
+                    <td>
+                        <button class="action-btn view" onclick="viewReferrerDetails('${referrer.id}')">View</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">No referrals yet</td></tr>';
+            }
+        }
+
+        function updateDetailedReferrals(allRefs, players) {
+            const tbody = document.getElementById('all-referrals-tbody');
+            tbody.innerHTML = '';
+
+            // Sort by date (newest first)
+            const sorted = allRefs.sort((a, b) => {
+                const dateA = new Date(a.created_at || a.timestamp);
+                const dateB = new Date(b.created_at || b.timestamp);
+                return dateB - dateA;
+            }).slice(0, 100); // Show last 100
+
+            sorted.forEach(ref => {
+                const row = document.createElement('tr');
+                const date = new Date(ref.created_at || ref.timestamp).toLocaleString();
+                const status = ref.status === 'pending' ? '<span class="badge warning">Pending</span>' : '<span class="badge success">Active</span>';
+                const reward = ref.signup_reward || 1000;
+                
+                row.innerHTML = `
+                    <td>${date}</td>
+                    <td>${ref.referrer_username || 'Unknown'} (${ref.referrer_telegram_id})</td>
+                    <td>${ref.referred_username || 'Unknown'} (${ref.referred_telegram_id})</td>
+                    <td>${status}</td>
+                    <td>${reward.toLocaleString()} TAMA</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;">No referrals yet</td></tr>';
+            }
+        }
+
+        function viewReferrerDetails(telegramId) {
+            alert(`Viewing referrer details: ${telegramId}\n\nThis will show:\n- All referred users\n- Total TAMA earned\n- Referral timeline\n- Milestone progress`);
+            // TODO: Implement detailed view modal
+        }
+
+        function showReferralsTab() {
+            // Switch to referrals tab
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector('[data-tab="referrals"]').classList.add('active');
+            document.getElementById('tab-referrals').classList.add('active');
+            
+            // Load referrals data
+            loadReferrals();
+        }
+
+        // Search referrals
+        document.getElementById('search-referrals')?.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#referrals-tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
         // Auto-refresh every 30 seconds
-        setInterval(loadData, 30000);
+        setInterval(() => {
+            loadData();
+            // Also refresh referrals if tab is active
+            if (document.getElementById('tab-referrals').classList.contains('active')) {
+                loadReferrals();
+            }
+        }, 30000);
 
         // Initial load
-        window.addEventListener('DOMContentLoaded', loadData);
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            loadReferrals();
+        });
     </script>
 </body>
 </html>

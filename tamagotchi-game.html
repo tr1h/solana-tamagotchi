@@ -7620,15 +7620,23 @@
         const copyReferralBtn = document.getElementById('copy-referral-btn');
         const shareReferralBtn = document.getElementById('share-referral-btn');
 
-        // Generate referral link
-        function generateReferralLink() {
+        // Generate referral link (SAME algorithm as bot.py!)
+        async function generateReferralLink() {
             const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
             if (telegramUser && telegramUser.id) {
-                const telegramId = telegramUser.id;
-                // Generate referral code (same algorithm as bot)
-                const hash = telegramId * 2654435761;
-                const codeNum = Math.abs(hash) % (36 ** 6);
+                const telegramId = String(telegramUser.id);
+                
+                // Use SHA256 for better distribution (same as bot.py)
+                const encoder = new TextEncoder();
+                const data = encoder.encode(telegramId);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = new Uint8Array(hashBuffer);
+                
+                // Take first 3 bytes and convert to base36 (same as bot.py)
+                const hashVal = (hashArray[0] << 16) | (hashArray[1] << 8) | hashArray[2];
+                const codeNum = hashVal % (36 ** 6);
                 const code = 'TAMA' + codeNum.toString(36).toUpperCase().padStart(6, '0').slice(0, 6);
+                
                 return `https://tr1h.github.io/solana-tamagotchi/s.html?ref=${code}&v=30`;
             }
             return 'https://tr1h.github.io/solana-tamagotchi/s.html';
@@ -7636,8 +7644,8 @@
 
         // Open referral modal
         if (referralBtn && referralModal) {
-            referralBtn.addEventListener('click', () => {
-                const refLink = generateReferralLink();
+            referralBtn.addEventListener('click', async () => {
+                const refLink = await generateReferralLink();
                 referralLinkInput.value = refLink;
                 referralModal.classList.add('show');
             });
@@ -7901,8 +7909,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.8.0 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | NEW: Referral Link button in game!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.8.1 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: Sync referral code algorithm with bot!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
