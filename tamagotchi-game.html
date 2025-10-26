@@ -5183,6 +5183,19 @@
                     hasAutoFeeder: gameState.hasAutoFeeder
                 };
                 
+                // Prepare data to send
+                const dataToSend = {
+                    tama: gameState.tama,
+                    level: gameState.level,
+                    pet_data: pet_data,  // Send as object for JSONB
+                    last_activity: new Date().toISOString()
+                };
+                
+                // DEBUG: Log what we're sending
+                console.log('🔍 Sending to Supabase:', dataToSend);
+                console.log('🔍 pet_data type:', typeof pet_data);
+                console.log('🔍 pet_data value:', pet_data);
+                
                 // Direct save to Supabase
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${userId}`, {
                     method: 'PATCH',
@@ -5190,14 +5203,9 @@
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json',
-                        'Prefer': 'return=minimal'
+                        'Prefer': 'return=representation'  // Return error details
                     },
-                    body: JSON.stringify({
-                        tama: gameState.tama,
-                        level: gameState.level,
-                        pet_data: pet_data,  // Send as object for JSONB
-                        last_activity: new Date().toISOString()
-                    })
+                    body: JSON.stringify(dataToSend)
                 });
                 
                 if (response.ok) {
@@ -5205,6 +5213,13 @@
                     return true;
                 } else {
                     console.error('❌ Supabase save failed:', response.status);
+                    // Get error details
+                    try {
+                        const errorText = await response.text();
+                        console.error('❌ Error details:', errorText);
+                    } catch (e) {
+                        console.error('❌ Could not read error:', e);
+                    }
                     return false;
                 }
             } catch (error) {
@@ -7627,8 +7642,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.6 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: Handle JSONB pet_data correctly!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.7 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | DEBUG: Added detailed error logging!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
