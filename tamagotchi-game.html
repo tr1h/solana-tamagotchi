@@ -5057,10 +5057,15 @@
                     gameState.level = userData.level || 1; // Use actual level from DB, not calculated!
                     gameState.xpToLevel = gameState.level * 100;
                     
-                    // Try to parse pet_data if exists
+                    // Load pet_data if exists (handle both JSONB object and string)
                     if (userData.pet_data) {
                         try {
-                            const petData = JSON.parse(userData.pet_data);
+                            // If pet_data is already an object (JSONB), use it directly
+                            // If it's a string, parse it
+                            const petData = typeof userData.pet_data === 'string' 
+                                ? JSON.parse(userData.pet_data) 
+                                : userData.pet_data;
+                            
                             gameState.hp = petData.hp || 100;
                             gameState.food = petData.food || 100;
                             gameState.happy = petData.happy || 100;
@@ -7622,8 +7627,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.5 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: Action button prices match actual costs!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.6 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: Handle JSONB pet_data correctly!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
