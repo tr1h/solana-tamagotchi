@@ -4545,6 +4545,8 @@
         });
         */
 
+        // OLD HANDLERS COMMENTED OUT - USING NEW playPet() AND healPet() FUNCTIONS
+        /*
         playBtn.addEventListener('click', () => {
             const cost = getProgressivePrice(30);
             if (gameState.tama >= cost) {
@@ -4576,6 +4578,7 @@
                 showMessage('❌ Not enough TAMA!');
             }
         });
+        */
 
         // Manual save removed - using enhanced auto-save system
 
@@ -7642,8 +7645,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.8 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: Round TAMA to integer for database!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.6.9 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: Remove duplicate action button handlers!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
