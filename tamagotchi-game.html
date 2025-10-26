@@ -4293,6 +4293,9 @@
             // if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
             // if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
             
+            // Load economy config from admin panel or use defaults
+            const economyConfig = JSON.parse(localStorage.getItem('economyConfig') || '{}');
+            
             // ⚡ ENERGY COST - Every click consumes resources! (Load from admin panel)
             const HP_PER_CLICK = economyConfig.HP_PER_CLICK || 0.1;
             const FOOD_PER_CLICK = economyConfig.FOOD_PER_CLICK || 0.05;
@@ -4311,7 +4314,6 @@
             }
             
             // BALANCED Combo system - Load from admin panel or use defaults
-            const economyConfig = JSON.parse(localStorage.getItem('economyConfig') || '{}');
             const COMBO_WINDOW = economyConfig.COMBO_WINDOW || 2500; // 2.5 seconds for combo window
             const COMBO_COOLDOWN = economyConfig.COMBO_COOLDOWN || 800; // 0.8 second cooldown between clicks
             const COMBO_DECAY_TIME = 5000; // 5 seconds for combo decay
@@ -7652,8 +7654,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.7.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | NEW: Configurable stat degradation from admin panel!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.7.3 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: economyConfig initialization order!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
