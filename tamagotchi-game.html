@@ -3806,7 +3806,7 @@
         function updateUI() {
             // Header
             levelDisplay.textContent = `Lvl ${gameState.level}`;
-            tamaDisplay.textContent = gameState.tama.toLocaleString();
+            tamaDisplay.textContent = Math.floor(gameState.tama).toLocaleString();  // Round down for display
 
             // Stats
             updateStat('hp', gameState.hp, gameState.maxHp);
@@ -7645,8 +7645,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.6.9 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: Remove duplicate action button handlers!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.7.0 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | FIX: Round TAMA display to integer!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
