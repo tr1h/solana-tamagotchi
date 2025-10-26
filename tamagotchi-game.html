@@ -4293,10 +4293,14 @@
             // if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
             // if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
             
-            // ⚡ ENERGY COST - Every click consumes resources! (REDUCED FOR EASIER GAMEPLAY)
-            gameState.hp = Math.max(0, gameState.hp - 0.1);    // -0.1 HP per click (was -0.5)
-            gameState.food = Math.max(0, gameState.food - 0.05); // -0.05 Food per click (was -0.3)
-            gameState.happy = Math.max(0, gameState.happy - 0.05); // -0.05 Happy per click (was -0.2)
+            // ⚡ ENERGY COST - Every click consumes resources! (Load from admin panel)
+            const HP_PER_CLICK = economyConfig.HP_PER_CLICK || 0.1;
+            const FOOD_PER_CLICK = economyConfig.FOOD_PER_CLICK || 0.05;
+            const HAPPY_PER_CLICK = economyConfig.HAPPY_PER_CLICK || 0.05;
+            
+            gameState.hp = Math.max(0, gameState.hp - HP_PER_CLICK);
+            gameState.food = Math.max(0, gameState.food - FOOD_PER_CLICK);
+            gameState.happy = Math.max(0, gameState.happy - HAPPY_PER_CLICK);
             
             // Extra penalty if stats are low (pet gets tired faster)
             if (gameState.hp < 50) {
@@ -7618,7 +7622,10 @@
                         COMBO_WINDOW: data.combo_window,
                         COMBO_COOLDOWN: data.combo_cooldown,
                         COMBO_BONUS_DIVIDER: data.combo_bonus_divider,
-                        SPAM_PENALTY: data.spam_penalty
+                        SPAM_PENALTY: data.spam_penalty,
+                        HP_PER_CLICK: data.hp_per_click || 0.1,
+                        FOOD_PER_CLICK: data.food_per_click || 0.05,
+                        HAPPY_PER_CLICK: data.happy_per_click || 0.05
                     };
                     
                     localStorage.setItem('economyConfig', JSON.stringify(config));
@@ -7645,8 +7652,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.7.1 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: Reduce click penalties for easier gameplay!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.7.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 | NEW: Configurable stat degradation from admin panel!', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
             
             // Load economy config from database
