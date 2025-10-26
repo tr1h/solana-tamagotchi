@@ -359,7 +359,13 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcmF6eXVwYW1laWR4cGppaHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5Mzc1NTAsImV4cCI6MjA3NTUxMzU1MH0.1EkMDqCNJoAjcJDh3Dd3yPfus-JpdcwE--z2dhjh7wU';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const presets = {
             current: {
                 baseReward: 0.1,
@@ -454,28 +460,65 @@
             document.getElementById('sim-level').textContent = levelPerHour;
         }
 
-        function applySettings() {
+        async function applySettings() {
+            const baseReward = parseFloat(document.getElementById('base-reward').value);
+            const minReward = parseFloat(document.getElementById('min-reward').value);
+            const maxCombo = parseInt(document.getElementById('max-combo').value);
+            const comboWindow = parseFloat(document.getElementById('combo-window').value) * 1000;
+            const comboCooldown = parseFloat(document.getElementById('combo-cooldown').value) * 1000;
+            const comboDivider = parseInt(document.getElementById('combo-divider').value);
+            const spamPenalty = 1 - (parseInt(document.getElementById('spam-penalty').value) / 100);
+
             const config = {
-                BASE_CLICK_REWARD: parseFloat(document.getElementById('base-reward').value),
-                MIN_REWARD: parseFloat(document.getElementById('min-reward').value),
-                MAX_COMBO_BONUS: parseInt(document.getElementById('max-combo').value),
-                COMBO_WINDOW: parseFloat(document.getElementById('combo-window').value) * 1000,
-                COMBO_COOLDOWN: parseFloat(document.getElementById('combo-cooldown').value) * 1000,
-                COMBO_BONUS_DIVIDER: parseInt(document.getElementById('combo-divider').value),
-                SPAM_PENALTY: 1 - (parseInt(document.getElementById('spam-penalty').value) / 100)
+                BASE_CLICK_REWARD: baseReward,
+                MIN_REWARD: minReward,
+                MAX_COMBO_BONUS: maxCombo,
+                COMBO_WINDOW: comboWindow,
+                COMBO_COOLDOWN: comboCooldown,
+                COMBO_BONUS_DIVIDER: comboDivider,
+                SPAM_PENALTY: spamPenalty
             };
 
-            // Save to localStorage
-            localStorage.setItem('economyConfig', JSON.stringify(config));
-            
-            // Broadcast to game tabs (auto-apply!)
             try {
-                const channel = new BroadcastChannel('economy-updates');
-                channel.postMessage({ type: 'config-update', config: config });
-                channel.close();
-                showStatus('✅ Settings applied and sent to game! Changes active immediately.', 'success');
-            } catch (e) {
-                showStatus('✅ Settings applied! Refresh the game to see changes.', 'success');
+                // Save to Supabase
+                // First, deactivate all configs
+                await supabase.from('economy_config').update({ is_active: false }).neq('id', 0);
+                
+                // Then, upsert the custom config
+                const { data, error } = await supabase.from('economy_config')
+                    .upsert({
+                        config_name: 'custom',
+                        base_click_reward: baseReward,
+                        min_reward: minReward,
+                        max_combo_bonus: maxCombo,
+                        combo_window: comboWindow,
+                        combo_cooldown: comboCooldown,
+                        combo_bonus_divider: comboDivider,
+                        spam_penalty: spamPenalty,
+                        is_active: true,
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'config_name'
+                    });
+
+                if (error) throw error;
+
+                // Save to localStorage as backup
+                localStorage.setItem('economyConfig', JSON.stringify(config));
+                
+                // Broadcast to game tabs (auto-apply!)
+                try {
+                    const channel = new BroadcastChannel('economy-updates');
+                    channel.postMessage({ type: 'config-update', config: config });
+                    channel.close();
+                } catch (e) {
+                    console.log('BroadcastChannel not available');
+                }
+
+                showStatus('✅ Settings saved to database and applied! Changes active for all players.', 'success');
+            } catch (error) {
+                console.error('Error saving to database:', error);
+                showStatus('❌ Error saving to database: ' + error.message, 'error');
             }
         }
 
@@ -514,8 +557,39 @@
             }, 3000);
         }
 
+        // Load config from database
+        async function loadFromDatabase() {
+            try {
+                const { data, error } = await supabase
+                    .from('economy_config')
+                    .select('*')
+                    .eq('is_active', true)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    // Load values into form
+                    document.getElementById('base-reward').value = data.base_click_reward;
+                    document.getElementById('min-reward').value = data.min_reward;
+                    document.getElementById('max-combo').value = data.max_combo_bonus;
+                    document.getElementById('combo-window').value = data.combo_window / 1000;
+                    document.getElementById('combo-cooldown').value = data.combo_cooldown / 1000;
+                    document.getElementById('combo-divider').value = data.combo_bonus_divider;
+                    document.getElementById('spam-penalty').value = (1 - data.spam_penalty) * 100;
+
+                    updateDisplay();
+                    showStatus('✅ Loaded config from database: ' + data.config_name, 'success');
+                }
+            } catch (error) {
+                console.error('Error loading from database:', error);
+                showStatus('⚠️ Using default values', 'warning');
+            }
+        }
+
         // Initialize
         updateDisplay();
+        loadFromDatabase();
     </script>
 </body>
 </html>
