@@ -5321,6 +5321,8 @@
                                     body: JSON.stringify({
                                         referrer_telegram_id: referrerId,
                                         referred_telegram_id: currentUserId,
+                                        referrer_address: `telegram_${referrerId}`,
+                                        referred_address: `telegram_${currentUserId}`,
                                         referrer_username: referrerUsername,
                                         referred_username: telegramUser.username || telegramUser.first_name,
                                         referral_code: refCode,
