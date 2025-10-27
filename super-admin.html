@@ -1222,33 +1222,43 @@
         async function loadReferrals() {
             try {
                 // Load referrals table
-                const { data: referrals, error: refError } = await fetch(`${SUPABASE_URL}/rest/v1/referrals?select=*`, {
+                const referralsResponse = await fetch(`${SUPABASE_URL}/rest/v1/referrals?select=*`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     }
-                }).then(r => r.json());
+                });
+                const referrals = await referralsResponse.json();
+                const refError = referralsResponse.ok ? null : referrals;
 
                 // Load pending referrals
-                const { data: pendingRefs, error: pendError } = await fetch(`${SUPABASE_URL}/rest/v1/pending_referrals?select=*`, {
+                const pendingRefsResponse = await fetch(`${SUPABASE_URL}/rest/v1/pending_referrals?select=*`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     }
-                }).then(r => r.json());
+                });
+                const pendingRefs = await pendingRefsResponse.json();
+                const pendError = pendingRefsResponse.ok ? null : pendingRefs;
 
                 // Load leaderboard for usernames and referral codes
-                const { data: players, error: playersError } = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=telegram_id,telegram_username,referral_code,tama`, {
+                const playersResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?select=telegram_id,telegram_username,referral_code,tama`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     }
-                }).then(r => r.json());
+                });
+                const players = await playersResponse.json();
+                const playersError = playersResponse.ok ? null : players;
 
                 if (refError || pendError || playersError) {
                     console.error('Error loading referrals:', refError || pendError || playersError);
                     return;
                 }
+
+                console.log('Referrals data:', referrals);
+                console.log('Pending referrals data:', pendingRefs);
+                console.log('Players data:', players);
 
                 // Calculate stats
                 const allRefs = [...(referrals || []), ...(pendingRefs || [])];

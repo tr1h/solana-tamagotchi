@@ -5257,6 +5257,14 @@
                             const existingRefs = await existingRefResponse.json();
                             
                             if (!existingRefs || existingRefs.length === 0) {
+                                console.log('🔄 Creating new referral record...', {
+                                    referrerId,
+                                    referredId: currentUserId,
+                                    referrerUsername,
+                                    referredUsername: telegramUser.username || telegramUser.first_name,
+                                    refCode
+                                });
+                                
                                 // Create new referral record
                                 const newRefResponse = await fetch(`${SUPABASE_URL}/rest/v1/referrals`, {
                                     method: 'POST',
@@ -5309,7 +5317,11 @@
                                     if (referrerUpdateResponse.ok) {
                                         console.log('✅ Referrer rewarded 1,000 TAMA');
                                         showNotification("🎉 Referral successful! Your referrer earned 1,000 TAMA!");
+                                    } else {
+                                        console.error('❌ Failed to reward referrer:', await referrerUpdateResponse.text());
                                     }
+                                } else {
+                                    console.error('❌ Failed to create referral record:', await newRefResponse.text());
                                 }
                             } else {
                                 console.log('⚠️ Referral already exists');
