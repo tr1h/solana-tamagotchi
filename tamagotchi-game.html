@@ -2024,8 +2024,90 @@
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .referral-bonuses {
+        .referral-progress {
             margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .referral-progress h4 {
+            color: #fbbf24;
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .referral-status {
+            text-align: center;
+            color: #e2e8f0;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .milestone-rewards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .milestone.completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .milestone.current {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .milestone.upcoming {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
         }
 
         .referral-bonuses h3 {
@@ -3761,11 +3843,25 @@
                     <input type="text" id="referral-link-input" readonly class="referral-link-input">
                     <button class="copy-btn" id="copy-referral-btn">📋 Copy</button>
                 </div>
+                <div class="referral-progress">
+                    <h4>🏆 Твой прогресс реферера</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="referral-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="referral-status" id="referral-status">0/5 рефералов до следующего бонуса!</div>
+                    <div class="milestone-rewards">
+                        <div class="milestone completed">✅ 5 рефералов: +1,000 TAMA</div>
+                        <div class="milestone current">🎯 10 рефералов: +3,000 TAMA</div>
+                        <div class="milestone upcoming">🔒 25 рефералов: +10,000 TAMA</div>
+                        <div class="milestone upcoming">🔒 50 рефералов: +30,000 TAMA</div>
+                        <div class="milestone upcoming">🔒 100 рефералов: +100,000 TAMA + Badge!</div>
+                    </div>
+                </div>
                 <div class="referral-bonuses">
                     <h3>💰 Referral Bonuses</h3>
                     <div class="bonus-item">
                         <span class="bonus-icon">🎁</span>
-                        <span class="bonus-text">New players get 500 TAMA welcome bonus!</span>
+                        <span class="bonus-text">New players get 1,000 TAMA welcome bonus!</span>
                     </div>
                     <div class="bonus-item">
                         <span class="bonus-icon">💎</span>
@@ -7669,11 +7765,84 @@
             return 'https://tr1h.github.io/solana-tamagotchi/s.html';
         }
 
+        // Update referral progress bar
+        async function updateReferralProgress() {
+            try {
+                const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                if (!telegramUser?.id) return;
+
+                // Получить количество рефералов пользователя
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/referrals?referrer_telegram_id=eq.${telegramUser.id}&select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                const referrals = await response.json();
+                const referralCount = referrals.length || 0;
+
+                // Определить текущий milestone
+                const milestones = [5, 10, 25, 50, 100];
+                let currentMilestone = 5;
+                let progress = 0;
+
+                for (let i = 0; i < milestones.length; i++) {
+                    if (referralCount >= milestones[i]) {
+                        currentMilestone = milestones[i + 1] || 100;
+                        progress = 100;
+                    } else {
+                        currentMilestone = milestones[i];
+                        progress = (referralCount / milestones[i]) * 100;
+                        break;
+                    }
+                }
+
+                // Обновить прогресс-бар
+                const progressFill = document.getElementById('referral-progress-fill');
+                const statusText = document.getElementById('referral-status');
+                
+                if (progressFill) {
+                    progressFill.style.width = `${Math.min(progress, 100)}%`;
+                }
+
+                if (statusText) {
+                    if (referralCount >= 100) {
+                        statusText.textContent = `🎉 Максимальный уровень достигнут! (${referralCount} рефералов)`;
+                    } else {
+                        const nextMilestone = milestones.find(m => m > referralCount) || 100;
+                        statusText.textContent = `${referralCount}/${nextMilestone} рефералов до следующего бонуса!`;
+                    }
+                }
+
+                // Обновить статус milestones
+                const milestoneElements = document.querySelectorAll('.milestone');
+                milestoneElements.forEach((element, index) => {
+                    element.classList.remove('completed', 'current', 'upcoming');
+                    
+                    if (referralCount >= milestones[index]) {
+                        element.classList.add('completed');
+                    } else if (referralCount < milestones[index] && (index === 0 || referralCount >= milestones[index - 1])) {
+                        element.classList.add('current');
+                    } else {
+                        element.classList.add('upcoming');
+                    }
+                });
+
+            } catch (error) {
+                console.log('Failed to update referral progress:', error);
+            }
+        }
+
         // Open referral modal
         if (referralBtn && referralModal) {
             referralBtn.addEventListener('click', async () => {
                 const link = await generateReferralLink();
                 referralLinkInput.value = link;
+                
+                // Обновить прогресс-бар рефералов
+                await updateReferralProgress();
+                
                 referralModal.classList.add('show');
             });
         }
@@ -7720,7 +7889,32 @@
         if (shareReferralBtn) {
             shareReferralBtn.addEventListener('click', async () => {
                 const link = referralLinkInput.value;
-                const text = `🎮 Join me in Solana Tamagotchi! Get 500 TAMA welcome bonus! 💰\n\n${link}`;
+                const text = `🎮 Join me in Solana Tamagotchi! Get 1,000 TAMA welcome bonus! 💰\n\n${link}`;
+                
+                // 🎁 МГНОВЕННАЯ НАГРАДА ЗА ШАРИНГ!
+                addTama(100);
+                showNotification("🎉 +100 TAMA за шаринг!");
+                
+                // Отправить событие в базу данных
+                try {
+                    await fetch(`${SUPABASE_URL}/rest/v1/sharing_events`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            telegram_id: telegramUser?.id,
+                            platform: 'telegram',
+                            timestamp: new Date().toISOString(),
+                            reward_given: 100
+                        })
+                    });
+                } catch (error) {
+                    console.log('Sharing event tracking failed:', error);
+                }
                 
                 if (navigator.share) {
                     try {
@@ -7729,6 +7923,10 @@
                             text: text,
                             url: link
                         });
+                        shareReferralBtn.textContent = '✅ Shared!';
+                        setTimeout(() => {
+                            shareReferralBtn.textContent = '📤 Share Link';
+                        }, 2000);
                     } catch (err) {
                         console.log('Share cancelled or failed');
                     }
