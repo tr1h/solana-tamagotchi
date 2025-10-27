@@ -8108,7 +8108,7 @@
                 const leaderboardData = data.map((player, index) => ({
                     rank: index + 1,
                     name: player.telegram_username || player.pet_name || `Player #${player.telegram_id}`,
-                    level: Math.floor((player.tama || 0) / 1000) + 1, // Approximate level
+                    level: player.level || Math.floor((player.tama || 0) / 1000) + 1, // Use actual level from DB
                     tama: player.tama || 0,
                     telegram_id: player.telegram_id
                 }));
