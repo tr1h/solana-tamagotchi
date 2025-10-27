@@ -5300,18 +5300,33 @@
                             
                             const existingRefs = await existingRefResponse.json();
                             
-                            if (!existingRefs || existingRefs.length === 0) {
-                                console.log('🔄 Creating new referral record...', {
-                                    referrerId,
-                                    referredId: currentUserId,
-                                    referrerUsername,
-                                    referredUsername: telegramUser.username || telegramUser.first_name,
-                                    refCode
+                            if (existingRefs && existingRefs.length > 0) {
+                                console.log('✅ Referral already exists, skipping creation in game');
+                                console.log('📊 Referral was created by bot, game will only track progress');
+                            } else {
+                                console.log('⚠️ No referral found - this should have been created by bot');
+                                console.log('🔄 Game will not create referral records (bot handles this)');
+                            }
+                            
+                            // Always award TAMA to referrer (even if referral was created by bot)
+                            try {
+                                console.log('💰 Awarding TAMA to referrer...');
+                                
+                                // Get current TAMA balance
+                                const currentBalanceResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${referrerId}&select=tama`, {
+                                    headers: {
+                                        'apikey': SUPABASE_ANON_KEY,
+                                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                                    }
                                 });
                                 
-                                // Create new referral record
-                                const newRefResponse = await fetch(`${SUPABASE_URL}/rest/v1/referrals`, {
-                                    method: 'POST',
+                                const currentBalanceData = await currentBalanceResponse.json();
+                                const currentTama = currentBalanceData && currentBalanceData.length > 0 ? (currentBalanceData[0].tama || 0) : 0;
+                                const newTama = currentTama + 1000;
+                                
+                                // Update referrer's TAMA
+                                const updateResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${referrerId}`, {
+                                    method: 'PATCH',
                                     headers: {
                                         'apikey': SUPABASE_ANON_KEY,
                                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -5319,59 +5334,18 @@
                                         'Prefer': 'return=minimal'
                                     },
                                     body: JSON.stringify({
-                                        referrer_telegram_id: referrerId,
-                                        referred_telegram_id: currentUserId,
-                                        referrer_address: `telegram_${referrerId}`,
-                                        referred_address: `telegram_${currentUserId}`,
-                                        referrer_username: referrerUsername,
-                                        referred_username: telegramUser.username || telegramUser.first_name,
-                                        referral_code: refCode,
-                                        status: 'completed',
-                                        reward_given: 1000,
-                                        signup_reward: 1000,
-                                        created_at: new Date().toISOString()
+                                        tama: newTama
                                     })
                                 });
                                 
-                                if (newRefResponse.ok) {
-                                    console.log('✅ Referral record created successfully');
-                                    
-                                    // Award TAMA to referrer (get current amount first)
-                                    const currentUserResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${referrerId}&select=tama`, {
-                                        headers: {
-                                            'apikey': SUPABASE_ANON_KEY,
-                                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                                        }
-                                    });
-                                    
-                                    const currentUserData = await currentUserResponse.json();
-                                    const currentTama = currentUserData && currentUserData.length > 0 ? currentUserData[0].tama : 0;
-                                    const newTama = currentTama + 1000;
-                                    
-                                    const referrerUpdateResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${referrerId}`, {
-                                        method: 'PATCH',
-                                        headers: {
-                                            'apikey': SUPABASE_ANON_KEY,
-                                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                                            'Content-Type': 'application/json',
-                                            'Prefer': 'return=minimal'
-                                        },
-                                        body: JSON.stringify({
-                                            tama: newTama
-                                        })
-                                    });
-                                    
-                                    if (referrerUpdateResponse.ok) {
-                                        console.log('✅ Referrer rewarded 1,000 TAMA');
-                                        showNotification("🎉 Referral successful! Your referrer earned 1,000 TAMA!");
-                                    } else {
-                                        console.error('❌ Failed to reward referrer:', await referrerUpdateResponse.text());
-                                    }
+                                if (updateResponse.ok) {
+                                    console.log('✅ TAMA awarded to referrer:', referrerId, '+1000 TAMA');
+                                    showNotification("🎉 Referral successful! Your referrer earned 1,000 TAMA!");
                                 } else {
-                                    console.error('❌ Failed to create referral record:', await newRefResponse.text());
+                                    console.log('❌ Failed to award TAMA to referrer');
                                 }
-                            } else {
-                                console.log('⚠️ Referral already exists');
+                            } catch (error) {
+                                console.log('❌ Error awarding TAMA to referrer:', error);
                             }
                         } else {
                             console.log('⚠️ Self-referral detected, ignoring');
