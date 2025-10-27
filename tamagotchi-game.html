@@ -2524,7 +2524,7 @@
             animation: racingFinish 1s ease-in-out infinite;
         }
         
-        /* 🌄 LANDSCAPE MODE для platformer - максимум места для игры! */
+        /* 🌄 LANDSCAPE MODE for platformer - maximum space for game! */
         @media (orientation: landscape) and (max-height: 600px) {
             #platformer-header {
                 display: none !important;
@@ -3425,7 +3425,7 @@
             
             <!-- 🍄 TAMA JUMP PLATFORMER -->
             <div class="game-arena" id="platformer-arena" style="display: none;">
-                <!-- СРАЗУ открываем fullscreen при выборе игры -->
+                <!-- IMMEDIATELY open fullscreen when selecting game -->
             </div>
             
         </div>
@@ -3434,7 +3434,7 @@
     <!-- Platformer Fullscreen Modal -->
     <div id="platformer-fullscreen-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #1a1a2e; z-index: 9999; overflow: hidden;">
         <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-            <!-- Header (скрывается в landscape для больше места) -->
+            <!-- Header (hidden in landscape for more space) -->
             <div id="platformer-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: rgba(0,0,0,0.7); border-bottom: 3px solid #ef4444;">
                 <h2 style="margin: 0; color: white; font-size: 20px;">🍄 SUPER TAMA BROS</h2>
                 <button onclick="closePlatformerFullscreen()" style="padding: 8px 16px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);">✕ EXIT</button>
@@ -3456,7 +3456,7 @@
                 </div>
             </div>
             
-            <!-- Start Button (скрывается в landscape) -->
+            <!-- Start Button (hidden in landscape) -->
             <div id="platformer-footer" style="padding: 15px; text-align: center; background: rgba(0,0,0,0.5);">
                 <div id="platformer-result-fs" style="margin-bottom: 10px; font-size: 16px; color: white; min-height: 40px; font-weight: bold;"></div>
                 <button id="platformer-start-btn-fs" style="padding: 12px 30px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5); transition: all 0.2s;">🍄 START GAME (100 TAMA)</button>
@@ -3835,45 +3835,45 @@
     <div class="referral-modal" id="referral-modal">
         <div class="referral-content">
             <div class="referral-header">
-                <h2>🔗 Моя реферальная ссылка</h2>
+                <h2>🔗 My Referral Link</h2>
                 <button class="close-btn" id="close-referral">✕</button>
             </div>
             <div class="referral-body">
                 <div class="referral-link-container">
                     <input type="text" id="referral-link-input" readonly class="referral-link-input">
-                    <button class="copy-btn" id="copy-referral-btn">📋 Копировать</button>
+                    <button class="copy-btn" id="copy-referral-btn">📋 Copy</button>
                 </div>
                 <div class="referral-progress">
-                    <h4>🏆 Твой прогресс реферера</h4>
+                    <h4>🏆 Your Referral Progress</h4>
                     <div class="progress-bar">
                         <div class="progress-fill" id="referral-progress-fill" style="width: 0%"></div>
                     </div>
-                    <div class="referral-status" id="referral-status">0/5 рефералов до следующего бонуса!</div>
+                    <div class="referral-status" id="referral-status">0/5 referrals until next bonus!</div>
                     <div class="milestone-rewards">
-                        <div class="milestone completed">✅ 5 рефералов: +1,000 TAMA</div>
-                        <div class="milestone current">🎯 10 рефералов: +3,000 TAMA</div>
-                        <div class="milestone upcoming">🔒 25 рефералов: +10,000 TAMA</div>
-                        <div class="milestone upcoming">🔒 50 рефералов: +30,000 TAMA</div>
-                        <div class="milestone upcoming">🔒 100 рефералов: +100,000 TAMA + Badge!</div>
+                        <div class="milestone completed">✅ 5 referrals: +1,000 TAMA</div>
+                        <div class="milestone current">🎯 10 referrals: +3,000 TAMA</div>
+                        <div class="milestone upcoming">🔒 25 referrals: +10,000 TAMA</div>
+                        <div class="milestone upcoming">🔒 50 referrals: +30,000 TAMA</div>
+                        <div class="milestone upcoming">🔒 100 referrals: +100,000 TAMA + Badge!</div>
                     </div>
                 </div>
                 <div class="referral-bonuses">
-                    <h3>💰 Реферальные бонусы</h3>
+                    <h3>💰 Referral Bonuses</h3>
                     <div class="bonus-item">
                         <span class="bonus-icon">🎁</span>
-                        <span class="bonus-text">Новые игроки получают 1,000 TAMA приветственный бонус!</span>
+                        <span class="bonus-text">New players get 1,000 TAMA welcome bonus!</span>
                     </div>
                     <div class="bonus-item">
                         <span class="bonus-icon">💎</span>
-                        <span class="bonus-text">Ты получаешь 1,000 TAMA за каждого приглашенного друга!</span>
+                        <span class="bonus-text">You earn 1,000 TAMA per friend invited!</span>
                     </div>
                     <div class="bonus-item">
                         <span class="bonus-icon">🏆</span>
-                        <span class="bonus-text">Бонусы за достижения: 5, 10, 25, 50, 100 друзей!</span>
+                        <span class="bonus-text">Milestone bonuses: 5, 10, 25, 50, 100 friends!</span>
                     </div>
                 </div>
                 <div class="referral-actions">
-                    <button class="share-btn" id="share-referral-btn">📤 Поделиться ссылкой</button>
+                    <button class="share-btn" id="share-referral-btn">📤 Share Link</button>
                 </div>
             </div>
         </div>
@@ -4743,13 +4743,13 @@
                 gameState.xpToLevel = Math.floor(gameState.xpToLevel * 1.5);
                 gameState.clickPower = gameState.level;
                 
-                // Level up bonuses - увеличиваем максимумы и даем частичное восстановление
+                // Level up bonuses - increase maximums and give partial restoration
                 gameState.maxHp += 10;
-                gameState.hp = Math.min(gameState.maxHp, gameState.hp + 20); // +20 HP, но не больше максимума
+                gameState.hp = Math.min(gameState.maxHp, gameState.hp + 20); // +20 HP, but not more than maximum
                 gameState.maxFood += 5;
-                gameState.food = Math.min(gameState.maxFood, gameState.food + 15); // +15 Food, но не больше максимума
+                gameState.food = Math.min(gameState.maxFood, gameState.food + 15); // +15 Food, but not more than maximum
                 gameState.maxHappy += 5;
-                gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 15); // +15 Happy, но не больше максимума
+                gameState.happy = Math.min(gameState.maxHappy, gameState.happy + 15); // +15 Happy, but not more than maximum
 
                 // Log level up transaction
                 const levelBonus = gameState.level * 100;
@@ -5745,7 +5745,7 @@
             card.addEventListener('click', () => {
                 const gameName = card.dataset.game;
                 
-                // Для platformer - сразу открываем fullscreen!
+                // For platformer - immediately open fullscreen!
                 if (gameName === 'platformer') {
                     openPlatformerFullscreen();
                     return;
@@ -6177,7 +6177,7 @@
             animationFrame: 0,
             
             init() {
-                // Используем fullscreen canvas сразу (маленький canvas удален)
+                // Use fullscreen canvas immediately (small canvas removed)
                 this.canvas = document.getElementById('platformer-canvas-fullscreen');
                 if (!this.canvas) {
                     console.warn('Platformer canvas not found, will initialize on game start');
@@ -6205,7 +6205,7 @@
             },
             
             setupMobileControls() {
-                // Старые кнопки удалены, используем только fullscreen версию
+                // Old buttons removed, use only fullscreen version
                 console.log('Mobile controls will be set up when fullscreen opens');
             },
             
@@ -6227,7 +6227,7 @@
                 this.lives = 3;
                 this.gameTime = 60;
                 
-                // Show mobile controls on touch devices (для обоих режимов!)
+                // Show mobile controls on touch devices (for both modes!)
                 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
                 const mobileControls = platformerFullscreenMode ? 
                     document.getElementById('mobile-controls-fullscreen') : 
@@ -6243,19 +6243,19 @@
                     }, 100);
                 }
                 
-                // Initialize player (УВЕЛИЧЕН ДЛЯ ВИДИМОСТИ!)
+                // Initialize player (INCREASED FOR VISIBILITY!)
                 this.player = {
                     x: 50,
                     y: 360,
-                    width: 40,  // Было 24, стало 40!
-                    height: 40, // Было 24, стало 40!
+                    width: 40,  // Was 24, now 40!
+                    height: 40, // Was 24, now 40!
                     vx: 0,
                     vy: 0,
                     jumping: false,
                     onGround: false,
                     jump() {
                         if (this.onGround) {
-                            this.vy = -12; // Увеличен прыжок для большего игрока
+                            this.vy = -12; // Increased jump for bigger player
                             this.jumping = true;
                             this.onGround = false;
                         }
@@ -6265,7 +6265,7 @@
                 // Generate level
                 this.generateLevel();
                 
-                // Clear result (только для fullscreen)
+                // Clear result (only for fullscreen)
                 const resultElement = platformerFullscreenMode ? 
                     document.getElementById('platformer-result-fs') : null;
                 if (resultElement) {
@@ -6297,7 +6297,7 @@
                 this.powerups = [];
                 this.particles = [];
                 
-                // Ground - длинная земля как в Марио (ниже из-за большего canvas)
+                // Ground - long ground like in Mario (lower due to bigger canvas)
                 for (let i = 0; i < this.levelWidth / 30; i++) {
                     this.platforms.push({ 
                         x: i * 30, 
@@ -6308,7 +6308,7 @@
                     });
                 }
                 
-                // Question blocks (? блоки с монетами) - НИЖЕ, чтобы можно было допрыгнуть
+                // Question blocks (? blocks with coins) - LOWER, so you can jump to them
                 const questionPositions = [
                     { x: 150, y: 350 },
                     { x: 180, y: 350 },
@@ -6337,7 +6337,7 @@
                     });
                 });
                 
-                // Brick blocks (разбиваемые блоки) - НИЖЕ и меньше
+                // Brick blocks (breakable blocks) - LOWER and smaller
                 const brickPatterns = [
                     { x: 300, y: 370, count: 3 },
                     { x: 500, y: 350, count: 2 },
@@ -6363,7 +6363,7 @@
                     }
                 });
                 
-                // Pipes (трубы как в Марио)
+                // Pipes (pipes like in Mario)
                 const pipePositions = [
                     { x: 450, height: 40 },
                     { x: 750, height: 50 },
@@ -6384,7 +6384,7 @@
                     });
                 });
                 
-                // Floating platforms (парящие платформы) - на разных высотах
+                // Floating platforms (floating platforms) - at different heights
                 const platformData = [
                     { x: 550, y: 380, width: 60 },
                     { x: 650, y: 350, width: 50 },
@@ -6408,7 +6408,7 @@
                     });
                 });
                 
-                // Enemies (враги-грибы)
+                // Enemies (mushroom enemies)
                 for (let i = 0; i < 15; i++) {
                     this.enemies.push({
                         x: 300 + i * 200,
@@ -6422,7 +6422,7 @@
                     });
                 }
                 
-                // Finish flag (флаг в конце)
+                // Finish flag (flag at the end)
                 this.finishFlag = {
                     x: this.levelWidth - 100,
                     y: 330,
@@ -6497,17 +6497,17 @@
             
             drawUI() {
                 // Game info panel at top (fixed position, not affected by camera)
-                const panelHeight = 60; // УВЕЛИЧЕНА высота панели!
+                const panelHeight = 60; // INCREASED panel height!
                 
                 // Semi-transparent background
                 this.ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
                 this.ctx.fillRect(0, 0, this.canvas.width, panelHeight);
                 
-                // Stats text - ОГРОМНЫЙ ТЕКСТ!
+                // Stats text - HUGE TEXT!
                 this.ctx.fillStyle = '#FFF';
                 this.ctx.strokeStyle = '#000';
                 this.ctx.lineWidth = 4;
-                this.ctx.font = 'bold 28px "Courier New"'; // Было 18px, стало 28px!
+                this.ctx.font = 'bold 28px "Courier New"'; // Was 18px, now 28px!
                 
                 // Coins
                 this.ctx.strokeText(`💰 ${this.coinsCollected}`, 20, 40);
@@ -6525,9 +6525,9 @@
                 this.ctx.strokeText(`★ ${this.score}`, 480, 40);
                 this.ctx.fillText(`★ ${this.score}`, 480, 40);
                 
-                // Progress bar (how far in level) - БОЛЬШЕ!
+                // Progress bar (how far in level) - BIGGER!
                 const progress = (this.player.x / this.levelWidth) * 100;
-                const barWidth = 300; // Фиксированная ширина
+                const barWidth = 300; // Fixed width
                 const barX = this.canvas.width - barWidth - 30;
                 this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
                 this.ctx.fillRect(barX, 20, barWidth, 25);
@@ -6558,7 +6558,7 @@
                 // Limit falling speed
                 if (this.player.vy > 10) this.player.vy = 10;
                 
-                // Keep player in bounds horizontally - НЕ canvas.width, а levelWidth!
+                // Keep player in bounds horizontally - NOT canvas.width, but levelWidth!
                 if (this.player.x < 0) this.player.x = 0;
                 if (this.player.x > this.levelWidth - this.player.width) {
                     this.player.x = this.levelWidth - this.player.width;
@@ -6585,9 +6585,9 @@
                 // Reset ground detection
                 this.player.onGround = false;
                 
-                // Platform collision (ground and floating) - ТОЛЬКО сверху, БЕЗ боков!
+                // Platform collision (ground and floating) - ONLY from top, NO sides!
                 [...this.platforms, ...this.pipes].forEach(platform => {
-                    // Landing on top - с большим margin чтобы НЕ блокировать сбоку
+                    // Landing on top - with big margin to NOT block from sides
                     if (this.player.x + 8 < platform.x + platform.width &&
                         this.player.x + this.player.width - 8 > platform.x &&
                         this.player.y + this.player.height >= platform.y &&
@@ -6603,7 +6603,7 @@
                 
                 // Question block collision from below
                 this.questionBlocks.forEach(block => {
-                    // Hit from below (with BIG margin - НЕ блокируем сбоку!)
+                    // Hit from below (with BIG margin - do NOT block from sides!)
                     if (!block.hit && 
                         this.player.x + 8 < block.x + block.width &&
                         this.player.x + this.player.width - 8 > block.x &&
@@ -6630,7 +6630,7 @@
                         this.player.vy = 1; // Bounce back down
                     }
                     
-                    // Stand on question block (with BIG margin - НЕ блокируем сбоку!)
+                    // Stand on question block (with BIG margin - do NOT block from sides!)
                     if (this.player.x + 8 < block.x + block.width &&
                         this.player.x + this.player.width - 8 > block.x &&
                         this.player.y + this.player.height >= block.y &&
@@ -6647,7 +6647,7 @@
                 // Brick collision
                 this.bricks.forEach(brick => {
                     if (!brick.broken) {
-                        // Hit from below (with BIG margin - НЕ блокируем сбоку!)
+                        // Hit from below (with BIG margin - do NOT block from sides!)
                         if (this.player.x + 8 < brick.x + brick.width &&
                             this.player.x + this.player.width - 8 > brick.x &&
                             this.player.y <= brick.y + brick.height &&
@@ -6672,7 +6672,7 @@
                             this.player.vy = 1;
                         }
                         
-                        // Stand on brick (with BIG margin - НЕ блокируем сбоку!)
+                        // Stand on brick (with BIG margin - do NOT block from sides!)
                         if (this.player.x + 8 < brick.x + brick.width &&
                             this.player.x + this.player.width - 8 > brick.x &&
                             this.player.y + this.player.height >= brick.y &&
@@ -6687,7 +6687,7 @@
                     }
                 });
                 
-                // Enemy collision - враги НЕ физические препятствия, только урон!
+                // Enemy collision - enemies are NOT physical obstacles, only damage!
                 this.enemies.forEach(enemy => {
                     if (!enemy.dead && !enemy.justHit &&
                         this.player.x < enemy.x + enemy.width - 5 &&
@@ -7891,7 +7891,7 @@
                 const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 if (!telegramUser?.id) return;
 
-                // Получить количество рефералов пользователя
+                // Get user's referral count
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/referrals?referrer_telegram_id=eq.${telegramUser.id}&select=count`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
@@ -7928,14 +7928,14 @@
 
                 if (statusText) {
                     if (referralCount >= 100) {
-                        statusText.textContent = `🎉 Максимальный уровень достигнут! (${referralCount} рефералов)`;
+                        statusText.textContent = `🎉 Maximum level reached! (${referralCount} referrals)`;
                     } else {
                         const nextMilestone = milestones.find(m => m > referralCount) || 100;
-                        statusText.textContent = `${referralCount}/${nextMilestone} рефералов до следующего бонуса!`;
+                        statusText.textContent = `${referralCount}/${nextMilestone} referrals until next bonus!`;
                     }
                 }
 
-                // Обновить статус milestones
+                // Update milestone status
                 const milestoneElements = document.querySelectorAll('.milestone');
                 milestoneElements.forEach((element, index) => {
                     element.classList.remove('completed', 'current', 'upcoming');
@@ -7960,7 +7960,7 @@
                 const link = await generateReferralLink();
                 referralLinkInput.value = link;
                 
-                // Обновить прогресс-бар рефералов
+                // Update referral progress bar
                 await updateReferralProgress();
                 
                 referralModal.classList.add('show');
@@ -7988,18 +7988,18 @@
             copyReferralBtn.addEventListener('click', async () => {
                 try {
                     await navigator.clipboard.writeText(referralLinkInput.value);
-                    copyReferralBtn.textContent = '✅ Скопировано!';
+                    copyReferralBtn.textContent = '✅ Copied!';
                     setTimeout(() => {
-                        copyReferralBtn.textContent = '📋 Копировать';
+                        copyReferralBtn.textContent = '📋 Copy';
                     }, 2000);
                 } catch (err) {
                     console.error('Failed to copy: ', err);
                     // Fallback for older browsers
                     referralLinkInput.select();
                     document.execCommand('copy');
-                    copyReferralBtn.textContent = '✅ Скопировано!';
+                    copyReferralBtn.textContent = '✅ Copied!';
                     setTimeout(() => {
-                        copyReferralBtn.textContent = '📋 Копировать';
+                        copyReferralBtn.textContent = '📋 Copy';
                     }, 2000);
                 }
             });
@@ -8011,11 +8011,11 @@
                 const link = referralLinkInput.value;
                 const text = `🎮 Join me in Solana Tamagotchi! Get 1,000 TAMA welcome bonus! 💰\n\n${link}`;
                 
-                // 🎁 МГНОВЕННАЯ НАГРАДА ЗА ШАРИНГ!
+                // 🎁 INSTANT REWARD FOR SHARING!
                 addTama(100);
-                showNotification("🎉 +100 TAMA за шаринг!");
+                showNotification("🎉 +100 TAMA for sharing!");
                 
-                // Отправить событие в базу данных
+                // Send event to database
                 try {
                     await fetch(`${SUPABASE_URL}/rest/v1/sharing_events`, {
                         method: 'POST',
@@ -8043,9 +8043,9 @@
                             text: text,
                             url: link
                         });
-                        shareReferralBtn.textContent = '✅ Поделился!';
+                        shareReferralBtn.textContent = '✅ Shared!';
                         setTimeout(() => {
-                            shareReferralBtn.textContent = '📤 Поделиться ссылкой';
+                            shareReferralBtn.textContent = '📤 Share Link';
                         }, 2000);
                     } catch (err) {
                         console.log('Share cancelled or failed');
@@ -8054,9 +8054,9 @@
                     // Fallback: copy to clipboard
                     try {
                         await navigator.clipboard.writeText(text);
-                        shareReferralBtn.textContent = '✅ Поделился!';
+                        shareReferralBtn.textContent = '✅ Shared!';
                         setTimeout(() => {
-                            shareReferralBtn.textContent = '📤 Поделиться ссылкой';
+                            shareReferralBtn.textContent = '📤 Share Link';
                         }, 2000);
                     } catch (err) {
                         console.error('Failed to share: ', err);
