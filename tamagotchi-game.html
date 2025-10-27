@@ -3835,13 +3835,13 @@
     <div class="referral-modal" id="referral-modal">
         <div class="referral-content">
             <div class="referral-header">
-                <h2>🔗 My Referral Link</h2>
+                <h2>🔗 Моя реферальная ссылка</h2>
                 <button class="close-btn" id="close-referral">✕</button>
             </div>
             <div class="referral-body">
                 <div class="referral-link-container">
                     <input type="text" id="referral-link-input" readonly class="referral-link-input">
-                    <button class="copy-btn" id="copy-referral-btn">📋 Copy</button>
+                    <button class="copy-btn" id="copy-referral-btn">📋 Копировать</button>
                 </div>
                 <div class="referral-progress">
                     <h4>🏆 Твой прогресс реферера</h4>
@@ -3858,22 +3858,22 @@
                     </div>
                 </div>
                 <div class="referral-bonuses">
-                    <h3>💰 Referral Bonuses</h3>
+                    <h3>💰 Реферальные бонусы</h3>
                     <div class="bonus-item">
                         <span class="bonus-icon">🎁</span>
-                        <span class="bonus-text">New players get 1,000 TAMA welcome bonus!</span>
+                        <span class="bonus-text">Новые игроки получают 1,000 TAMA приветственный бонус!</span>
                     </div>
                     <div class="bonus-item">
                         <span class="bonus-icon">💎</span>
-                        <span class="bonus-text">You earn 1,000 TAMA per friend invited!</span>
+                        <span class="bonus-text">Ты получаешь 1,000 TAMA за каждого приглашенного друга!</span>
                     </div>
                     <div class="bonus-item">
                         <span class="bonus-icon">🏆</span>
-                        <span class="bonus-text">Milestone bonuses: 5, 10, 25, 50, 100 friends!</span>
+                        <span class="bonus-text">Бонусы за достижения: 5, 10, 25, 50, 100 друзей!</span>
                     </div>
                 </div>
                 <div class="referral-actions">
-                    <button class="share-btn" id="share-referral-btn">📤 Share Link</button>
+                    <button class="share-btn" id="share-referral-btn">📤 Поделиться ссылкой</button>
                 </div>
             </div>
         </div>
@@ -7988,18 +7988,18 @@
             copyReferralBtn.addEventListener('click', async () => {
                 try {
                     await navigator.clipboard.writeText(referralLinkInput.value);
-                    copyReferralBtn.textContent = '✅ Copied!';
+                    copyReferralBtn.textContent = '✅ Скопировано!';
                     setTimeout(() => {
-                        copyReferralBtn.textContent = '📋 Copy';
+                        copyReferralBtn.textContent = '📋 Копировать';
                     }, 2000);
                 } catch (err) {
                     console.error('Failed to copy: ', err);
                     // Fallback for older browsers
                     referralLinkInput.select();
                     document.execCommand('copy');
-                    copyReferralBtn.textContent = '✅ Copied!';
+                    copyReferralBtn.textContent = '✅ Скопировано!';
                     setTimeout(() => {
-                        copyReferralBtn.textContent = '📋 Copy';
+                        copyReferralBtn.textContent = '📋 Копировать';
                     }, 2000);
                 }
             });
@@ -8043,9 +8043,9 @@
                             text: text,
                             url: link
                         });
-                        shareReferralBtn.textContent = '✅ Shared!';
+                        shareReferralBtn.textContent = '✅ Поделился!';
                         setTimeout(() => {
-                            shareReferralBtn.textContent = '📤 Share Link';
+                            shareReferralBtn.textContent = '📤 Поделиться ссылкой';
                         }, 2000);
                     } catch (err) {
                         console.log('Share cancelled or failed');
@@ -8054,9 +8054,9 @@
                     // Fallback: copy to clipboard
                     try {
                         await navigator.clipboard.writeText(text);
-                        shareReferralBtn.textContent = '✅ Shared!';
+                        shareReferralBtn.textContent = '✅ Поделился!';
                         setTimeout(() => {
-                            shareReferralBtn.textContent = '📤 Share Link';
+                            shareReferralBtn.textContent = '📤 Поделиться ссылкой';
                         }, 2000);
                     } catch (err) {
                         console.error('Failed to share: ', err);
