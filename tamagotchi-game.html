@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- VERSION: 1.6.2 | BUILD: 2025-10-24 22:45 | CRITICAL: Fix player stuck at canvas edge - use levelWidth instead of canvas.width -->
+<!-- VERSION: 1.8.2 | BUILD: 2025-10-26 22:00 | NEW: Beautiful header design + My Link button -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Solana Tamagotchi v1.6.2</title>
+    <title>Solana Tamagotchi v1.8.2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Transaction Logger -->
     <script src="js/transaction-logger.js?v=1.6.2"></script>
     <style>
@@ -84,10 +82,11 @@
 
         .game-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px;
+            padding: 20px 15px;
             text-align: center;
             border-bottom: 4px solid #4a5568;
             position: relative;
+            border-radius: 16px 16px 0 0;
         }
 
         .header-stats {
@@ -1682,20 +1681,25 @@
             transform: translateY(0);
         }
 
-        /* Individual nav button styles */
+        /* Individual nav button styles - UNIFIED DESIGN */
         .nav-btn.help-btn {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-            border: 2px solid #5b21b6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         .nav-btn.minigames-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: 2px solid #065f46;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         .nav-btn.leaderboard-btn {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            border: 2px solid #78350f;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-btn.referral-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         /* Mobile responsiveness for nav buttons */
@@ -1908,135 +1912,6 @@
             overflow-y: auto;
         }
 
-        /* Referral Modal */
-        .referral-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .referral-modal.show {
-            display: flex;
-        }
-
-        .referral-content {
-            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-            border: 3px solid #4a5568;
-            border-radius: 15px;
-            padding: 20px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .referral-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .referral-header h2 {
-            color: #f7fafc;
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .referral-body {
-            color: #e2e8f0;
-        }
-
-        .referral-description {
-            font-size: 18px;
-            font-weight: bold;
-            color: #fbbf24;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .referral-link-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .referral-link-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #4a5568;
-            border-radius: 8px;
-            background: #2d3748;
-            color: #f7fafc;
-            font-size: 14px;
-            font-family: monospace;
-        }
-
-        .copy-referral-btn {
-            padding: 12px 20px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .copy-referral-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-        }
-
-        .share-referral-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .share-referral-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-        }
-
-        .referral-stats {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #4a5568;
-        }
-
-        .referral-stats p {
-            margin: 0 0 10px 0;
-            color: #fbbf24;
-            font-weight: bold;
-        }
-
-        .referral-stats ul {
-            margin: 0;
-            padding-left: 20px;
-            color: #e2e8f0;
-        }
-
-        .referral-stats li {
-            margin-bottom: 5px;
-        }
-
         /* Help Modal */
         .help-modal {
             display: none;
@@ -2064,6 +1939,138 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+        }
+
+        /* Referral Modal Styles */
+        .referral-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .referral-modal.show {
+            display: flex;
+        }
+
+        .referral-content {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        .referral-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4a5568;
+            padding-bottom: 10px;
+        }
+
+        .referral-header h2 {
+            color: #667eea;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .referral-link-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .referral-link-input {
+            flex: 1;
+            padding: 12px;
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .referral-bonuses {
+            margin-bottom: 20px;
+        }
+
+        .referral-bonuses h3 {
+            color: #fbbf24;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .bonus-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .bonus-icon {
+            font-size: 20px;
+        }
+
+        .bonus-text {
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+
+        .referral-actions {
+            text-align: center;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
         }
 
         .help-header {
@@ -3743,24 +3750,31 @@
     <div class="referral-modal" id="referral-modal">
         <div class="referral-content">
             <div class="referral-header">
-                <h2>🔗 Your Referral Link</h2>
+                <h2>🔗 My Referral Link</h2>
                 <button class="close-btn" id="close-referral">✕</button>
             </div>
             <div class="referral-body">
-                <p class="referral-description">💰 Earn 1,000 TAMA per friend!</p>
                 <div class="referral-link-container">
-                    <input type="text" id="referral-link-input" class="referral-link-input" readonly>
-                    <button id="copy-referral-btn" class="copy-referral-btn">📋 Copy</button>
+                    <input type="text" id="referral-link-input" readonly class="referral-link-input">
+                    <button class="copy-btn" id="copy-referral-btn">📋 Copy</button>
                 </div>
-                <button id="share-referral-btn" class="share-referral-btn">📤 Share Link</button>
-                <div class="referral-stats">
-                    <p>🎁 <strong>Milestone Bonuses:</strong></p>
-                    <ul>
-                        <li>5 friends → +1,000 TAMA</li>
-                        <li>10 friends → +3,000 TAMA</li>
-                        <li>25 friends → +10,000 TAMA</li>
-                        <li>100 friends → +100,000 TAMA + Badge!</li>
-                    </ul>
+                <div class="referral-bonuses">
+                    <h3>💰 Referral Bonuses</h3>
+                    <div class="bonus-item">
+                        <span class="bonus-icon">🎁</span>
+                        <span class="bonus-text">New players get 500 TAMA welcome bonus!</span>
+                    </div>
+                    <div class="bonus-item">
+                        <span class="bonus-icon">💎</span>
+                        <span class="bonus-text">You earn 1,000 TAMA per friend invited!</span>
+                    </div>
+                    <div class="bonus-item">
+                        <span class="bonus-icon">🏆</span>
+                        <span class="bonus-text">Milestone bonuses: 5, 10, 25, 50, 100 friends!</span>
+                    </div>
+                </div>
+                <div class="referral-actions">
+                    <button class="share-btn" id="share-referral-btn">📤 Share Link</button>
                 </div>
             </div>
         </div>
@@ -3963,7 +3977,7 @@
         function updateUI() {
             // Header
             levelDisplay.textContent = `Lvl ${gameState.level}`;
-            tamaDisplay.textContent = Math.floor(gameState.tama).toLocaleString();  // Round down for display
+            tamaDisplay.textContent = gameState.tama.toLocaleString();
 
             // Stats
             updateStat('hp', gameState.hp, gameState.maxHp);
@@ -3983,10 +3997,10 @@
             // 💰 Update progressive prices
             updateActionPrices();
 
-            // Button states (using fixed prices to match actual functions)
-            const feedCost = 50;  // Fixed price - matches feedPet() function
-            const playCost = 30;  // Fixed price - matches playPet() function
-            const healCost = 100; // Fixed price - matches healPet() function
+            // Button states (updated with progressive prices)
+            const feedCost = getProgressivePrice(50);
+            const playCost = getProgressivePrice(30);
+            const healCost = getProgressivePrice(100);
             
             feedBtn.disabled = gameState.tama < feedCost;
             playBtn.disabled = gameState.tama < playCost;
@@ -4445,22 +4459,15 @@
                 return;
             }
 
-            // NEW: Pet condition affects click efficiency (DISABLED FOR EASIER GAMEPLAY)
-            // if (gameState.hp < 30) clickEfficiency *= 0.5; // 50% efficiency
-            // if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
-            // if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
+            // NEW: Pet condition affects click efficiency
+            if (gameState.hp < 30) clickEfficiency *= 0.5; // 50% efficiency
+            if (gameState.food < 30) clickEfficiency *= 0.7; // 70% efficiency  
+            if (gameState.happy < 30) clickEfficiency *= 0.8; // 80% efficiency
             
-            // Load economy config from admin panel or use defaults
-            const economyConfig = JSON.parse(localStorage.getItem('economyConfig') || '{}');
-            
-            // ⚡ ENERGY COST - Every click consumes resources! (Load from admin panel)
-            const HP_PER_CLICK = economyConfig.HP_PER_CLICK || 0.1;
-            const FOOD_PER_CLICK = economyConfig.FOOD_PER_CLICK || 0.05;
-            const HAPPY_PER_CLICK = economyConfig.HAPPY_PER_CLICK || 0.05;
-            
-            gameState.hp = Math.max(0, gameState.hp - HP_PER_CLICK);
-            gameState.food = Math.max(0, gameState.food - FOOD_PER_CLICK);
-            gameState.happy = Math.max(0, gameState.happy - HAPPY_PER_CLICK);
+            // ⚡ ENERGY COST - Every click consumes resources!
+            gameState.hp = Math.max(0, gameState.hp - 0.5);    // -0.5 HP per click
+            gameState.food = Math.max(0, gameState.food - 0.3); // -0.3 Food per click
+            gameState.happy = Math.max(0, gameState.happy - 0.2); // -0.2 Happy per click
             
             // Extra penalty if stats are low (pet gets tired faster)
             if (gameState.hp < 50) {
@@ -4471,6 +4478,7 @@
             }
             
             // BALANCED Combo system - Load from admin panel or use defaults
+            const economyConfig = JSON.parse(localStorage.getItem('economyConfig') || '{}');
             const COMBO_WINDOW = economyConfig.COMBO_WINDOW || 2500; // 2.5 seconds for combo window
             const COMBO_COOLDOWN = economyConfig.COMBO_COOLDOWN || 800; // 0.8 second cooldown between clicks
             const COMBO_DECAY_TIME = 5000; // 5 seconds for combo decay
@@ -4680,18 +4688,16 @@
         }
 
         function updateActionPrices() {
-            // Use fixed prices to match actual function costs
-            const feedCost = 50;  // Fixed price - matches feedPet() function
-            const playCost = 30;  // Fixed price - matches playPet() function  
-            const healCost = 100; // Fixed price - matches healPet() function
+            const feedCost = getProgressivePrice(50);
+            const playCost = getProgressivePrice(30);
+            const healCost = getProgressivePrice(100);
             
             feedBtn.innerHTML = `🍔<br>Feed<br><small>-${feedCost} TAMA</small>`;
             playBtn.innerHTML = `🎮<br>Play<br><small>-${playCost} TAMA</small>`;
             healBtn.innerHTML = `💊<br>Heal<br><small>-${healCost} TAMA</small>`;
         }
 
-        // Actions - OLD HANDLERS (COMMENTED OUT - USING NEW feedPet() FUNCTION)
-        /*
+        // Actions
         feedBtn.addEventListener('click', () => {
             const cost = getProgressivePrice(50);
             if (gameState.tama >= cost) {
@@ -4706,10 +4712,7 @@
                 showMessage('❌ Not enough TAMA!');
             }
         });
-        */
 
-        // OLD HANDLERS COMMENTED OUT - USING NEW playPet() AND healPet() FUNCTIONS
-        /*
         playBtn.addEventListener('click', () => {
             const cost = getProgressivePrice(30);
             if (gameState.tama >= cost) {
@@ -4741,7 +4744,6 @@
                 showMessage('❌ Not enough TAMA!');
             }
         });
-        */
 
         // Manual save removed - using enhanced auto-save system
 
@@ -5223,15 +5225,10 @@
                     gameState.level = userData.level || 1; // Use actual level from DB, not calculated!
                     gameState.xpToLevel = gameState.level * 100;
                     
-                    // Load pet_data if exists (handle both JSONB object and string)
+                    // Try to parse pet_data if exists
                     if (userData.pet_data) {
                         try {
-                            // If pet_data is already an object (JSONB), use it directly
-                            // If it's a string, parse it
-                            const petData = typeof userData.pet_data === 'string' 
-                                ? JSON.parse(userData.pet_data) 
-                                : userData.pet_data;
-                            
+                            const petData = JSON.parse(userData.pet_data);
                             gameState.hp = petData.hp || 100;
                             gameState.food = petData.food || 100;
                             gameState.happy = petData.happy || 100;
@@ -5349,19 +5346,6 @@
                     hasAutoFeeder: gameState.hasAutoFeeder
                 };
                 
-                // Prepare data to send
-                const dataToSend = {
-                    tama: Math.floor(gameState.tama),  // Round to integer for database
-                    level: gameState.level,
-                    pet_data: pet_data,  // Send as object for JSONB
-                    last_activity: new Date().toISOString()
-                };
-                
-                // DEBUG: Log what we're sending
-                console.log('🔍 Sending to Supabase:', dataToSend);
-                console.log('🔍 pet_data type:', typeof pet_data);
-                console.log('🔍 pet_data value:', pet_data);
-                
                 // Direct save to Supabase
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${userId}`, {
                     method: 'PATCH',
@@ -5369,9 +5353,14 @@
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'  // Return error details
+                        'Prefer': 'return=minimal'
                     },
-                    body: JSON.stringify(dataToSend)
+                    body: JSON.stringify({
+                        tama: gameState.tama,
+                        level: gameState.level,
+                        pet_data: JSON.stringify(pet_data),
+                        last_activity: new Date().toISOString()
+                    })
                 });
                 
                 if (response.ok) {
@@ -5379,13 +5368,6 @@
                     return true;
                 } else {
                     console.error('❌ Supabase save failed:', response.status);
-                    // Get error details
-                    try {
-                        const errorText = await response.text();
-                        console.error('❌ Error details:', errorText);
-                    } catch (e) {
-                        console.error('❌ Could not read error:', e);
-                    }
                     return false;
                 }
             } catch (error) {
@@ -7612,104 +7594,6 @@
             });
         }
 
-        // Referral Modal Event Listeners
-        const referralBtn = document.getElementById('referral-btn');
-        const referralModal = document.getElementById('referral-modal');
-        const closeReferral = document.getElementById('close-referral');
-        const referralLinkInput = document.getElementById('referral-link-input');
-        const copyReferralBtn = document.getElementById('copy-referral-btn');
-        const shareReferralBtn = document.getElementById('share-referral-btn');
-
-        // Generate referral link (SAME algorithm as bot.py!)
-        async function generateReferralLink() {
-            const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            if (telegramUser && telegramUser.id) {
-                const telegramId = String(telegramUser.id);
-                
-                // Use SHA256 for better distribution (same as bot.py)
-                const encoder = new TextEncoder();
-                const data = encoder.encode(telegramId);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                const hashArray = new Uint8Array(hashBuffer);
-                
-                // Take first 3 bytes and convert to base36 (same as bot.py)
-                const hashVal = (hashArray[0] << 16) | (hashArray[1] << 8) | hashArray[2];
-                const codeNum = hashVal % (36 ** 6);
-                const code = 'TAMA' + codeNum.toString(36).toUpperCase().padStart(6, '0').slice(0, 6);
-                
-                return `https://tr1h.github.io/solana-tamagotchi/s.html?ref=${code}&v=30`;
-            }
-            return 'https://tr1h.github.io/solana-tamagotchi/s.html';
-        }
-
-        // Open referral modal
-        if (referralBtn && referralModal) {
-            referralBtn.addEventListener('click', async () => {
-                const refLink = await generateReferralLink();
-                referralLinkInput.value = refLink;
-                referralModal.classList.add('show');
-            });
-        }
-
-        // Close referral modal
-        if (closeReferral && referralModal) {
-            closeReferral.addEventListener('click', () => {
-                referralModal.classList.remove('show');
-            });
-        }
-
-        // Close on background click
-        if (referralModal) {
-            referralModal.addEventListener('click', (e) => {
-                if (e.target.id === 'referral-modal') {
-                    referralModal.classList.remove('show');
-                }
-            });
-        }
-
-        // Copy referral link
-        if (copyReferralBtn && referralLinkInput) {
-            copyReferralBtn.addEventListener('click', () => {
-                referralLinkInput.select();
-                navigator.clipboard.writeText(referralLinkInput.value).then(() => {
-                    copyReferralBtn.textContent = '✅ Copied!';
-                    setTimeout(() => {
-                        copyReferralBtn.textContent = '📋 Copy';
-                    }, 2000);
-                    showMessage('✅ Link copied to clipboard!');
-                }).catch(err => {
-                    console.error('Failed to copy:', err);
-                    showMessage('❌ Failed to copy link');
-                });
-            });
-        }
-
-        // Share referral link
-        if (shareReferralBtn && referralLinkInput) {
-            shareReferralBtn.addEventListener('click', () => {
-                const refLink = referralLinkInput.value;
-                const shareText = '🎮 Join me in Solana Tamagotchi! Get 500 TAMA welcome bonus! 💰';
-                
-                if (window.Telegram?.WebApp) {
-                    // Use Telegram share
-                    window.Telegram.WebApp.openTelegramLink(
-                        `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`
-                    );
-                } else if (navigator.share) {
-                    // Use Web Share API
-                    navigator.share({
-                        title: 'Solana Tamagotchi',
-                        text: shareText,
-                        url: refLink
-                    }).catch(err => console.log('Share failed:', err));
-                } else {
-                    // Fallback: copy to clipboard
-                    navigator.clipboard.writeText(`${shareText}\n${refLink}`);
-                    showMessage('✅ Link copied! Share it with friends!');
-                }
-            });
-        }
-
         // Help Modal Event Listeners
         if (helpBtn && helpModal) {
             helpBtn.addEventListener('click', () => {
@@ -7752,12 +7636,117 @@
             });
         });
 
+        // Referral Modal Elements and Event Listeners
+        const referralBtn = document.getElementById('referral-btn');
+        const referralModal = document.getElementById('referral-modal');
+        const closeReferral = document.getElementById('close-referral');
+        const referralLinkInput = document.getElementById('referral-link-input');
+        const copyReferralBtn = document.getElementById('copy-referral-btn');
+        const shareReferralBtn = document.getElementById('share-referral-btn');
+
+        // Generate referral link (SAME algorithm as bot.py!)
+        async function generateReferralLink() {
+            const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+            if (telegramUser && telegramUser.id) {
+                const telegramId = String(telegramUser.id);
+                
+                // Use SHA256 for better distribution (same as bot.py)
+                const encoder = new TextEncoder();
+                const data = encoder.encode(telegramId);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = new Uint8Array(hashBuffer);
+                
+                // Take first 3 bytes and convert to base36 (same as bot.py)
+                const hashVal = (hashArray[0] << 16) | (hashArray[1] << 8) | hashArray[2];
+                const codeNum = hashVal % (36 ** 6);
+                const code = 'TAMA' + codeNum.toString(36).toUpperCase().padStart(6, '0').slice(0, 6);
+                
+                return `https://tr1h.github.io/solana-tamagotchi/s.html?ref=${code}&v=30`;
+            }
+            return 'https://tr1h.github.io/solana-tamagotchi/s.html';
+        }
+
+        // Open referral modal
+        if (referralBtn && referralModal) {
+            referralBtn.addEventListener('click', async () => {
+                const link = await generateReferralLink();
+                referralLinkInput.value = link;
+                referralModal.classList.add('show');
+            });
+        }
+
+        // Close referral modal
+        if (closeReferral && referralModal) {
+            closeReferral.addEventListener('click', () => {
+                referralModal.classList.remove('show');
+            });
+        }
+
+        // Close referral on background click
+        if (referralModal) {
+            referralModal.addEventListener('click', (e) => {
+                if (e.target.id === 'referral-modal') {
+                    referralModal.classList.remove('show');
+                }
+            });
+        }
+
+        // Copy referral link
+        if (copyReferralBtn && referralLinkInput) {
+            copyReferralBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(referralLinkInput.value);
+                    copyReferralBtn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        copyReferralBtn.textContent = '📋 Copy';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                    // Fallback for older browsers
+                    referralLinkInput.select();
+                    document.execCommand('copy');
+                    copyReferralBtn.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        copyReferralBtn.textContent = '📋 Copy';
+                    }, 2000);
+                }
+            });
+        }
+
+        // Share referral link
+        if (shareReferralBtn) {
+            shareReferralBtn.addEventListener('click', async () => {
+                const link = referralLinkInput.value;
+                const text = `🎮 Join me in Solana Tamagotchi! Get 500 TAMA welcome bonus! 💰\n\n${link}`;
+                
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Solana Tamagotchi',
+                            text: text,
+                            url: link
+                        });
+                    } catch (err) {
+                        console.log('Share cancelled or failed');
+                    }
+                } else {
+                    // Fallback: copy to clipboard
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        shareReferralBtn.textContent = '✅ Shared!';
+                        setTimeout(() => {
+                            shareReferralBtn.textContent = '📤 Share Link';
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to share: ', err);
+                    }
+                }
+            });
+        }
+
         // Supabase Configuration
         const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcmF6eXVwYW1laWR4cGppaHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5Mzc1NTAsImV4cCI6MjA3NTUxMzU1MH0.1EkMDqCNJoAjcJDh3Dd3yPfus-JpdcwE--z2dhjh7wU';
-        
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Load leaderboard from Supabase
         async function loadLeaderboard() {
@@ -7860,40 +7849,6 @@
         }
         
         // Initialize everything when DOM is ready
-        // Load economy config from Supabase on game start
-        async function loadEconomyConfig() {
-            try {
-                const { data, error } = await supabase
-                    .from('economy_config')
-                    .select('*')
-                    .eq('is_active', true)
-                    .single();
-
-                if (error) throw error;
-
-                if (data) {
-                    const config = {
-                        BASE_CLICK_REWARD: data.base_click_reward,
-                        MIN_REWARD: data.min_reward,
-                        MAX_COMBO_BONUS: data.max_combo_bonus,
-                        COMBO_WINDOW: data.combo_window,
-                        COMBO_COOLDOWN: data.combo_cooldown,
-                        COMBO_BONUS_DIVIDER: data.combo_bonus_divider,
-                        SPAM_PENALTY: data.spam_penalty,
-                        HP_PER_CLICK: data.hp_per_click || 0.1,
-                        FOOD_PER_CLICK: data.food_per_click || 0.05,
-                        HAPPY_PER_CLICK: data.happy_per_click || 0.05
-                    };
-                    
-                    localStorage.setItem('economyConfig', JSON.stringify(config));
-                    console.log('✅ Economy config loaded from database:', data.config_name, config);
-                }
-            } catch (error) {
-                console.log('⚠️ Could not load economy config from database:', error);
-                console.log('Using default or cached config');
-            }
-        }
-
         // Listen for economy config updates from admin panel
         try {
             const economyChannel = new BroadcastChannel('economy-updates');
@@ -7909,12 +7864,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('%c🎮 GAME VERSION: 1.8.1 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
-            console.log('%c📅 BUILD: 2025-10-26 | FIX: Sync referral code algorithm with bot!', 'font-size: 14px; color: #ffff00;');
+            console.log('%c🎮 GAME VERSION: 1.8.2 🎮', 'font-size: 20px; font-weight: bold; color: #00ff00; background: #000000; padding: 10px;');
+            console.log('%c📅 BUILD: 2025-10-26 22:00 | NEW: Beautiful header design + My Link button', 'font-size: 14px; color: #ffff00;');
             console.log('DOM loaded, initializing game...');
-            
-            // Load economy config from database
-            await loadEconomyConfig();
             
             // Wait for Telegram WebApp to initialize
             if (window.Telegram && window.Telegram.WebApp) {
