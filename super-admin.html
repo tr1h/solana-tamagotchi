@@ -533,6 +533,7 @@
             <button class="tab-btn" data-tab="database">🗄️ Database</button>
             <button class="tab-btn" data-tab="admin">⚙️ Admin Actions</button>
             <button class="tab-btn" data-tab="integration">🔗 Integration</button>
+            <button class="tab-btn" data-tab="api">🚀 API Docs</button>
         </div>
 
         <!-- Tab: Overview -->
@@ -919,6 +920,167 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Tab: API Documentation -->
+        <div class="tab-content" id="tab-api">
+            <div class="admin-actions">
+                <h3>🚀 API Documentation</h3>
+                
+                <!-- API Overview -->
+                <div style="padding: 20px; background: white; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">📡 API Overview</h4>
+                    <p><strong>Base URL:</strong> <code>https://zfrazyupameidxpjihrh.supabase.co/rest/v1</code></p>
+                    <p><strong>Authentication:</strong> Bearer Token (Supabase Anon Key)</p>
+                    <p><strong>Content-Type:</strong> application/json</p>
+                </div>
+
+                <!-- Supabase Tables -->
+                <div style="padding: 20px; background: white; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">🗄️ Database Tables</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px;">
+                            <h5 style="color: var(--primary); margin-bottom: 10px;">🏆 leaderboard</h5>
+                            <p style="font-size: 14px; color: #666;">Player data, levels, TAMA, pet info</p>
+                            <code style="font-size: 12px;">GET /leaderboard</code>
+                        </div>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px;">
+                            <h5 style="color: var(--primary); margin-bottom: 10px;">🔗 referrals</h5>
+                            <p style="font-size: 14px; color: #666;">Referral tracking and rewards</p>
+                            <code style="font-size: 12px;">GET /referrals</code>
+                        </div>
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px;">
+                            <h5 style="color: var(--primary); margin-bottom: 10px;">⏳ pending_referrals</h5>
+                            <p style="font-size: 14px; color: #666;">Pending referral data</p>
+                            <code style="font-size: 12px;">GET /pending_referrals</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Endpoints -->
+                <div style="padding: 20px; background: white; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">🔌 API Endpoints</h4>
+                    
+                    <!-- Leaderboard Endpoints -->
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: var(--primary); margin-bottom: 10px;">🏆 Leaderboard Endpoints</h5>
+                        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px;">
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--success); font-weight: bold;">GET</span> 
+                                <span style="color: var(--primary);">/leaderboard</span>
+                                <span style="color: #666;">- Get all players</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--success); font-weight: bold;">GET</span> 
+                                <span style="color: var(--primary);">/leaderboard?telegram_id=eq.{id}</span>
+                                <span style="color: #666;">- Get specific player</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--success); font-weight: bold;">GET</span> 
+                                <span style="color: var(--primary);">/leaderboard?order=level.desc</span>
+                                <span style="color: #666;">- Get top players by level</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--warning); font-weight: bold;">PATCH</span> 
+                                <span style="color: var(--primary);">/leaderboard?telegram_id=eq.{id}</span>
+                                <span style="color: #666;">- Update player data</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Referral Endpoints -->
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: var(--primary); margin-bottom: 10px;">🔗 Referral Endpoints</h5>
+                        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px;">
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--success); font-weight: bold;">GET</span> 
+                                <span style="color: var(--primary);">/referrals</span>
+                                <span style="color: #666;">- Get all referrals</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--success); font-weight: bold;">GET</span> 
+                                <span style="color: var(--primary);">/referrals?referrer_telegram_id=eq.{id}</span>
+                                <span style="color: #666;">- Get referrals by referrer</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--warning); font-weight: bold;">POST</span> 
+                                <span style="color: var(--primary);">/referrals</span>
+                                <span style="color: #666;">- Create new referral</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: var(--success); font-weight: bold;">GET</span> 
+                                <span style="color: var(--primary);">/pending_referrals</span>
+                                <span style="color: #666;">- Get pending referrals</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Query Examples -->
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: var(--primary); margin-bottom: 10px;">💡 Query Examples</h5>
+                        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px;">
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: #666;"># Get top 10 players by level</span><br>
+                                <span style="color: var(--primary);">/leaderboard?order=level.desc&limit=10</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: #666;"># Get referrals for specific user</span><br>
+                                <span style="color: var(--primary);">/referrals?referrer_telegram_id=eq.123456789</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: #666;"># Get players with TAMA > 1000</span><br>
+                                <span style="color: var(--primary);">/leaderboard?tama=gt.1000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request Headers -->
+                <div style="padding: 20px; background: white; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">📋 Request Headers</h4>
+                    <div style="background: #f9fafb; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px;">
+                        <div style="margin-bottom: 8px;">
+                            <span style="color: var(--primary);">apikey:</span> 
+                            <span style="color: #666;">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="color: var(--primary);">Authorization:</span> 
+                            <span style="color: #666;">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <span style="color: var(--primary);">Content-Type:</span> 
+                            <span style="color: #666;">application/json</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--primary);">Prefer:</span> 
+                            <span style="color: #666;">return=minimal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test API -->
+                <div style="padding: 20px; background: white; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 15px;">🧪 Test API</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <button class="action-btn" onclick="testAPI('leaderboard')" style="background: var(--success);">
+                            🏆 Test Leaderboard
+                        </button>
+                        <button class="action-btn" onclick="testAPI('referrals')" style="background: var(--primary);">
+                            🔗 Test Referrals
+                        </button>
+                        <button class="action-btn" onclick="testAPI('pending')" style="background: var(--warning);">
+                            ⏳ Test Pending
+                        </button>
+                        <button class="action-btn" onclick="showAPIResponse()" style="background: var(--secondary);">
+                            📊 Show Response
+                        </button>
+                    </div>
+                    <div id="api-response" style="margin-top: 15px; padding: 15px; background: #f9fafb; border-radius: 8px; font-family: monospace; font-size: 12px; display: none;">
+                        <strong>API Response:</strong><br>
+                        <pre id="api-response-content"></pre>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1419,6 +1581,109 @@
                 loadReferrals();
             }
         }, 30000);
+
+        // API Testing Functions
+        async function testAPI(endpoint) {
+            try {
+                let url = '';
+                let method = 'GET';
+                
+                switch(endpoint) {
+                    case 'leaderboard':
+                        url = `${SUPABASE_URL}/rest/v1/leaderboard?limit=5`;
+                        break;
+                    case 'referrals':
+                        url = `${SUPABASE_URL}/rest/v1/referrals?limit=5`;
+                        break;
+                    case 'pending':
+                        url = `${SUPABASE_URL}/rest/v1/pending_referrals?limit=5`;
+                        break;
+                }
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                // Store response for display
+                window.lastAPIResponse = {
+                    endpoint: endpoint,
+                    url: url,
+                    method: method,
+                    status: response.status,
+                    data: data,
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log(`✅ API Test ${endpoint}:`, data);
+                
+                // Show success message
+                showNotification(`✅ API Test ${endpoint} successful! Status: ${response.status}`);
+                
+            } catch (error) {
+                console.error(`❌ API Test ${endpoint} failed:`, error);
+                showNotification(`❌ API Test ${endpoint} failed: ${error.message}`);
+            }
+        }
+        
+        function showAPIResponse() {
+            if (!window.lastAPIResponse) {
+                showNotification('❌ No API response to show. Run a test first!');
+                return;
+            }
+            
+            const responseDiv = document.getElementById('api-response');
+            const contentDiv = document.getElementById('api-response-content');
+            
+            const response = window.lastAPIResponse;
+            const formattedResponse = {
+                endpoint: response.endpoint,
+                url: response.url,
+                method: response.method,
+                status: response.status,
+                timestamp: response.timestamp,
+                data: response.data
+            };
+            
+            contentDiv.textContent = JSON.stringify(formattedResponse, null, 2);
+            responseDiv.style.display = 'block';
+            
+            // Scroll to response
+            responseDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--success);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 600;
+                max-width: 400px;
+                word-wrap: break-word;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
 
         // Initial load
         window.addEventListener('DOMContentLoaded', () => {
