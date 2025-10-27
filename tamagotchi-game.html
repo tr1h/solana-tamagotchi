@@ -5206,6 +5206,126 @@
             }
         }, 10000); // Check every 10 seconds
 
+        // 🎁 REFERRAL SYSTEM: Check for referral code on page load
+        async function checkReferralCode() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref');
+                
+                if (refCode && refCode.startsWith('TAMA')) {
+                    console.log('🎁 Referral code detected:', refCode);
+                    
+                    // Get current user info
+                    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                    if (!telegramUser?.id) {
+                        console.log('❌ No Telegram user data available');
+                        return;
+                    }
+                    
+                    const currentUserId = String(telegramUser.id);
+                    
+                    // Find referrer by referral code
+                    const referrerResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?referral_code=eq.${refCode}&select=telegram_id,telegram_username`, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    });
+                    
+                    const referrerData = await referrerResponse.json();
+                    
+                    if (referrerData && referrerData.length > 0) {
+                        const referrerId = referrerData[0].telegram_id;
+                        const referrerUsername = referrerData[0].telegram_username;
+                        
+                        // Check if this is not self-referral
+                        if (referrerId !== currentUserId) {
+                            console.log('✅ Valid referral detected:', {
+                                referrer: referrerId,
+                                referred: currentUserId,
+                                code: refCode
+                            });
+                            
+                            // Check if referral already exists
+                            const existingRefResponse = await fetch(`${SUPABASE_URL}/rest/v1/referrals?referrer_telegram_id=eq.${referrerId}&referred_telegram_id=eq.${currentUserId}`, {
+                                headers: {
+                                    'apikey': SUPABASE_ANON_KEY,
+                                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                                }
+                            });
+                            
+                            const existingRefs = await existingRefResponse.json();
+                            
+                            if (!existingRefs || existingRefs.length === 0) {
+                                // Create new referral record
+                                const newRefResponse = await fetch(`${SUPABASE_URL}/rest/v1/referrals`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'apikey': SUPABASE_ANON_KEY,
+                                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                        'Content-Type': 'application/json',
+                                        'Prefer': 'return=minimal'
+                                    },
+                                    body: JSON.stringify({
+                                        referrer_telegram_id: referrerId,
+                                        referred_telegram_id: currentUserId,
+                                        referrer_username: referrerUsername,
+                                        referred_username: telegramUser.username || telegramUser.first_name,
+                                        referral_code: refCode,
+                                        status: 'completed',
+                                        reward_given: 1000,
+                                        created_at: new Date().toISOString()
+                                    })
+                                });
+                                
+                                if (newRefResponse.ok) {
+                                    console.log('✅ Referral record created successfully');
+                                    
+                                    // Award TAMA to referrer (get current amount first)
+                                    const currentUserResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${referrerId}&select=tama`, {
+                                        headers: {
+                                            'apikey': SUPABASE_ANON_KEY,
+                                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                                        }
+                                    });
+                                    
+                                    const currentUserData = await currentUserResponse.json();
+                                    const currentTama = currentUserData && currentUserData.length > 0 ? currentUserData[0].tama : 0;
+                                    const newTama = currentTama + 1000;
+                                    
+                                    const referrerUpdateResponse = await fetch(`${SUPABASE_URL}/rest/v1/leaderboard?telegram_id=eq.${referrerId}`, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'apikey': SUPABASE_ANON_KEY,
+                                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                                            'Content-Type': 'application/json',
+                                            'Prefer': 'return=minimal'
+                                        },
+                                        body: JSON.stringify({
+                                            tama: newTama
+                                        })
+                                    });
+                                    
+                                    if (referrerUpdateResponse.ok) {
+                                        console.log('✅ Referrer rewarded 1,000 TAMA');
+                                        showNotification("🎉 Referral successful! Your referrer earned 1,000 TAMA!");
+                                    }
+                                }
+                            } else {
+                                console.log('⚠️ Referral already exists');
+                            }
+                        } else {
+                            console.log('⚠️ Self-referral detected, ignoring');
+                        }
+                    } else {
+                        console.log('❌ Referrer not found for code:', refCode);
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error processing referral code:', error);
+            }
+        }
+
         // Initialize game
         async function initGame() {
             try {
@@ -8090,6 +8210,9 @@
                 leaderboardBtn: !!leaderboardBtn,
                 leaderboardModal: !!leaderboardModal
             });
+            
+            // Check for referral code first
+            await checkReferralCode();
             
             // Initialize game
             await initGame();
