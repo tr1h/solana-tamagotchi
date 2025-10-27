@@ -3333,6 +3333,11 @@
                     <div class="game-card-name">TAMA Jump</div>
                     <div class="game-card-cost">100 TAMA | Win: up to 500 TAMA!</div>
                 </div>
+                <div class="game-card" data-game="catchpet" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                    <div class="game-card-icon">🐾</div>
+                    <div class="game-card-name">Catch the Pet!</div>
+                    <div class="game-card-cost">FREE | Win: up to 200 TAMA!</div>
+                </div>
             </div>
             
             <!-- Game Arenas (will be shown when game is selected) -->
@@ -3426,6 +3431,45 @@
             <!-- 🍄 TAMA JUMP PLATFORMER -->
             <div class="game-arena" id="platformer-arena" style="display: none;">
                 <!-- IMMEDIATELY open fullscreen when selecting game -->
+            </div>
+            
+            <!-- 🐾 CATCH THE PET! -->
+            <div class="game-arena" id="catchpet-arena" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 15px;">🐾 Catch the Pet!</h3>
+                <p style="text-align: center; margin-bottom: 20px; opacity: 0.9;">Catch the running pet and unlock new ones!</p>
+                
+                <!-- Game Stats -->
+                <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; min-width: 80px;">
+                        <div style="font-size: 24px; font-weight: bold; color: #fbbf24;">0</div>
+                        <div style="font-size: 12px; color: #d1d5db;">🏆 Caught</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; min-width: 80px;">
+                        <div style="font-size: 24px; font-weight: bold; color: #fbbf24;">0</div>
+                        <div style="font-size: 12px; color: #d1d5db;">💯 Score</div>
+                    </div>
+                    <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px; min-width: 80px;">
+                        <div style="font-size: 24px; font-weight: bold; color: #fbbf24;">1.0x</div>
+                        <div style="font-size: 12px; color: #d1d5db;">⚡ Speed</div>
+                    </div>
+                </div>
+                
+                <!-- Game Area -->
+                <div style="position: relative; width: 100%; height: 300px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 15px; margin: 20px 0; overflow: hidden; cursor: pointer;" id="catchpet-game-area">
+                    <div id="catchpet-pet" style="position: absolute; font-size: 48px; transition: all 0.1s ease; user-select: none;">🐕</div>
+                    <div id="catchpet-progress" style="position: absolute; bottom: 10px; left: 10px; right: 10px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 3px;">
+                        <div id="catchpet-progress-fill" style="height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 3px; width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                
+                <!-- Game Status -->
+                <div style="text-align: center; font-size: 18px; margin: 15px 0; min-height: 50px; font-weight: bold;" id="catchpet-status">Click to start catching pets!</div>
+                
+                <!-- Controls -->
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="catchpet-start-btn" style="padding: 15px 40px; background: linear-gradient(135deg, #06b6d4, #0891b2); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 18px;">🐾 START CATCHING!</button>
+                    <button onclick="backToGames()" style="padding: 15px 30px; background: #6b7280; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-left: 10px; font-size: 16px;">Back</button>
+                </div>
             </div>
             
         </div>
@@ -8449,6 +8493,9 @@
                     selectGame(game);
                 });
             });
+            
+            // Initialize Catch Pet Game
+            initCatchPetGame();
         });
         
         // Game selection function
@@ -8489,6 +8536,13 @@
                 racingState.active = false;
             }
             
+            // Reset catch pet state if active
+            if (window.catchPetState && window.catchPetState.active) {
+                clearInterval(window.catchPetState.gameTimer);
+                clearTimeout(window.catchPetState.moveTimer);
+                window.catchPetState.active = false;
+            }
+            
             // Hide all game arenas
             document.querySelectorAll('.game-arena').forEach(arena => {
                 arena.style.display = 'none';
@@ -8508,6 +8562,263 @@
             // Show game selection
             document.getElementById('game-selection').style.display = 'grid';
         }
+
+        // ==================== CATCH THE PET! GAME ====================
+        
+        // Catch Pet Game State
+        window.catchPetState = {
+            active: false,
+            score: 0,
+            caught: 0,
+            speed: 1.0,
+            gameTimer: null,
+            moveTimer: null,
+            petPosition: { x: 50, y: 50 },
+            petSpeed: 2,
+            gameArea: null,
+            pet: null,
+            progressFill: null,
+            status: null,
+            startBtn: null
+        };
+
+        // Initialize Catch Pet Game
+        function initCatchPetGame() {
+            const arena = document.getElementById('catchpet-arena');
+            if (!arena) return;
+
+            window.catchPetState.gameArea = document.getElementById('catchpet-game-area');
+            window.catchPetState.pet = document.getElementById('catchpet-pet');
+            window.catchPetState.progressFill = document.getElementById('catchpet-progress-fill');
+            window.catchPetState.status = document.getElementById('catchpet-status');
+            window.catchPetState.startBtn = document.getElementById('catchpet-start-btn');
+
+            // Start button click
+            if (window.catchPetState.startBtn) {
+                window.catchPetState.startBtn.addEventListener('click', startCatchPetGame);
+            }
+
+            // Game area click (to catch pet)
+            if (window.catchPetState.gameArea) {
+                window.catchPetState.gameArea.addEventListener('click', catchPet);
+            }
+        }
+
+        // Start Catch Pet Game
+        function startCatchPetGame() {
+            if (window.catchPetState.active) return;
+
+            window.catchPetState.active = true;
+            window.catchPetState.score = 0;
+            window.catchPetState.caught = 0;
+            window.catchPetState.speed = 1.0;
+            window.catchPetState.petSpeed = 2;
+
+            // Update UI
+            updateCatchPetUI();
+            
+            // Start game timer (30 seconds)
+            window.catchPetState.gameTimer = setInterval(() => {
+                endCatchPetGame();
+            }, 30000);
+
+            // Start pet movement
+            movePet();
+
+            // Update status
+            if (window.catchPetState.status) {
+                window.catchPetState.status.textContent = 'Click on the pet to catch it! 🎯';
+            }
+
+            // Hide start button
+            if (window.catchPetState.startBtn) {
+                window.catchPetState.startBtn.style.display = 'none';
+            }
+        }
+
+        // Move Pet Randomly
+        function movePet() {
+            if (!window.catchPetState.active || !window.catchPetState.pet || !window.catchPetState.gameArea) return;
+
+            const gameArea = window.catchPetState.gameArea;
+            const pet = window.catchPetState.pet;
+            const areaRect = gameArea.getBoundingClientRect();
+            
+            // Random position within game area
+            const maxX = areaRect.width - 48; // Pet size
+            const maxY = areaRect.height - 48;
+            
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            pet.style.left = newX + 'px';
+            pet.style.top = newY + 'px';
+            
+            // Store position for catching
+            window.catchPetState.petPosition = { x: newX, y: newY };
+            
+            // Schedule next move
+            const moveDelay = Math.max(500, 2000 - (window.catchPetState.speed * 200));
+            window.catchPetState.moveTimer = setTimeout(movePet, moveDelay);
+        }
+
+        // Catch Pet
+        function catchPet(event) {
+            if (!window.catchPetState.active) return;
+
+            const pet = window.catchPetState.pet;
+            const petRect = pet.getBoundingClientRect();
+            const gameArea = window.catchPetState.gameArea;
+            const areaRect = gameArea.getBoundingClientRect();
+            
+            // Check if click is near pet
+            const clickX = event.clientX - areaRect.left;
+            const clickY = event.clientY - areaRect.top;
+            
+            const petX = petRect.left - areaRect.left;
+            const petY = petRect.top - areaRect.top;
+            
+            const distance = Math.sqrt((clickX - petX) ** 2 + (clickY - petY) ** 2);
+            
+            if (distance < 60) { // Catch radius
+                // Pet caught!
+                window.catchPetState.caught++;
+                window.catchPetState.score += Math.floor(10 * window.catchPetState.speed);
+                
+                // Increase speed
+                window.catchPetState.speed += 0.1;
+                window.catchPetState.petSpeed += 0.2;
+                
+                // Update UI
+                updateCatchPetUI();
+                
+                // Show catch effect
+                showCatchEffect(petX, petY);
+                
+                // Move pet to new position
+                setTimeout(() => {
+                    movePet();
+                }, 200);
+                
+                // Update status
+                if (window.catchPetState.status) {
+                    window.catchPetState.status.textContent = `Great catch! +${Math.floor(10 * window.catchPetState.speed)} points! 🎉`;
+                }
+            } else {
+                // Miss
+                if (window.catchPetState.status) {
+                    window.catchPetState.status.textContent = 'Miss! Try again! 🎯';
+                }
+            }
+        }
+
+        // Show Catch Effect
+        function showCatchEffect(x, y) {
+            const gameArea = window.catchPetState.gameArea;
+            const effect = document.createElement('div');
+            effect.style.cssText = `
+                position: absolute;
+                left: ${x}px;
+                top: ${y}px;
+                font-size: 24px;
+                color: #fbbf24;
+                font-weight: bold;
+                pointer-events: none;
+                z-index: 10;
+                animation: catchEffect 1s ease-out forwards;
+            `;
+            effect.textContent = '+10';
+            gameArea.appendChild(effect);
+            
+            setTimeout(() => {
+                effect.remove();
+            }, 1000);
+        }
+
+        // Update Catch Pet UI
+        function updateCatchPetUI() {
+            const stats = document.querySelectorAll('#catchpet-arena .game-arena > div > div');
+            if (stats.length >= 3) {
+                stats[0].textContent = window.catchPetState.caught;
+                stats[1].textContent = window.catchPetState.score;
+                stats[2].textContent = window.catchPetState.speed.toFixed(1) + 'x';
+            }
+            
+            // Update progress bar
+            if (window.catchPetState.progressFill) {
+                const progress = Math.min(100, (window.catchPetState.caught / 10) * 100);
+                window.catchPetState.progressFill.style.width = progress + '%';
+            }
+        }
+
+        // End Catch Pet Game
+        function endCatchPetGame() {
+            if (!window.catchPetState.active) return;
+            
+            window.catchPetState.active = false;
+            
+            // Clear timers
+            if (window.catchPetState.gameTimer) {
+                clearInterval(window.catchPetState.gameTimer);
+            }
+            if (window.catchPetState.moveTimer) {
+                clearTimeout(window.catchPetState.moveTimer);
+            }
+            
+            // Calculate reward
+            const baseReward = Math.floor(window.catchPetState.score / 10);
+            const bonusReward = window.catchPetState.caught >= 5 ? 50 : 0;
+            const totalReward = baseReward + bonusReward;
+            
+            // Award TAMA
+            if (totalReward > 0) {
+                gameState.tama += totalReward;
+                updateUI();
+                
+                // Log transaction
+                if (window.TransactionLogger) {
+                    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                    if (telegramUser) {
+                        window.TransactionLogger.logMiniGame(
+                            telegramUser.id.toString(),
+                            telegramUser.username || telegramUser.first_name,
+                            'catch_pet',
+                            totalReward,
+                            gameState.tama - totalReward,
+                            gameState.tama
+                        );
+                    }
+                }
+            }
+            
+            // Show results
+            if (window.catchPetState.status) {
+                window.catchPetState.status.innerHTML = `
+                    🎉 Game Over!<br>
+                    Caught: ${window.catchPetState.caught} pets<br>
+                    Score: ${window.catchPetState.score} points<br>
+                    Reward: ${totalReward} TAMA!<br>
+                    <button onclick="startCatchPetGame()" style="margin-top: 10px; padding: 10px 20px; background: #06b6d4; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">Play Again!</button>
+                `;
+            }
+            
+            // Show start button
+            if (window.catchPetState.startBtn) {
+                window.catchPetState.startBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Add CSS for catch effect animation
+        const catchEffectCSS = `
+            @keyframes catchEffect {
+                0% { transform: translateY(0) scale(1); opacity: 1; }
+                100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+            }
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = catchEffectCSS;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
