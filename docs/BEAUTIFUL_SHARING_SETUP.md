@@ -13,7 +13,7 @@
 ## 🚀 КАК РАБОТАЕТ:
 
 ### **1️⃣ Пользователь нажимает `/ref` в боте:**
-- Получает реферальную ссылку: `https://t.me/solana_tamagotchi_v3_bot?start=refTAMA123`
+- Получает реферальную ссылку: `https://t.me/gotchigamebot?start=refTAMA123`
 - Получает красивую ссылку: `https://tr1h.github.io/solana-tamagotchi/referral.html?ref=TAMA123`
 
 ### **2️⃣ При шаринге красивой ссылки:**
@@ -33,7 +33,7 @@
 ## 📱 ПРОВЕРКА:
 
 ### **1️⃣ Открой бота:**
-https://t.me/solana_tamagotchi_v3_bot
+https://t.me/gotchigamebot
 
 ### **2️⃣ Нажми `/ref`:**
 - Получишь две ссылки:
@@ -82,7 +82,7 @@ https://t.me/solana_tamagotchi_v3_bot
 
 ### **До:**
 ```
-https://t.me/solana_tamagotchi_v3_bot?start=refTAMA123
+https://t.me/gotchigamebot?start=refTAMA123
 ```
 - Обычный текст
 - Никакого превью

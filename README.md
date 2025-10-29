@@ -80,7 +80,7 @@ solana-tamagotchi/
 const refCode = urlParams.get('ref'); // TAMA3F2A1C
 
 // Creates bot link
-const botLink = `https://t.me/solana_tamagotchi_v3_bot?start=ref${refCode}`;
+const botLink = `https://t.me/gotchigamebot?start=ref${refCode}`;
 
 // Automatically redirects after 2 seconds
 setTimeout(() => window.location.href = botLink, 2000);
@@ -214,7 +214,7 @@ fetch('https://your-analytics-api.herokuapp.com/track_click', {
 This repository works together with:
 
 * **Main Project**: https://github.com/tr1h/huma-chain-xyz
-* **Telegram Bot**: @solana_tamagotchi_v3_bot
+* **Telegram Bot**: @gotchigamebot
 * **Contact Email**: gotchigame@proton.me
 
 ## 📈 Current Metrics
@@ -250,7 +250,7 @@ MIT License
 
 ## 🤝 Contact
 
-* **Telegram**: @solana_tamagotchi_v3_bot
+* **Telegram**: @gotchigamebot
 * **GitHub**: https://github.com/tr1h/solana-tamagotchi
 * **Email**: gotchigame@proton.me
 

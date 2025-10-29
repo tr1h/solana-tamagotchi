@@ -1,7 +1,7 @@
 # 📌 **WELCOME TO SOLANA TAMAGOTCHI COMMUNITY!**
 
 ## 🎮 **START HERE (PRE-LAUNCH):**
-1. **Message the bot:** @solana_tamagotchi_v3_bot
+1. **Message the bot:** @gotchigamebot
 2. **Get your referral link** and start earning TAMA
 3. **Join waitlist:** [Landing Page](https://tr1h.github.io/solana-tamagotchi/)
 4. **Share with friends** to earn 1,000 TAMA each!
@@ -17,7 +17,7 @@ Use `/leaderboard` in the bot to see top earners!
 
 ## 📢 **STAY UPDATED:**
 • **Twitter:** @GotchiGame
-• **Bot:** @solana_tamagotchi_v3_bot
+• **Bot:** @gotchigamebot
 
 ## 🎯 **QUICK ACTIONS:**
 • **Get referral link:** Message the bot

@@ -230,6 +230,7 @@
             display: block;
         }
     </style>
+    <script src="js/admin-env.js"></script>
 </head>
 <body>
     <div class="container">
@@ -391,10 +392,63 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase configuration
-        const SUPABASE_URL = 'https://zfrazyupameidxpjihrh.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmcmF6eXVwYW1laWR4cGppaHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5Mzc1NTAsImV4cCI6MjA3NTUxMzU1MH0.1EkMDqCNJoAjcJDh3Dd3yPfus-JpdcwE--z2dhjh7wU';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Supabase configuration from AdminEnv or manual input
+        let SUPABASE_URL = window.AdminEnv?.SUPABASE_URL || localStorage.getItem('SUPABASE_URL') || '';
+        let SUPABASE_KEY = window.AdminEnv?.SUPABASE_KEY || localStorage.getItem('SUPABASE_KEY') || '';
+        let TAMA_API_BASE = window.AdminEnv?.TAMA_API_BASE || localStorage.getItem('TAMA_API_BASE') || '';
+        let REF_API_BASE = window.AdminEnv?.REF_API_BASE || localStorage.getItem('REF_API_BASE') || '';
+        let supabase = (SUPABASE_URL && SUPABASE_KEY) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+        // Simple settings UI
+        document.addEventListener('DOMContentLoaded', () => {
+            const bar = document.createElement('div');
+            bar.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:9999;background:#ffffff;border-bottom:1px solid #e5e7eb;padding:10px;display:flex;gap:10px;align-items:center;';
+            bar.innerHTML = `
+                <span style="font-weight:600;color:#4a5568">Connection:</span>
+                <input id="sb_url" placeholder="Supabase URL (https://....supabase.co)" style="flex:1;padding:8px;border:1px solid #cbd5e0;border-radius:8px" value="${SUPABASE_URL}">
+                <input id="sb_key" placeholder="Supabase anon key" style="flex:1;padding:8px;border:1px solid #cbd5e0;border-radius:8px" value="${SUPABASE_KEY}">
+                <input id="tama_api" placeholder="TAMA API (optional)" style="flex:1;padding:8px;border:1px solid #cbd5e0;border-radius:8px" value="${TAMA_API_BASE}">
+                <button id="save_conn" style="background:#667eea;color:#fff;border:none;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer">Save</button>
+                <span id="conn_status" style="margin-left:8px;font-size:12px;color:#4a5568"></span>
+            `;
+            document.body.appendChild(bar);
+            document.body.style.paddingTop = '60px';
+
+            function setStatus(text, ok) {
+                const el = document.getElementById('conn_status');
+                el.textContent = text;
+                el.style.color = ok ? '#16a34a' : '#dc2626';
+            }
+
+            async function initSupabase() {
+                if (SUPABASE_URL && SUPABASE_KEY) {
+                    try {
+                        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                        // quick ping
+                        const { data, error } = await supabase.from('leaderboard').select('id').limit(1);
+                        if (error) throw error;
+                        setStatus('Connected', true);
+                    } catch (e) {
+                        setStatus('Connection error: ' + e.message, false);
+                        supabase = null;
+                    }
+                } else {
+                    setStatus('Not configured', false);
+                }
+            }
+
+            document.getElementById('save_conn').onclick = () => {
+                SUPABASE_URL = document.getElementById('sb_url').value.trim();
+                SUPABASE_KEY = document.getElementById('sb_key').value.trim();
+                TAMA_API_BASE = document.getElementById('tama_api').value.trim();
+                localStorage.setItem('SUPABASE_URL', SUPABASE_URL);
+                localStorage.setItem('SUPABASE_KEY', SUPABASE_KEY);
+                localStorage.setItem('TAMA_API_BASE', TAMA_API_BASE);
+                initSupabase();
+            };
+
+            initSupabase();
+        });
 
         const presets = {
             current: {
@@ -537,12 +591,13 @@
             };
 
             try {
-                // Save to Supabase
-                // First, deactivate all configs
-                await supabase.from('economy_config').update({ is_active: false }).neq('id', 0);
+                // Save to Supabase (if configured)
+                if (supabase) {
+                    await supabase.from('economy_config').update({ is_active: false }).neq('id', 0);
+                }
                 
-                // Then, upsert the custom config
-                const { data, error } = await supabase.from('economy_config')
+                // Upsert the custom config
+                const upsertResult = supabase ? await supabase.from('economy_config')
                     .upsert({
                         config_name: 'custom',
                         base_click_reward: baseReward,
@@ -559,9 +614,22 @@
                         updated_at: new Date().toISOString()
                     }, {
                         onConflict: 'config_name'
-                    });
+                    }) : { data: null, error: null };
 
-                if (error) throw error;
+                if (upsertResult.error) throw upsertResult.error;
+
+                // Also notify backend API if configured
+                if (TAMA_API_BASE) {
+                    try {
+                        await fetch(`${TAMA_API_BASE}/config`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ config })
+                        });
+                    } catch (e) {
+                        console.warn('TAMA API notify failed (optional):', e.message);
+                    }
+                }
 
                 // Save to localStorage as backup
                 localStorage.setItem('economyConfig', JSON.stringify(config));
@@ -620,6 +688,7 @@
         // Load config from database
         async function loadFromDatabase() {
             try {
+                if (!supabase) return;
                 const { data, error } = await supabase
                     .from('economy_config')
                     .select('*')

@@ -5,7 +5,7 @@ https://tr1h.github.io/solana-tamagotchi/s.html?ref=TAMAC115FD&v=30
 📱 Текст для отправки:
 🎮 Join me in Solana Tamagotchi! Get 1,000 TAMA bonus! No wallet needed!
 
-🤖 Бот: @solana_tamagotchi_v3_bot
+🤖 Бот: @gotchigamebot
 
 ---
 

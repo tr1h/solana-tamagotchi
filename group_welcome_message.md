@@ -8,7 +8,7 @@
 • **Community-driven gameplay**
 
 ## 🚀 **Get Started (Pre-Launch):**
-• **Get referral link:** Message @solana_tamagotchi_v3_bot
+• **Get referral link:** Message @gotchigamebot
 • **Start earning TAMA:** Share your referral link now!
 • **Join waitlist:** [Landing Page](https://tr1h.github.io/solana-tamagotchi/)
 • **Use /help** for bot commands
@@ -22,7 +22,7 @@
 ## 📢 **Stay Updated:**
 • **Twitter:** @GotchiGame
 • **News:** @GotchiGame  
-• **Bot:** @solana_tamagotchi_v3_bot
+• **Bot:** @gotchigamebot
 • **Community:** This group!
 
 ## 🎯 **Community Rules:**
